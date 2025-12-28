@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyage avec Martin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+		#sidebar {
+		    position: fixed;
+		    left: -380px;
+		    top: 0;
+		    width: 380px;
+		    height: 100vh;
+		    background: rgba(20, 20, 20, 0.95);
+		    border-right: 2px solid #333;
+		    overflow-y: auto;
+		    padding: 20px;
+		    z-index: 100;
+		    transition: left 0.3s ease;
+		}
+
+		#sidebar.open {
+		    left: 0;
+		}
+
+        #header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+		#logo {
+		    width: 300px;
+		    height: 300px;
+		    margin: 0 auto 10px;
+		    display: block;
+		    object-fit: contain;
+		}
+        #title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #search-box {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        #stats {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #stats h3 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .continent-section {
+            margin-bottom: 15px;
+        }
+
+        .continent-header {
+            background: rgba(50, 50, 50, 0.8);
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .continent-header:hover {
+            background: rgba(70, 70, 70, 0.9);
+        }
+
+        .continent-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .continent-stats {
+            font-size: 12px;
+            color: #4CAF50;
+        }
+
+        .continent-countries {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .continent-countries.open {
+            max-height: 2000px;
+        }
+
+        .country-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            margin-left: 15px;
+            background: rgba(40, 40, 40, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .country-item:hover {
+            background: rgba(60, 60, 60, 0.8);
+        }
+
+        .country-item.visited {
+            background: rgba(76, 175, 80, 0.3);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .country-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .country-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .country-rating {
+            font-size: 12px;
+            color: #FFD700;
+        }
+
+        #globe-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            padding: 10px 15px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: #45a049;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.98);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #4CAF50;
+            min-width: 450px;
+            max-width: 600px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        #modal.active {
+            display: block;
+        }
+
+        #modal h2 {
+            margin-bottom: 20px;
+            color: #4CAF50;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #4a4a4a;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: 'Segoe UI', Arial;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 14px;
+        }
+
+        .rating {
+            display: flex;
+            gap: 8px;
+            font-size: 35px;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #4a4a4a;
+            transition: color 0.2s;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #FFD700;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-neutral {
+            background: #555;
+            color: white;
+        }
+
+        .btn-neutral:hover {
+            background: #666;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        .arrow {
+            transition: transform 0.3s;
+        }
+
+        .arrow.open {
+            transform: rotate(90deg);
+        }
+		body.light-mode {
+		    background-color: #f0f0f0;
+		    color: #000;
+		}
+
+		body.light-mode #sidebar {
+		    background: rgba(255, 255, 255, 0.95);
+		    border-right: 2px solid #ccc;
+		}
+
+		body.light-mode #search-box,
+		body.light-mode textarea {
+		    background: #fff;
+		    color: #000;
+		    border: 1px solid #ccc;
+		}
+
+		body.light-mode .continent-header {
+		    background: rgba(200, 200, 200, 0.8);
+		}
+
+		body.light-mode .continent-header:hover {
+		    background: rgba(180, 180, 180, 0.9);
+		}
+
+		body.light-mode .country-item {
+		    background: rgba(230, 230, 230, 0.5);
+		}
+
+		body.light-mode .country-item:hover {
+		    background: rgba(200, 200, 200, 0.8);
+		}
+
+		body.light-mode #modal {
+		    background: rgba(255, 255, 255, 0.98);
+		    border: 2px solid #4CAF50;
+		    color: #000;
+		}
+
+		body.light-mode label {
+		    color: #333;
+		}
+    </style>
+</head>
+<body>
+    <div id="container">
+		<button id="toggle-sidebar" style="position: fixed; top: 20px; left: 20px; z-index: 101; padding: 10px 15px; background: #4CAF50; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 20px;">☰</button>
+        <div id="sidebar">
+            <div id="header">
+<img id="logo" src="images/logo_vam.png" alt="Logo">
+                <div id="title">🌍 Voyage avec Martin</div>
+            </div>
+
+<div id="stats">
+    <h3>Statistiques</h3>
+    <p><span id="visited-count">0</span> / <span id="total-count">0</span> pays visités</p>
+    <p>Note moyenne : <span id="avg-rating">-</span> ⭐</p>
+    <p>Dernier voyage : <span id="last-country">-</span></p>
+</div>
+
+            <input type="text" id="search-box" placeholder="🔍 Rechercher un pays...">
+			<select id="rating-filter" style="width: 100%; padding: 10px; margin-bottom: 20px; background: #1a1a1a; color: #fff; border: 1px solid #444; border-radius: 5px; font-size: 14px;">
+			    <option value="all">Toutes les notes</option>
+			    <option value="5">⭐⭐⭐⭐⭐ uniquement</option>
+			    <option value="4">⭐⭐⭐⭐ et plus</option>
+			    <option value="3">⭐⭐⭐ et plus</option>
+			    <option value="2">⭐⭐ et plus</option>
+			    <option value="1">⭐ et plus</option>
+			    <option value="0">Pays visités sans note</option>
+			</select>
+
+            <div id="continents-list"></div>
+        </div>
+
+        <div id="globe-container"></div>
+        
+<div id="controls">
+    <button class="control-btn" onclick="resetView()">🔄 Réinitialiser</button>
+    <button class="control-btn" onclick="toggleRotation()">🔄 Rotation</button>
+	<button class="control-btn" onclick="toggleTheme()">🌓 Thème</button>
+	
+</div>
+
+        <div id="overlay"></div>
+        
+        <div id="modal">
+            <h2 id="modal-title">Pays</h2>
+            <div class="form-group">
+                <label>📝 Notes sur votre voyage :</label>
+                <textarea id="notes-input" placeholder="Ce que vous avez aimé, vos souvenirs, conseils..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>⭐ Votre note :</label>
+                <div class="rating" id="rating-stars">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" id="save-btn">💾 Sauvegarder</button>
+                <button class="btn-neutral" id="cancel-btn">❌ Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js et Globe.GL -->
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/globe.gl"></script>
+
+    <script>
+        let visitedCountries = {};
+        let currentRating = 0;
+        let selectedCountry = null;
+        let myGlobe;
+        let countriesGeoJson;
+
+        // Correspondance des noms de pays (format interface -> format GeoJSON)
+        const countryNameMapping = {
+            'États-Unis': 'United States of America',
+            'Royaume-Uni': 'United Kingdom',
+            'Russie': 'Russia',
+            'Chine': 'China',
+            'Inde': 'India',
+            'Brésil': 'Brazil',
+            'France': 'France',
+            'Allemagne': 'Germany',
+            'Italie': 'Italy',
+            'Espagne': 'Spain',
+            'Canada': 'Canada',
+            'Australie': 'Australia',
+            'Japon': 'Japan',
+            'Corée du Sud': 'South Korea',
+            'Mexique': 'Mexico',
+            'Argentine': 'Argentina',
+            'Afrique du Sud': 'South Africa',
+            'Égypte': 'Egypt',
+            'Turquie': 'Turkey',
+            'Thaïlande': 'Thailand',
+            'Vietnam': 'Vietnam',
+            'Indonésie': 'Indonesia',
+            'Philippines': 'Philippines',
+            'Pakistan': 'Pakistan',
+            'Bangladesh': 'Bangladesh',
+            'Algérie': 'Algeria',
+            'Maroc': 'Morocco',
+            'Tunisie': 'Tunisia',
+            'Kenya': 'Kenya',
+            'Nigeria': 'Nigeria',
+            'Éthiopie': 'Ethiopia',
+            'Tanzanie': 'Tanzania',
+            'Ghana': 'Ghana',
+            'Soudan': 'Sudan',
+            'Arabie Saoudite': 'Saudi Arabia',
+            'Iran': 'Iran',
+            'Irak': 'Iraq',
+            'Syrie': 'Syria',
+            'Israël': 'Israel',
+            'Jordanie': 'Jordan',
+            'Liban': 'Lebanon',
+            'Émirats Arabes Unis': 'United Arab Emirates',
+            'Afghanistan': 'Afghanistan',
+            'Kazakhstan': 'Kazakhstan',
+            'Ouzbékistan': 'Uzbekistan',
+            'Pologne': 'Poland',
+            'Roumanie': 'Romania',
+            'Pays-Bas': 'Netherlands',
+            'Belgique': 'Belgium',
+            'Grèce': 'Greece',
+            'Portugal': 'Portugal',
+            'Tchéquie': 'Czechia',
+            'Hongrie': 'Hungary',
+            'Suède': 'Sweden',
+            'Autriche': 'Austria',
+            'Suisse': 'Switzerland',
+            'Bulgarie': 'Bulgaria',
+            'Serbie': 'Serbia',
+            'Danemark': 'Denmark',
+            'Finlande': 'Finland',
+            'Slovaquie': 'Slovakia',
+            'Norvège': 'Norway',
+            'Irlande': 'Ireland',
+            'Croatie': 'Croatia',
+            'Bosnie-Herzégovine': 'Bosnia and Herzegovina',
+            'Albanie': 'Albania',
+            'Lituanie': 'Lithuania',
+            'Slovénie': 'Slovenia',
+            'Lettonie': 'Latvia',
+            'Estonie': 'Estonia',
+            'Biélorussie': 'Belarus',
+            'Ukraine': 'Ukraine',
+            'Moldavie': 'Moldova',
+            'Arménie': 'Armenia',
+            'Géorgie': 'Georgia',
+            'Azerbaïdjan': 'Azerbaijan',
+            'Chili': 'Chile',
+            'Colombie': 'Colombia',
+            'Venezuela': 'Venezuela',
+            'Pérou': 'Peru',
+            'Équateur': 'Ecuador',
+            'Bolivie': 'Bolivia',
+            'Paraguay': 'Paraguay',
+            'Uruguay': 'Uruguay',
+            'Cuba': 'Cuba',
+            'Haïti': 'Haiti',
+            'République Dominicaine': 'Dominican Republic',
+            'Guatemala': 'Guatemala',
+            'Honduras': 'Honduras',
+            'Nicaragua': 'Nicaragua',
+            'Costa Rica': 'Costa Rica',
+            'Panama': 'Panama',
+            'Jamaïque': 'Jamaica',
+            'Nouvelle-Zélande': 'New Zealand',
+            'Malaisie': 'Malaysia',
+            'Singapour': 'Singapore',
+            'Myanmar': 'Myanmar',
+            'Cambodge': 'Cambodia',
+            'Laos': 'Laos',
+            'Népal': 'Nepal',
+            'Sri Lanka': 'Sri Lanka',
+            'Mongolie': 'Mongolia',
+            'Corée du Nord': 'North Korea',
+            'Taïwan': 'Taiwan',
+            'Yémen': 'Yemen',
+            'Oman': 'Oman',
+            'Koweït': 'Kuwait',
+            'Qatar': 'Qatar',
+            'Bahreïn': 'Bahrain',
+            'Libye': 'Libya',
+            'Mali': 'Mali',
+            'Niger': 'Niger',
+            'Tchad': 'Chad',
+            'Mauritanie': 'Mauritania',
+            'Sénégal': 'Senegal',
+            'Guinée': 'Guinea',
+            'Côte d\'Ivoire': 'Ivory Coast',
+            'Burkina Faso': 'Burkina Faso',
+            'Bénin': 'Benin',
+            'Togo': 'Togo',
+            'Cameroun': 'Cameroon',
+            'Gabon': 'Gabon',
+            'Congo': 'Republic of the Congo',
+            'République Démocratique du Congo': 'Democratic Republic of the Congo',
+            'Angola': 'Angola',
+            'Zambie': 'Zambia',
+            'Zimbabwe': 'Zimbabwe',
+            'Mozambique': 'Mozambique',
+            'Madagascar': 'Madagascar',
+            'Botswana': 'Botswana',
+            'Namibie': 'Namibia',
+            'Rwanda': 'Rwanda',
+            'Burundi': 'Burundi',
+            'Somalie': 'Somalia',
+            'Érythrée': 'Eritrea',
+            'Djibouti': 'Djibouti',
+            'Gambie': 'Gambia',
+            'Bhoutan': 'Bhutan',
+            'Maldives': 'Maldives',
+            'Brunei': 'Brunei',
+            'Fidji': 'Fiji',
+            'Turkménistan': 'Turkmenistan',
+            'Kirghizistan': 'Kyrgyzstan',
+            'Tadjikistan': 'Tajikistan',
+            'Andorre': 'Andorra',
+            'Monaco': 'Monaco',
+            'Monténégro': 'Montenegro',
+            'Cap-Vert': 'Cape Verde'
+        };
+
+        const continents = {
+            'Europe': {
+                emoji: '🇪🇺',
+                countries: [
+                    'Albanie', 'Allemagne', 'Andorre', 'Autriche', 'Belgique', 'Biélorussie',
+                    'Bosnie-Herzégovine', 'Bulgarie', 'Chypre', 'Croatie', 'Danemark', 'Espagne',
+                    'Estonie', 'Finlande', 'France', 'Grèce', 'Hongrie', 'Irlande', 'Islande',
+                    'Italie', 'Lettonie', 'Lituanie', 'Luxembourg', 'Malte', 'Moldavie',
+                    'Monaco', 'Monténégro', 'Norvège', 'Pays-Bas', 'Pologne', 'Portugal',
+                    'Roumanie', 'Royaume-Uni', 'Russie', 'Serbie', 'Slovaquie', 'Slovénie',
+                    'Suède', 'Suisse', 'Tchéquie', 'Ukraine'
+                ]
+            },
+            'Asie': {
+                emoji: '🌏',
+                countries: [
+                    'Afghanistan', 'Arabie Saoudite', 'Arménie', 'Azerbaïdjan', 'Bahreïn',
+                    'Bangladesh', 'Bhoutan', 'Brunei', 'Cambodge', 'Chine', 'Corée du Nord',
+                    'Corée du Sud', 'Émirats Arabes Unis', 'Géorgie', 'Inde', 'Indonésie',
+                    'Irak', 'Iran', 'Israël', 'Japon', 'Jordanie', 'Kazakhstan', 'Koweït',
+                    'Laos', 'Liban', 'Malaisie', 'Maldives', 'Mongolie', 'Myanmar', 'Népal',
+                    'Oman', 'Pakistan', 'Philippines', 'Qatar', 'Singapour', 'Sri Lanka',
+                    'Syrie', 'Taïwan', 'Thaïlande', 'Turkménistan', 'Turquie', 'Vietnam', 'Yémen'
+                ]
+            },
+            'Afrique': {
+                emoji: '🌍',
+                countries: [
+                    'Afrique du Sud', 'Algérie', 'Angola', 'Bénin', 'Botswana', 'Burkina Faso',
+                    'Burundi', 'Cameroun', 'Cap-Vert', 'Congo', 'Côte d\'Ivoire', 'Djibouti',
+                    'Égypte', 'Érythrée', 'Éthiopie', 'Gabon', 'Gambie', 'Ghana', 'Guinée',
+                    'Kenya', 'Libye', 'Madagascar', 'Mali', 'Maroc', 'Mozambique', 'Namibie',
+                    'Niger', 'Nigeria', 'Rwanda', 'Sénégal', 'Somalie', 'Soudan', 'Tanzanie',
+                    'Tchad', 'Tunisie', 'Zambie', 'Zimbabwe'
+                ]
+            },
+            'Amérique du Nord': {
+                emoji: '🌎',
+                countries: [
+                    'Canada', 'Costa Rica', 'Cuba', 'États-Unis', 'Guatemala', 'Haïti',
+                    'Honduras', 'Jamaïque', 'Mexique', 'Nicaragua', 'Panama'
+                ]
+            },
+            'Amérique du Sud': {
+                emoji: '🌎',
+                countries: [
+                    'Argentine', 'Bolivie', 'Brésil', 'Chili', 'Colombie', 'Équateur',
+                    'Paraguay', 'Pérou', 'Uruguay', 'Venezuela'
+                ]
+            },
+            'Océanie': {
+                emoji: '🌏',
+                countries: [
+                    'Australie', 'Fidji', 'Nouvelle-Zélande'
+                ]
+            }
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem('travelData');
+            if (saved) {
+                visitedCountries = JSON.parse(saved);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('travelData', JSON.stringify(visitedCountries));
+        }
+
+        function initContinentsList() {
+            const container = document.getElementById('continents-list');
+            
+            Object.keys(continents).forEach(continentName => {
+                const continent = continents[continentName];
+                const section = document.createElement('div');
+                section.className = 'continent-section';
+                
+                const header = document.createElement('div');
+                header.className = 'continent-header';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'continent-name';
+                nameDiv.innerHTML = `<span class="arrow">▶</span> ${continent.emoji} ${continentName}`;
+                
+                const stats = document.createElement('div');
+                stats.className = 'continent-stats';
+                const visited = continent.countries.filter(c => visitedCountries[c]).length;
+                const total = continent.countries.length;
+                stats.textContent = `${visited}/${total}`;
+                
+                header.appendChild(nameDiv);
+                header.appendChild(stats);
+                
+                const countriesDiv = document.createElement('div');
+                countriesDiv.className = 'continent-countries';
+                
+                const sortedCountries = continent.countries.sort();
+                sortedCountries.forEach(countryName => {
+                    const item = createCountryItem(countryName);
+                    countriesDiv.appendChild(item);
+                });
+                
+                header.addEventListener('click', () => {
+                    countriesDiv.classList.toggle('open');
+                    header.querySelector('.arrow').classList.toggle('open');
+                });
+                
+                section.appendChild(header);
+                section.appendChild(countriesDiv);
+                container.appendChild(section);
+            });
+            
+            updateStats();
+        }
+
+        function createCountryItem(countryName) {
+            const item = document.createElement('div');
+            item.className = 'country-item';
+            if (visitedCountries[countryName]) {
+                item.classList.add('visited');
+            }
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'country-checkbox';
+            checkbox.checked = !!visitedCountries[countryName];
+            checkbox.addEventListener('change', (e) => {
+                e.stopPropagation();
+                toggleCountry(countryName, e.target.checked);
+            });
+            
+            const name = document.createElement('span');
+            name.className = 'country-name';
+            name.textContent = countryName;
+            
+            const rating = document.createElement('span');
+            rating.className = 'country-rating';
+            if (visitedCountries[countryName] && visitedCountries[countryName].rating) {
+                rating.textContent = '⭐'.repeat(visitedCountries[countryName].rating);
+            }
+            
+            item.appendChild(checkbox);
+            item.appendChild(name);
+            item.appendChild(rating);
+            
+            item.addEventListener('click', (e) => {
+                if (e.target !== checkbox) {
+                    openModal(countryName);
+                }
+            });
+            
+            return item;
+        }
+
+		document.addEventListener('DOMContentLoaded', () => {
+		    const searchBox = document.getElementById('search-box');
+		    searchBox.addEventListener('input', (e) => {
+		        const search = e.target.value.toLowerCase();
+		        const items = document.querySelectorAll('.country-item');
+		        const sections = document.querySelectorAll('.continent-section');
+        
+		        if (search === '') {
+		            items.forEach(item => item.style.display = 'flex');
+		            sections.forEach(section => section.style.display = 'block');
+		            return;
+		        }
+        
+		        items.forEach(item => {
+		            const countryName = item.querySelector('.country-name').textContent.toLowerCase();
+		            if (countryName.includes(search)) {
+		                item.style.display = 'flex';
+		                item.parentElement.classList.add('open');
+		                item.closest('.continent-section').style.display = 'block';
+		            } else {
+		                item.style.display = 'none';
+		            }
+		        });
+        
+		        sections.forEach(section => {
+		            const visibleItems = section.querySelectorAll('.country-item[style="display: flex;"]');
+		            if (visibleItems.length === 0) {
+		                section.style.display = 'none';
+		            }
+		        });
+		    });
+
+		    const ratingFilter = document.getElementById('rating-filter');
+		    ratingFilter.addEventListener('change', (e) => {
+		        const filterValue = e.target.value;
+		        const items = document.querySelectorAll('.country-item');
+		        const sections = document.querySelectorAll('.continent-section');
+        
+		        items.forEach(item => {
+		            const countryName = item.querySelector('.country-name').textContent;
+		            const countryData = visitedCountries[countryName];
+            
+		            if (filterValue === 'all') {
+		                item.style.display = 'flex';
+		            } else if (filterValue === '0') {
+		                if (countryData && countryData.rating === 0) {
+		                    item.style.display = 'flex';
+		                } else {
+		                    item.style.display = 'none';
+		                }
+		            } else {
+		                const minRating = parseInt(filterValue);
+		                if (countryData && countryData.rating >= minRating) {
+		                    item.style.display = 'flex';
+		                    item.parentElement.classList.add('open');
+		                } else {
+		                    item.style.display = 'none';
+		                }
+		            }
+		        });
+        
+		        sections.forEach(section => {
+		            const visibleItems = section.querySelectorAll('.country-item[style="display: flex;"]');
+		            if (visibleItems.length === 0) {
+		                section.style.display = 'none';
+		            } else {
+		                section.style.display = 'block';
+		            }
+		        });
+		    });
+		});
+
+        function toggleCountry(countryName, isVisited) {
+            if (isVisited) {
+                if (!visitedCountries[countryName]) {
+                    visitedCountries[countryName] = {
+                        visited: true,
+                        notes: '',
+                        rating: 0,
+                        date: new Date().toISOString()
+                    };
+                }
+            } else {
+                delete visitedCountries[countryName];
+            }
+            
+            saveData();
+            updateGlobeColors();
+            updateCountryItem(countryName);
+            updateAllContinentStats();
+            updateStats();
+        }
+
+        function updateCountryItem(countryName) {
+            const items = document.querySelectorAll('.country-item');
+            items.forEach(item => {
+                const name = item.querySelector('.country-name').textContent;
+                if (name === countryName) {
+                    const checkbox = item.querySelector('.country-checkbox');
+                    const rating = item.querySelector('.country-rating');
+                    
+                    if (visitedCountries[countryName]) {
+                        item.classList.add('visited');
+                        checkbox.checked = true;
+                        if (visitedCountries[countryName].rating) {
+                            rating.textContent = '⭐'.repeat(visitedCountries[countryName].rating);
+                        } else {
+                            rating.textContent = '';
+                        }
+                    } else {
+                        item.classList.remove('visited');
+                        checkbox.checked = false;
+                        rating.textContent = '';
+                    }
+                }
+            });
+        }
+
+        function updateAllContinentStats() {
+            const headers = document.querySelectorAll('.continent-header');
+            headers.forEach((header, index) => {
+                const continentName = Object.keys(continents)[index];
+                const continent = continents[continentName];
+                const visited = continent.countries.filter(c => visitedCountries[c]).length;
+                const total = continent.countries.length;
+                header.querySelector('.continent-stats').textContent = `${visited}/${total}`;
+            });
+        }
+
+		function updateStats() {
+		    let visitedCount = 0;
+		    let totalCount = 0;
+		    let totalRating = 0;
+		    let ratedCount = 0;
+		    let lastVisit = null;
+		    let lastCountry = null;
+    
+		    Object.values(continents).forEach(continent => {
+		        totalCount += continent.countries.length;
+		        continent.countries.forEach(country => {
+		            if (visitedCountries[country]) {
+		                visitedCount++;
+		                if (visitedCountries[country].rating > 0) {
+		                    totalRating += visitedCountries[country].rating;
+		                    ratedCount++;
+		                }
+		                const visitDate = new Date(visitedCountries[country].date);
+		                if (!lastVisit || visitDate > lastVisit) {
+		                    lastVisit = visitDate;
+		                    lastCountry = country;
+		                }
+		            }
+		        });
+		    });
+    
+		    document.getElementById('visited-count').textContent = visitedCount;
+		    document.getElementById('total-count').textContent = totalCount;
+    
+		    if (ratedCount > 0) {
+		        const avgRating = (totalRating / ratedCount).toFixed(1);
+		        document.getElementById('avg-rating').textContent = avgRating;
+		    } else {
+		        document.getElementById('avg-rating').textContent = '-';
+		    }
+    
+		    if (lastCountry) {
+		        document.getElementById('last-country').textContent = lastCountry;
+		    } else {
+		        document.getElementById('last-country').textContent = '-';
+		    }
+		}
+
+        // Initialiser le globe
+        async function initGlobe() {
+            // Charger les données GeoJSON des pays
+            const response = await fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson');
+            countriesGeoJson = await response.json();
+
+            myGlobe = Globe()
+                (document.getElementById('globe-container'))
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+                .polygonsData(countriesGeoJson.features)
+                .polygonAltitude(0.01)
+                .polygonCapColor(feat => {
+                    const countryName = getCountryNameFromGeoJson(feat.properties.NAME);
+                    return visitedCountries[countryName] ? '#00ff00' : 'rgba(100, 100, 100, 0.3)';
+                })
+                .polygonSideColor(() => 'rgba(0, 0, 0, 0.1)')
+                .polygonStrokeColor(() => '#111')
+                .polygonLabel(feat => {
+                    const countryName = getCountryNameFromGeoJson(feat.properties.NAME);
+                    return `<b>${countryName}</b>`;
+                })
+                .onPolygonClick((polygon) => {
+                    const countryName = getCountryNameFromGeoJson(polygon.properties.NAME);
+                    if (countryName) {
+                        openModal(countryName);
+                    }
+                });
+
+	// Auto-rotation
+	            myGlobe.controls().autoRotate = false;
+	            myGlobe.controls().autoRotateSpeed = 0.3;
+	        }
+
+	        function getCountryNameFromGeoJson(geoJsonName) {
+	            // Trouver le nom français correspondant
+	            for (const [frenchName, englishName] of Object.entries(countryNameMapping)) {
+	                if (englishName === geoJsonName) {
+	                    return frenchName;
+	                }
+	            }
+	            return geoJsonName;
+	        }
+
+	        function updateGlobeColors() {
+	            if (myGlobe && countriesGeoJson) {
+	                myGlobe.polygonsData(countriesGeoJson.features);
+	            }
+	        }
+
+	        function resetView() {
+	            if (myGlobe) {
+	                myGlobe.pointOfView({ lat: 0, lng: 0, altitude: 2.5 }, 1000);
+	            }
+	        }
+			function toggleRotation() {
+			    myGlobe.controls().autoRotate = !myGlobe.controls().autoRotate;
+			}
+			function toggleTheme() {
+			    document.body.classList.toggle('light-mode');
+			    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+			}
+
+	        function openModal(countryName) {
+	            selectedCountry = countryName;
+	            document.getElementById('modal-title').textContent = countryName;
+            
+	            if (visitedCountries[countryName]) {
+	                document.getElementById('notes-input').value = visitedCountries[countryName].notes || '';
+	                currentRating = visitedCountries[countryName].rating || 0;
+	            } else {
+	                document.getElementById('notes-input').value = '';
+	                currentRating = 0;
+	            }
+            
+	            updateStars();
+	            document.getElementById('modal').classList.add('active');
+	            document.getElementById('overlay').classList.add('active');
+	        }
+
+	        function closeModal() {
+	            document.getElementById('modal').classList.remove('active');
+	            document.getElementById('overlay').classList.remove('active');
+	            selectedCountry = null;
+	        }
+
+	        function saveCountryDetails() {
+	            const notes = document.getElementById('notes-input').value;
+            
+	            visitedCountries[selectedCountry] = {
+	                visited: true,
+	                notes: notes,
+	                rating: currentRating,
+	                date: new Date().toISOString()
+	            };
+            
+	            saveData();
+	            updateGlobeColors();
+	            updateCountryItem(selectedCountry);
+	            updateAllContinentStats();
+	            updateStats();
+	            closeModal();
+	        }
+
+	        function updateStars() {
+	            document.querySelectorAll('.star').forEach(star => {
+	                const rating = parseInt(star.dataset.rating);
+	                if (rating <= currentRating) {
+	                    star.classList.add('active');
+	                } else {
+	                    star.classList.remove('active');
+	                }
+	            });
+	        }
+
+	        // Event listeners
+	        document.getElementById('save-btn').addEventListener('click', saveCountryDetails);
+	        document.getElementById('cancel-btn').addEventListener('click', closeModal);
+	        document.getElementById('overlay').addEventListener('click', closeModal);
+        
+	        document.querySelectorAll('.star').forEach(star => {
+	            star.addEventListener('click', function() {
+	                currentRating = parseInt(this.dataset.rating);
+	                updateStars();
+	            });
+	        });
+			document.getElementById('toggle-sidebar').addEventListener('click', () => {
+			    document.getElementById('sidebar').classList.toggle('open');
+			});
+
+	        // Initialisation
+			// Charger le thème sauvegardé
+			if (localStorage.getItem('theme') === 'light') {
+			    document.body.classList.add('light-mode');
+			}
+	        loadData();
+	        initContinentsList();
+	        initGlobe();
+	    </script>
+	</body>
+	</html>
