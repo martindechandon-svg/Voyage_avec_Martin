@@ -392,6 +392,9 @@
 <button id="bucket-list-btn" style="width: 100%; padding: 12px; background: #FF9800; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold;">
     🎯 Ma Bucket List
 </button>
+<button id="search-general-flights-btn" style="width: 100%; padding: 12px; background: #2196F3; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold;">
+    ✈️ Chercher des vols
+</button>
 
             <input type="text" id="search-box" placeholder="🔍 Rechercher un pays...">
 			<select id="rating-filter" style="width: 100%; padding: 10px; margin-bottom: 20px; background: #1a1a1a; color: #fff; border: 1px solid #444; border-radius: 5px; font-size: 14px;">
@@ -1800,6 +1803,10 @@
 			        closeModal();
 			    }
 			});
+			document.getElementById('search-general-flights-btn').addEventListener('click', () => {
+			    selectedCountry = 'Destination'; // Texte par défaut
+			    openFlightsModal();
+			});
 			function exportToPDF() {
 			    if (!visitedCountries[selectedCountry]) return;
     
@@ -1913,9 +1920,10 @@
 			// Ouvrir le modal de recherche de vols
 			// Nouvelle fonction simplifiée
 			function openFlightsModal() {
-			    const destination = countryAirportCodes[selectedCountry];
+			    const destination = countryAirportCodes[selectedCountry] || '';
     
-			    if (!destination) {
+			    // Ne pas afficher d'alerte si c'est une recherche générale
+			    if (!destination && selectedCountry !== 'Destination') {
 			        alert(`Désolé, nous n'avons pas de code aéroport pour ${selectedCountry}`);
 			        return;
 			    }
@@ -1954,8 +1962,7 @@
         
 			        <div style="margin-bottom: 15px;">
 			            <label style="display: block; margin-bottom: 5px; color: #ccc; font-weight: bold;">🎯 Ville/Aéroport de destination</label>
-			            <input type="text" id="multi-destination" value="${destination}" placeholder="Ex: JFK (New York), LAX (Los Angeles)" 
-			                   style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+<input type="text" id="multi-destination" value="${destination}" placeholder="${destination ? 'Ex: JFK (New York)' : 'Ex: ATH (Athènes), JFK (New York)'}"			                   style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
 			            <p style="color: #888; font-size: 12px; margin-top: 5px;">💡 Vous pouvez changer la ville si ${selectedCountry} a plusieurs aéroports</p>
 			        </div>
         
