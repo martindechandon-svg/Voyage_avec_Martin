@@ -1916,6 +1916,134 @@
 			    'Philippines': 'MNL',
 			    'Nouvelle-Zélande': 'AKL'
 			};
+			const airportsList = [
+			    { code: 'CDG', city: 'Paris', country: 'France' },
+			    { code: 'ORY', city: 'Paris Orly', country: 'France' },
+			    { code: 'NCE', city: 'Nice', country: 'France' },
+			    { code: 'LYS', city: 'Lyon', country: 'France' },
+			    { code: 'MRS', city: 'Marseille', country: 'France' },
+			    { code: 'TLS', city: 'Toulouse', country: 'France' },
+			    { code: 'ATH', city: 'Athènes', country: 'Grèce' },
+			    { code: 'JFK', city: 'New York', country: 'États-Unis' },
+			    { code: 'LAX', city: 'Los Angeles', country: 'États-Unis' },
+			    { code: 'LHR', city: 'Londres', country: 'Royaume-Uni' },
+			    { code: 'MAD', city: 'Madrid', country: 'Espagne' },
+			    { code: 'BCN', city: 'Barcelone', country: 'Espagne' },
+			    { code: 'ROM', city: 'Rome', country: 'Italie' },
+			    { code: 'FCO', city: 'Rome Fiumicino', country: 'Italie' },
+			    { code: 'BER', city: 'Berlin', country: 'Allemagne' },
+			    { code: 'FRA', city: 'Francfort', country: 'Allemagne' },
+			    { code: 'AMS', city: 'Amsterdam', country: 'Pays-Bas' },
+			    { code: 'BRU', city: 'Bruxelles', country: 'Belgique' },
+			    { code: 'ZRH', city: 'Zurich', country: 'Suisse' },
+			    { code: 'DXB', city: 'Dubaï', country: 'Émirats Arabes Unis' },
+			    { code: 'IST', city: 'Istanbul', country: 'Turquie' },
+			    { code: 'BKK', city: 'Bangkok', country: 'Thaïlande' },
+			    { code: 'TYO', city: 'Tokyo', country: 'Japon' },
+			    { code: 'NRT', city: 'Tokyo Narita', country: 'Japon' },
+			    { code: 'SYD', city: 'Sydney', country: 'Australie' },
+			    { code: 'NYC', city: 'New York (tous)', country: 'États-Unis' },
+			    { code: 'MIA', city: 'Miami', country: 'États-Unis' },
+			    { code: 'SFO', city: 'San Francisco', country: 'États-Unis' },
+			    { code: 'YTO', city: 'Toronto', country: 'Canada' },
+			    { code: 'YUL', city: 'Montréal', country: 'Canada' },
+			    { code: 'MEX', city: 'Mexico', country: 'Mexique' },
+			    { code: 'LIS', city: 'Lisbonne', country: 'Portugal' },
+			    { code: 'VIE', city: 'Vienne', country: 'Autriche' },
+			    { code: 'CPH', city: 'Copenhague', country: 'Danemark' },
+			    { code: 'OSL', city: 'Oslo', country: 'Norvège' },
+			    { code: 'STO', city: 'Stockholm', country: 'Suède' },
+			    { code: 'HEL', city: 'Helsinki', country: 'Finlande' },
+			    { code: 'WAW', city: 'Varsovie', country: 'Pologne' },
+			    { code: 'PRG', city: 'Prague', country: 'Tchéquie' },
+			    { code: 'BUD', city: 'Budapest', country: 'Hongrie' },
+			    { code: 'DUB', city: 'Dublin', country: 'Irlande' },
+			    { code: 'CAI', city: 'Le Caire', country: 'Égypte' },
+			    { code: 'CMN', city: 'Casablanca', country: 'Maroc' },
+			    { code: 'JNB', city: 'Johannesburg', country: 'Afrique du Sud' },
+			    { code: 'DEL', city: 'Delhi', country: 'Inde' },
+			    { code: 'BOM', city: 'Mumbai', country: 'Inde' },
+			    { code: 'PEK', city: 'Pékin', country: 'Chine' },
+			    { code: 'SGN', city: 'Ho Chi Minh', country: 'Vietnam' },
+			    { code: 'HAN', city: 'Hanoï', country: 'Vietnam' },
+			    { code: 'KUL', city: 'Kuala Lumpur', country: 'Malaisie' },
+			    { code: 'SIN', city: 'Singapour', country: 'Singapour' },
+			    { code: 'JKT', city: 'Jakarta', country: 'Indonésie' },
+			    { code: 'MNL', city: 'Manille', country: 'Philippines' },
+			    { code: 'SEL', city: 'Séoul', country: 'Corée du Sud' },
+			    { code: 'ICN', city: 'Séoul Incheon', country: 'Corée du Sud' },
+			    { code: 'AKL', city: 'Auckland', country: 'Nouvelle-Zélande' },
+			    { code: 'SAO', city: 'São Paulo', country: 'Brésil' },
+			    { code: 'GRU', city: 'São Paulo Guarulhos', country: 'Brésil' },
+			    { code: 'BUE', city: 'Buenos Aires', country: 'Argentine' },
+			    { code: 'LIM', city: 'Lima', country: 'Pérou' },
+			    { code: 'BOG', city: 'Bogota', country: 'Colombie' },
+			    { code: 'SCL', city: 'Santiago', country: 'Chili' }
+			];
+			
+			function setupAutocomplete(inputId) {
+			    const input = document.getElementById(inputId);
+			    const resultsId = inputId + '-results';
+    
+			    // Créer le conteneur des résultats s'il n'existe pas
+			    let resultsDiv = document.getElementById(resultsId);
+			    if (!resultsDiv) {
+			        resultsDiv = document.createElement('div');
+			        resultsDiv.id = resultsId;
+			        resultsDiv.style.cssText = 'position: absolute; background: #2a2a2a; border: 1px solid #4CAF50; border-radius: 5px; max-height: 200px; overflow-y: auto; z-index: 1003; width: calc(100% - 24px); margin-top: 2px; display: none;';
+			        input.parentElement.style.position = 'relative';
+			        input.parentElement.appendChild(resultsDiv);
+			    }
+    
+			    input.addEventListener('input', (e) => {
+			        const search = e.target.value.toLowerCase();
+        
+			        if (search.length < 2) {
+			            resultsDiv.style.display = 'none';
+			            return;
+			        }
+        
+			        const matches = airportsList.filter(airport => 
+			            airport.code.toLowerCase().includes(search) ||
+			            airport.city.toLowerCase().includes(search) ||
+			            airport.country.toLowerCase().includes(search)
+			        ).slice(0, 8);
+        
+			        if (matches.length === 0) {
+			            resultsDiv.style.display = 'none';
+			            return;
+			        }
+        
+			        resultsDiv.innerHTML = '';
+			        matches.forEach(airport => {
+			            const item = document.createElement('div');
+			            item.style.cssText = 'padding: 10px; cursor: pointer; border-bottom: 1px solid #333; transition: background 0.2s;';
+			            item.innerHTML = `
+			                <div style="font-weight: bold; color: #4CAF50;">${airport.code} - ${airport.city}</div>
+			                <div style="font-size: 12px; color: #999;">${airport.country}</div>
+			            `;
+            
+			            item.onmouseenter = () => item.style.background = 'rgba(76, 175, 80, 0.2)';
+			            item.onmouseleave = () => item.style.background = 'transparent';
+            
+			            item.onclick = () => {
+			                input.value = airport.code;
+			                resultsDiv.style.display = 'none';
+			            };
+            
+			            resultsDiv.appendChild(item);
+			        });
+        
+			        resultsDiv.style.display = 'block';
+			    });
+    
+			    // Fermer au clic ailleurs
+			    document.addEventListener('click', (e) => {
+			        if (e.target !== input) {
+			            resultsDiv.style.display = 'none';
+			        }
+			    });
+			}
 
 			// Ouvrir le modal de recherche de vols
 			// Nouvelle fonction simplifiée
@@ -2011,6 +2139,11 @@
 			    overlay.onclick = closeFlightsModalSimple;
     
 			    document.body.appendChild(overlay);
+				// Initialiser l'autocomplétion
+				setTimeout(() => {
+				    setupAutocomplete('multi-origin');
+				    setupAutocomplete('multi-destination');
+				}, 100);
 			    document.body.appendChild(modal);
 			}
 
