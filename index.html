@@ -417,6 +417,7 @@
         <div id="overlay"></div>
         
         <div id="modal">
+			<button id="close-modal-btn" onclick="closeModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; min-width: 35px; min-height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);" onmouseover="this.style.background='#d32f2f'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='#f44336'; this.style.transform='scale(1)'">✕</button>
             <h2 id="modal-title">Pays</h2>
             <div class="form-group">
                 <label>📝 Notes sur votre voyage :</label>
@@ -498,12 +499,18 @@
 				    <div class="button-group">
 				        <button class="btn-primary" id="save-btn">💾 Sauvegarder</button>
 				        <button class="btn-primary" id="export-pdf-btn" style="background: #2196F3;">📄 Export PDF</button>
+						<button class="btn-primary" id="search-flights-btn" style="background: #2196F3;">
+						    ✈️ Rechercher des vols
+						</button>
 				        <button class="btn-bucket" id="add-bucket-btn" style="background: #FF9800; color: white; flex: 1;">🎯 Ajouter à ma Bucket List</button>
 				        <button class="btn-neutral" id="cancel-btn">❌ Annuler</button>
 				    </div>
 				</div>
             </div>
         </div>
+		</div>
+    
+		    <div id="flights-results"></div>
 		</div>
 <div id="stats-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #4CAF50; width: 80%; max-width: 800px; max-height: 80vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
     <button id="close-stats-btn" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
@@ -1860,6 +1867,311 @@
 	        initGlobe();
 			initBucketSearch();
 			handlePhotoUpload();
+			
+
+			// Mapping des pays vers codes aéroports principaux
+			const countryAirportCodes = {
+			    'États-Unis': 'NYC',
+			    'France': 'PAR',
+			    'Royaume-Uni': 'LON',
+			    'Espagne': 'MAD',
+			    'Italie': 'ROM',
+			    'Allemagne': 'BER',
+			    'Japon': 'TYO',
+			    'Chine': 'PEK',
+			    'Australie': 'SYD',
+			    'Brésil': 'SAO',
+			    'Canada': 'YTO',
+			    'Mexique': 'MEX',
+			    'Inde': 'DEL',
+			    'Thaïlande': 'BKK',
+			    'Turquie': 'IST',
+			    'Émirats Arabes Unis': 'DXB',
+			    'Maroc': 'CMN',
+			    'Égypte': 'CAI',
+			    'Afrique du Sud': 'JNB',
+			    'Argentine': 'BUE',
+			    'Grèce': 'ATH',
+			    'Portugal': 'LIS',
+			    'Pays-Bas': 'AMS',
+			    'Belgique': 'BRU',
+			    'Suisse': 'ZRH',
+			    'Autriche': 'VIE',
+			    'Suède': 'STO',
+			    'Norvège': 'OSL',
+			    'Danemark': 'CPH',
+			    'Pologne': 'WAW',
+			    'Corée du Sud': 'SEL',
+			    'Singapour': 'SIN',
+			    'Malaisie': 'KUL',
+			    'Vietnam': 'SGN',
+			    'Indonésie': 'JKT',
+			    'Philippines': 'MNL',
+			    'Nouvelle-Zélande': 'AKL'
+			};
+
+			// Ouvrir le modal de recherche de vols
+			// Nouvelle fonction simplifiée
+			function openFlightsModal() {
+			    const destination = countryAirportCodes[selectedCountry];
+    
+			    if (!destination) {
+			        alert(`Désolé, nous n'avons pas de code aéroport pour ${selectedCountry}`);
+			        return;
+			    }
+    
+			    const modal = document.createElement('div');
+			    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #2196F3; z-index: 1002; min-width: 500px; max-width: 600px;';
+    
+			    // Date par défaut dans 1 mois
+			    const defaultDate = new Date();
+			    defaultDate.setMonth(defaultDate.getMonth() + 1);
+			    const dateString = defaultDate.toISOString().split('T')[0];
+    
+			    modal.innerHTML = `
+<button onclick="closeFlightsModalSimple()" 
+        style="position: absolute; top: 15px; right: 15px; min-width: 35px; min-height: 35px; width: 35px; height: 35px; padding: 0; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);" 
+        onmouseover="this.style.background='#d32f2f'; this.style.transform='scale(1.1)'" 
+        onmouseout="this.style.background='#f44336'; this.style.transform='scale(1)'">✕</button>
+        
+			        <h3 style="color: #2196F3; margin-bottom: 10px; text-align: center;">✈️ Rechercher des vols</h3>
+			        <p style="color: #888; text-align: center; margin-bottom: 20px; font-size: 14px;">Destination : ${selectedCountry}</p>
+        
+			        <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4CAF50;">
+			            <p style="color: #4CAF50; font-weight: bold; margin-bottom: 5px;">💡 Comment ça marche ?</p>
+			            <p style="color: #ccc; font-size: 13px;">
+			                Remplissez vos critères ci-dessous, puis cliquez sur le bouton pour ouvrir 
+			                <strong>Google Flights, Skyscanner et Kayak</strong> en même temps. 
+			                Vous pourrez comparer les prix instantanément !
+			            </p>
+			        </div>
+        
+			        <div style="margin-bottom: 15px;">
+			            <label style="display: block; margin-bottom: 5px; color: #ccc; font-weight: bold;">🏠 D'où partez-vous ?</label>
+			            <input type="text" id="multi-origin" value="CDG" placeholder="Ex: CDG (Paris), NCE (Nice), LYS (Lyon)" 
+			                   style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+			        </div>
+        
+			        <div style="margin-bottom: 15px;">
+			            <label style="display: block; margin-bottom: 5px; color: #ccc; font-weight: bold;">🎯 Ville/Aéroport de destination</label>
+			            <input type="text" id="multi-destination" value="${destination}" placeholder="Ex: JFK (New York), LAX (Los Angeles)" 
+			                   style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+			            <p style="color: #888; font-size: 12px; margin-top: 5px;">💡 Vous pouvez changer la ville si ${selectedCountry} a plusieurs aéroports</p>
+			        </div>
+        
+			        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+			            <div style="flex: 1;">
+			                <label style="display: block; margin-bottom: 5px; color: #ccc; font-weight: bold;">📅 Date de départ</label>
+			                <input type="date" id="multi-date" value="${dateString}"
+			                       style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+			            </div>
+			            <div style="flex: 1;">
+			                <label style="display: block; margin-bottom: 5px; color: #ccc; font-weight: bold;">👥 Passagers</label>
+			                <input type="number" id="multi-adults" value="1" min="1" max="9"
+			                       style="width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+			            </div>
+			        </div>
+        
+			        <button onclick="compareAllPlatforms()" 
+			                style="width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; margin-bottom: 10px; transition: transform 0.2s;">
+			            🚀 Comparer sur toutes les plateformes
+			        </button>
+        
+			        <div style="display: flex; gap: 10px;">
+			            <button onclick="openSinglePlatform('google')" 
+			                    style="flex: 1; padding: 12px; background: #4285F4; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 12px;">
+			                Google
+			            </button>
+			            <button onclick="openSinglePlatform('skyscanner')" 
+			                    style="flex: 1; padding: 12px; background: #00B2D6; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 12px;">
+			                Skyscanner
+			            </button>
+			            <button onclick="openSinglePlatform('kayak')" 
+			                    style="flex: 1; padding: 12px; background: #FF6E1D; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 12px;">
+			                Kayak
+			            </button>
+			        </div>
+        
+			        <button onclick="closeFlightsModalSimple()" 
+			                style="width: 100%; padding: 12px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer; margin-top: 15px;">
+			            Annuler
+			        </button>
+			    `;
+    
+			    const overlay = document.createElement('div');
+			    overlay.id = 'multi-overlay';
+			    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1001;';
+			    overlay.onclick = closeFlightsModalSimple;
+    
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(modal);
+			}
+
+			function closeFlightsModalSimple() {
+			    const modal = document.querySelector('[style*="z-index: 1002"]');
+			    const overlay = document.getElementById('multi-overlay');
+			    if (modal) modal.remove();
+			    if (overlay) overlay.remove();
+			}
+
+			// Fonction pour ouvrir TOUTES les plateformes en même temps
+			window.compareAllPlatforms = function() {
+			    const origin = document.getElementById('multi-origin').value.toUpperCase();
+			    const destination = document.getElementById('multi-destination').value.toUpperCase();
+			    const date = document.getElementById('multi-date').value;
+			    const adults = document.getElementById('multi-adults').value;
+    
+			    if (!origin || !destination || !date) {
+			        alert('⚠️ Veuillez remplir tous les champs');
+			        return;
+			    }
+    
+			    // Ouvrir Google Flights
+			    window.open(getGoogleFlightsUrl(origin, destination, date, adults), '_blank');
+    
+			    // Attendre 500ms puis ouvrir Skyscanner
+			    setTimeout(() => {
+			        window.open(getSkyscannerUrl(origin, destination, date, adults), '_blank');
+			    }, 500);
+    
+			    // Attendre 1000ms puis ouvrir Kayak
+			    setTimeout(() => {
+			        window.open(getKayakUrl(origin, destination, date, adults), '_blank');
+			    }, 1000);
+    
+			    // Message de confirmation
+			    const confirmDiv = document.createElement('div');
+			    confirmDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #4CAF50; color: white; padding: 15px 30px; border-radius: 8px; z-index: 2000; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+			    confirmDiv.textContent = '✅ 3 onglets ouverts ! Comparez les prix';
+			    document.body.appendChild(confirmDiv);
+    
+			    setTimeout(() => confirmDiv.remove(), 3000);
+    
+			    closeFlightsModalSimple();
+			}
+
+			// Fonction pour ouvrir une seule plateforme
+			window.openSinglePlatform = function(platform) {
+			    const origin = document.getElementById('multi-origin').value.toUpperCase();
+			    const destination = document.getElementById('multi-destination').value.toUpperCase();
+			    const date = document.getElementById('multi-date').value;
+			    const adults = document.getElementById('multi-adults').value;
+    
+			    if (!origin || !destination || !date) {
+			        alert('⚠️ Veuillez remplir tous les champs');
+			        return;
+			    }
+    
+			    let url;
+			    switch(platform) {
+			        case 'google':
+			            url = getGoogleFlightsUrl(origin, destination, date, adults);
+			            break;
+			        case 'skyscanner':
+			            url = getSkyscannerUrl(origin, destination, date, adults);
+			            break;
+			        case 'kayak':
+			            url = getKayakUrl(origin, destination, date, adults);
+			            break;
+			    }
+    
+			    window.open(url, '_blank');
+			}
+
+			// Fermer le modal de vols
+			function closeFlightsModal() {
+			    document.getElementById('flights-modal').style.display = 'none';
+			}
+
+			// Fonction de réservation avec choix de plateforme
+			function bookFlight(origin, destination, date, adults, airline) {
+			    const modal = document.createElement('div');
+			    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #FF9800; z-index: 1002; min-width: 400px;';
+    
+			    modal.innerHTML = `
+			        <h3 style="color: #FF9800; margin-bottom: 20px; text-align: center;">🎫 Réserver votre vol</h3>
+			        <p style="color: #ccc; margin-bottom: 20px; text-align: center; font-size: 14px;">
+			            ${origin} → ${destination} • ${new Date(date).toLocaleDateString('fr-FR')}
+			        </p>
+        
+			        <div style="display: flex; flex-direction: column; gap: 10px;">
+			            <button onclick="window.open('${getGoogleFlightsUrl(origin, destination, date, adults)}', '_blank')" 
+			                    style="padding: 15px; background: #4285F4; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; font-size: 14px;">
+			                🔵 Google Flights
+			            </button>
+            
+			            <button onclick="window.open('${getSkyscannerUrl(origin, destination, date, adults)}', '_blank')" 
+			                    style="padding: 15px; background: #00B2D6; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; font-size: 14px;">
+			                ✈️ Skyscanner
+			            </button>
+            
+			            <button onclick="window.open('${getKayakUrl(origin, destination, date, adults)}', '_blank')" 
+			                    style="padding: 15px; background: #FF6E1D; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; font-size: 14px;">
+			                🔶 Kayak
+			            </button>
+            
+			            <button onclick="window.open('${getAirlineUrl(airline, origin, destination, date)}', '_blank')" 
+			                    style="padding: 15px; background: #4CAF50; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; font-size: 14px;">
+			                🛫 Site de la compagnie (${airline})
+			            </button>
+            
+			            <button onclick="this.parentElement.parentElement.remove(); document.getElementById('booking-overlay').remove();" 
+			                    style="padding: 15px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer; font-weight: bold; font-size: 14px; margin-top: 10px;">
+			                ❌ Annuler
+			            </button>
+			        </div>
+			    `;
+    
+			    const overlay = document.createElement('div');
+			    overlay.id = 'booking-overlay';
+			    overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1001;';
+			    overlay.onclick = () => {
+			        modal.remove();
+			        overlay.remove();
+			    };
+    
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(modal);
+			}
+
+			// URLs des différentes plateformes
+			function getGoogleFlightsUrl(origin, destination, date, adults) {
+			    const formattedDate = date.replace(/-/g, '');
+			    return `https://www.google.com/travel/flights?q=flights%20from%20${origin}%20to%20${destination}%20on%20${formattedDate}%20for%20${adults}%20adults`;
+			}
+
+			function getSkyscannerUrl(origin, destination, date, adults) {
+			    const formattedDate = date.replace(/-/g, '').substring(2); // Format YYMMDD
+			    return `https://www.skyscanner.fr/transport/flights/${origin.toLowerCase()}/${destination.toLowerCase()}/${formattedDate}/?adults=${adults}`;
+			}
+
+			function getKayakUrl(origin, destination, date, adults) {
+			    return `https://www.kayak.fr/flights/${origin}-${destination}/${date}?sort=bestflight_a&fs=stops=0&adults=${adults}`;
+			}
+
+			function getAirlineUrl(airlineCode, origin, destination, date) {
+			    const airlines = {
+			        'AF': `https://www.airfrance.fr/search/offers?connections%5B0%5D.origin=${origin}&connections%5B0%5D.destination=${destination}&connections%5B0%5D.departureDate=${date}`,
+			        'BA': `https://www.britishairways.com/travel/book/public/en_gb?from=${origin}&to=${destination}&departureDate=${date}`,
+			        'LH': `https://www.lufthansa.com/de/en/flight-search?origin=${origin}&destination=${destination}&outbound-date=${date}`,
+			        'IB': `https://www.iberia.com/fr/flights/`,
+			        'KL': `https://www.klm.com/search/offers?origin=${origin}&destination=${destination}&departureDate=${date}`,
+			        'FR': `https://www.ryanair.com/fr/fr/booking/home/${origin}/${destination}/${date}`,
+			        'U2': `https://www.easyjet.com/fr/vols/${origin}/${destination}`,
+			        'EK': `https://www.emirates.com/fr/french/book/flights-from-${origin.toLowerCase()}-to-${destination.toLowerCase()}`,
+			        'QR': `https://www.qatarairways.com/fr-fr/homepage`,
+			        'TK': `https://www.turkishairlines.com/`,
+			        'EZY': `https://www.easyjet.com/fr/vols/${origin}/${destination}`,
+			        'VY': `https://www.vueling.com/fr`,
+			        'TO': `https://www.transavia.com/fr-FR/home/`
+			    };
+    
+			    return airlines[airlineCode] || `https://www.google.com/search?q=${airlineCode}+flights+${origin}+to+${destination}`;
+			}
+
+			// Event listeners pour les vols
+			document.getElementById('search-flights-btn').addEventListener('click', openFlightsModal);
+
 			
 	    </script>
 	</body>
