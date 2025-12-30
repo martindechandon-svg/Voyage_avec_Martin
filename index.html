@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Favicons pour différents appareils -->
+	<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <title>Voyage avec Martin</title>
     <style>
         * {
@@ -395,6 +399,9 @@
 <button id="search-general-flights-btn" style="width: 100%; padding: 12px; background: #2196F3; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold;">
     ✈️ Chercher des vols
 </button>
+<button id="games-btn" style="width: 100%; padding: 12px; background: #9C27B0; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; margin-bottom: 20px; font-weight: bold;">
+    🎮 Jeux
+</button>
 
             <input type="text" id="search-box" placeholder="🔍 Rechercher un pays...">
 			<select id="rating-filter" style="width: 100%; padding: 10px; margin-bottom: 20px; background: #1a1a1a; color: #fff; border: 1px solid #444; border-radius: 5px; font-size: 14px;">
@@ -568,9 +575,98 @@
         <div id="itinerary-content"></div>
     </div>
 </div>
+
+<div id="games-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #9C27B0; width: 85%; max-width: 900px; max-height: 85vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+    <button id="close-games-btn" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
     
-		</div>
+    <h2 style="color: #9C27B0; margin-bottom: 30px; text-align: center;">🎮 Mini-Jeux</h2>
+    
+    <!-- Menu des jeux -->
+    <div id="games-menu" style="display: block;">
+        <h3 style="color: #9C27B0; margin-bottom: 20px; text-align: center;">🌍 Quiz Géographie</h3>
+        <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis ton niveau de difficulté</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button onclick="startQuizGame(1)" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+                🟢 FACILE
+                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Monuments célèbres</div>
+            </button>
+            
+            <button onclick="startQuizGame(2)" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+                🟡 MOYEN
+                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Culture & Nature</div>
+            </button>
+            
+            <button onclick="startQuizGame(3)" style="padding: 25px; background: linear-gradient(135deg, #f44336, #d32f2f); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+                🔴 DIFFICILE
+                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Pour les experts</div>
+            </button>
+            
+            <button onclick="startQuizGame('mix')" style="padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+                🎯 MIX
+                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Tous les niveaux</div>
+            </button>
+        </div>
+        
+        <div style="padding: 25px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 10px; text-align: center; color: #888; margin-top: 15px;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🔜</div>
+            <div style="font-weight: bold;">Plus de jeux bientôt...</div>
+        </div>
     </div>
+    
+    <!-- Zone de jeu du Quiz -->
+    <div id="quiz-game" style="display: none;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="display: inline-block; padding: 10px 20px; background: rgba(156, 39, 176, 0.3); border-radius: 20px;">
+                <span style="font-size: 18px; font-weight: bold; color: #9C27B0;">Score: <span id="quiz-score">0</span>/10</span>
+                <span style="margin: 0 15px; color: #666;">|</span>
+                <span style="font-size: 18px; font-weight: bold; color: #4CAF50;">✓ <span id="quiz-correct">0</span></span>
+                <span style="margin: 0 10px; color: #666;">|</span>
+                <span style="font-size: 18px; font-weight: bold; color: #f44336;">✗ <span id="quiz-wrong">0</span></span>
+            </div>
+        </div>
+        
+        <div id="quiz-question-container" style="margin-bottom: 25px;">
+            <div id="quiz-question" style="font-size: 20px; font-weight: bold; color: #fff; text-align: center; margin-bottom: 20px;"></div>
+            <div id="quiz-image-container" style="text-align: center; margin-bottom: 20px;"></div>
+            <div id="quiz-hint" style="text-align: center; color: #FFD700; font-size: 14px; margin-bottom: 20px;"></div>
+        </div>
+        
+        <div id="quiz-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;"></div>
+        
+        <div id="quiz-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px;"></div>
+        
+        <div style="text-align: center;">
+            <button id="quiz-next-btn" onclick="nextQuizQuestion()" style="display: none; padding: 15px 40px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+                Question suivante →
+            </button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="backToGamesMenu()" style="padding: 10px 25px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+                ← Retour au menu
+            </button>
+        </div>
+    </div>
+    
+    <!-- Écran de fin -->
+    <div id="quiz-end" style="display: none; text-align: center;">
+        <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
+        <h3 style="color: #FFD700; font-size: 32px; margin-bottom: 20px;">Quiz terminé !</h3>
+        <div style="font-size: 24px; margin-bottom: 30px;">
+            Score final: <span id="final-score" style="color: #4CAF50; font-weight: bold;">0</span>/10
+        </div>
+        <div id="quiz-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <button onclick="startQuizGame(currentDifficulty)" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+                🔄 Rejouer
+            </button>
+            <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+                ← Menu
+            </button>
+        </div>
+    </div>
+</div>
 
     <!-- Three.js et Globe.GL -->
     <script src="https://unpkg.com/three"></script>
@@ -2471,6 +2567,415 @@
 			// Event listeners pour les vols
 			document.getElementById('search-flights-btn').addEventListener('click', openFlightsModal);
 
+			// Base de données des questions du quiz
+			const quizDatabase = [
+			    // Monuments célèbres
+			    { type: 'text', difficulty: 1, question: '🗼 Dans quel pays se trouve la Tour Eiffel ?', answer: 'France', hint: 'Capitale: Paris' },
+			    { type: 'text', difficulty: 1, question: '🗽 Dans quel pays se trouve la Statue de la Liberté ?', answer: 'États-Unis', hint: 'Ville: New York' },
+			    { type: 'text', difficulty: 1, question: '🕌 Dans quel pays se trouve le Taj Mahal ?', answer: 'Inde', hint: 'Situé à Agra' },
+			    { type: 'text', difficulty: 1, question: '🗿 Dans quel pays se trouve le Colisée ?', answer: 'Italie', hint: 'Capitale: Rome' },
+			    { type: 'text', difficulty: 2, question: '🏰 Dans quel pays se trouve le château de Neuschwanstein ?', answer: 'Allemagne', hint: 'En Bavière' },
+			    { type: 'text', difficulty: 2, question: '🕌 Dans quel pays se trouve la mosquée bleue ?', answer: 'Turquie', hint: 'Ville: Istanbul' },
+			    { type: 'text', difficulty: 1, question: '🗼 Dans quel pays se trouve Big Ben ?', answer: 'Royaume-Uni', hint: 'Capitale: Londres' },
+			    { type: 'text', difficulty: 1, question: '🏛️ Dans quel pays se trouve le Parthénon ?', answer: 'Grèce', hint: 'Capitale: Athènes' },
+			    { type: 'text', difficulty: 1, question: '🕍 Dans quel pays se trouve la Sagrada Família ?', answer: 'Espagne', hint: 'Ville: Barcelone' },
+			    { type: 'text', difficulty: 1, question: '🏯 Dans quel pays se trouve le Mont Fuji ?', answer: 'Japon', hint: 'Volcan sacré' },
+    
+			    // Anecdotes présidents/dirigeants
+			    { type: 'text', difficulty: 1, question: '👔 Le président de ce pays est Emmanuel Macron', answer: 'France', hint: 'Élu en 2017' },
+			    { type: 'text', difficulty: 1, question: '👔 Le président de ce pays est Joe Biden', answer: 'États-Unis', hint: 'Élu en 2020' },
+			    { type: 'text', difficulty: 1, question: '👔 Le chancelier de ce pays est Olaf Scholz', answer: 'Allemagne', hint: 'Succède à Angela Merkel' },
+			    { type: 'text', difficulty: 2, question: '👑 Le roi de ce pays est Felipe VI', answer: 'Espagne', hint: 'Monarchie constitutionnelle' },
+			    { type: 'text', difficulty: 2, question: '👔 Le Premier ministre de ce pays est Rishi Sunak', answer: 'Royaume-Uni', hint: 'Élu en 2022' },
+    
+			    // Faits culturels
+			    { type: 'text', difficulty: 1, question: '🍕 Dans quel pays la pizza a-t-elle été inventée ?', answer: 'Italie', hint: 'Ville: Naples' },
+			    { type: 'text', difficulty: 1, question: '🍣 Dans quel pays les sushis sont-ils originaires ?', answer: 'Japon', hint: 'Cuisine traditionnelle' },
+			    { type: 'text', difficulty: 1, question: '🥐 Dans quel pays le croissant a-t-il été popularisé ?', answer: 'France', hint: 'Petit-déjeuner typique' },
+			    { type: 'text', difficulty: 1, question: '🌮 Dans quel pays les tacos sont-ils originaires ?', answer: 'Mexique', hint: 'Cuisine traditionnelle' },
+			    { type: 'text', difficulty: 1, question: '🍺 Dans quel pays se déroule l\'Oktoberfest ?', answer: 'Allemagne', hint: 'Ville: Munich' },
+    
+			    // Géographie
+			    { type: 'text', difficulty: 1, question: '🏔️ Dans quel pays se trouve le Mont Everest (côté népalais) ?', answer: 'Népal', hint: 'Plus haute montagne du monde' },
+			    { type: 'text', difficulty: 2, question: '🏜️ Dans quel pays se trouve le désert du Sahara (principalement) ?', answer: 'Algérie', hint: 'Plus grand désert chaud' },
+			    { type: 'text', difficulty: 1, question: '🌊 Dans quel pays se trouve la Grande Barrière de Corail ?', answer: 'Australie', hint: 'Plus grand récif corallien' },
+			    { type: 'text', difficulty: 1, question: '🌋 Dans quel pays se trouve le volcan Vésuve ?', answer: 'Italie', hint: 'Près de Naples' },
+			    { type: 'text', difficulty: 1, question: '🏞️ Dans quel pays se trouvent les fjords les plus célèbres ?', answer: 'Norvège', hint: 'Pays scandinave' },
+    
+			    // Capitales
+			    { type: 'text', difficulty: 1, question: '🏛️ Berlin est la capitale de quel pays ?', answer: 'Allemagne', hint: 'Pays d\'Europe centrale' },
+			    { type: 'text', difficulty: 1, question: '🏛️ Madrid est la capitale de quel pays ?', answer: 'Espagne', hint: 'Pays ibérique' },
+			    { type: 'text', difficulty: 1, question: '🏛️ Lisbonne est la capitale de quel pays ?', answer: 'Portugal', hint: 'À l\'ouest de l\'Espagne' },
+			    { type: 'text', difficulty: 1, question: '🏛️ Amsterdam est la capitale de quel pays ?', answer: 'Pays-Bas', hint: 'Célèbre pour ses canaux' },
+			    { type: 'text', difficulty: 1, question: '🏛️ Vienne est la capitale de quel pays ?', answer: 'Autriche', hint: 'Pays germanophone' },
+    
+			    // Sports
+			    { type: 'text', difficulty: 2, question: '⚽ Dans quel pays le football a-t-il été inventé ?', answer: 'Royaume-Uni', hint: 'Angleterre, précisément' },
+			    { type: 'text', difficulty: 1, question: '🏉 Dans quel pays le rugby est-il né ?', answer: 'Royaume-Uni', hint: 'Angleterre' },
+			    { type: 'text', difficulty: 1, question: '🥋 Dans quel pays le judo a-t-il été créé ?', answer: 'Japon', hint: 'Art martial' },
+			    { type: 'text', difficulty: 1, question: '⚽ Quel pays a remporté la Coupe du Monde 2018 ?', answer: 'France', hint: 'Équipe de Mbappé et Griezmann' },
+    
+			    // Drapeaux/Symboles
+			    { type: 'text', difficulty: 1, question: '🦘 Quel pays a le kangourou comme symbole ?', answer: 'Australie', hint: 'Continent-pays' },
+			    { type: 'text', difficulty: 1, question: '🐻 Quel pays a l\'ours comme symbole national ?', answer: 'Russie', hint: 'Plus grand pays du monde' },
+			    { type: 'text', difficulty: 1, question: '🍁 Quel pays a une feuille d\'érable sur son drapeau ?', answer: 'Canada', hint: 'Drapeau rouge et blanc' },
+				
+// Monuments
+{ type: 'text', difficulty: 3, question: '🗿 Dans quel pays se trouvent les Moaï ?', answer: 'Chili', hint: 'Île de Pâques' },
+{ type: 'text', difficulty: 3, question: '🕌 Dans quel pays se trouve Angkor Wat ?', answer: 'Cambodge', hint: 'Temple bouddhiste' },
+{ type: 'text', difficulty: 1, question: '🏛️ Dans quel pays se trouve Machu Picchu ?', answer: 'Pérou', hint: 'Cité inca dans les Andes' },
+
+// Gastronomie
+{ type: 'text', difficulty: 1, question: '🍝 Dans quel pays les pâtes sont-elles originaires ?', answer: 'Italie', hint: 'Cuisine méditerranéenne' },
+{ type: 'text', difficulty: 1, question: '🥘 Dans quel pays la paella est-elle originaire ?', answer: 'Espagne', hint: 'Plat à base de riz' },
+{ type: 'text', difficulty: 1, question: '🧀 Dans quel pays le fromage Gouda est-il originaire ?', answer: 'Pays-Bas', hint: 'Pays des moulins' },
+
+// Nature
+{ type: 'text', difficulty: 2, question: '🌊 Dans quel pays se trouvent les chutes Victoria ?', answer: 'Zimbabwe', hint: 'Frontière avec la Zambie' },
+{ type: 'text', difficulty: 3, question: '🏜️ Dans quel pays se trouve le désert d\'Atacama ?', answer: 'Chili', hint: 'Le plus aride du monde' },
+{ type: 'text', difficulty: 1, question: '🌳 Dans quel pays se trouve la forêt amazonienne (majoritairement) ?', answer: 'Brésil', hint: 'Poumon de la planète' },
+
+// Culture
+{ type: 'text', difficulty: 2, question: '🎭 Dans quel pays l\'opéra a-t-il été inventé ?', answer: 'Italie', hint: 'Renaissance italienne' },
+{ type: 'text', difficulty: 2, question: '💃 Dans quel pays le tango est-il né ?', answer: 'Argentine', hint: 'Danse sensuelle' },
+{ type: 'text', difficulty: 1, question: '🎸 Dans quel pays le flamenco est-il originaire ?', answer: 'Espagne', hint: 'Andalousie' },
+				
+// Monuments ultra-célèbres
+{ type: 'text', difficulty: 1, question: '🗿 Dans quel pays se trouvent les pyramides de Gizeh ?', answer: 'Égypte', hint: 'Pharaons et Nil', difficulty: 1 },
+{ type: 'text', difficulty: 1, question: '🎡 Dans quel pays se trouve la Grande Muraille ?', answer: 'Chine', hint: 'Visible depuis l\'espace' },
+{ type: 'text', difficulty: 1, question: '🗼 Dans quel pays se trouve la Tour de Pise ?', answer: 'Italie', hint: 'Tour penchée célèbre' },
+{ type: 'text', difficulty: 1, question: '🦘 Dans quel pays se trouve l\'Opéra de Sydney ?', answer: 'Australie', hint: 'Forme de coquillages' },
+{ type: 'text', difficulty: 1, question: '🌉 Dans quel pays se trouve le Golden Gate ?', answer: 'États-Unis', hint: 'San Francisco' },
+
+// Culture populaire
+{ type: 'text', difficulty: 1, question: '🍕 Dans quel pays la pizza Margherita a-t-elle été créée ?', answer: 'Italie', hint: 'Naples, berceau de la pizza' },
+{ type: 'text', difficulty: 1, question: '🥖 Dans quel pays la baguette est-elle un symbole national ?', answer: 'France', hint: 'Pain traditionnel' },
+{ type: 'text', difficulty: 1, question: '🎅 Dans quel pays vit le Père Noël selon la légende ?', answer: 'Finlande', hint: 'Laponie' },
+{ type: 'text', difficulty: 1, question: '🍫 Dans quel pays le chocolat suisse est-il fabriqué ?', answer: 'Suisse', hint: 'Montres et chocolat' },
+{ type: 'text', difficulty: 1, question: '🦁 Dans quel pays se déroule le film Le Roi Lion ?', answer: 'Kenya', hint: 'Savane africaine' },
+				
+// Géographie et nature
+{ type: 'text', difficulty: 2, question: '🌋 Dans quel pays se trouve le Kilimandjaro ?', answer: 'Tanzanie', hint: 'Plus haut sommet d\'Afrique' },
+{ type: 'text', difficulty: 2, question: '🏔️ Dans quel pays se trouve le Cervin/Matterhorn ?', answer: 'Suisse', hint: 'Frontière italo-suisse' },
+{ type: 'text', difficulty: 2, question: '🌊 Dans quel pays se trouvent les fjords de Geiranger ?', answer: 'Norvège', hint: 'Pays scandinave' },
+{ type: 'text', difficulty: 2, question: '🏜️ Dans quel pays se trouve le désert de Gobi ?', answer: 'Mongolie', hint: 'Entre Chine et Mongolie' },
+{ type: 'text', difficulty: 3, question: '💎 Dans quel pays se trouve le mine de diamants de Kimberley ?', answer: 'Afrique du Sud', hint: 'Ville des diamants' },
+
+// Monuments moins connus
+{ type: 'text', difficulty: 2, question: '🕌 Dans quel pays se trouve la mosquée Hassan II ?', answer: 'Maroc', hint: 'Casablanca' },
+{ type: 'text', difficulty: 3, question: '🏛️ Dans quel pays se trouve Petra, la cité rose ?', answer: 'Jordanie', hint: 'Taillée dans la roche' },
+{ type: 'text', difficulty: 2, question: '⛩️ Dans quel pays se trouvent plus de 10 000 temples bouddhistes ?', answer: 'Thaïlande', hint: 'Pays du sourire' },
+{ type: 'text', difficulty: 3, question: '🏰 Dans quel pays se trouve le château de Bran (Dracula) ?', answer: 'Roumanie', hint: 'Transylvanie' },
+{ type: 'text', difficulty: 2, question: '🗿 Dans quel pays se trouve Stonehenge ?', answer: 'Royaume-Uni', hint: 'Monument mégalithique' },
+
+// Culture et traditions
+{ type: 'text', difficulty: 1, question: '💃 Dans quel pays le carnaval de Rio est-il célébré ?', answer: 'Brésil', hint: 'Samba et couleurs' },
+{ type: 'text', difficulty: 2, question: '🎭 Dans quel pays le théâtre Nô est-il originaire ?', answer: 'Japon', hint: 'Théâtre masqué' },
+{ type: 'text', difficulty: 1, question: '🥘 Dans quel pays le curry est-il un plat national ?', answer: 'Inde', hint: 'Épices et saveurs' },
+{ type: 'text', difficulty: 1, question: '🍷 Dans quel pays se trouve la région viticole de Porto ?', answer: 'Portugal', hint: 'Vin fortifié' },
+{ type: 'text', difficulty: 2, question: '🎿 Dans quel pays se sont déroulés les premiers Jeux Olympiques d\'hiver ?', answer: 'France', hint: 'Chamonix 1924' },
+				
+// Géographie pointue
+{ type: 'text', difficulty: 3, question: '🏔️ Dans quel pays se trouve le K2, deuxième sommet mondial ?', answer: 'Pakistan', hint: 'Frontière avec la Chine' },
+{ type: 'text', difficulty: 3, question: '🌋 Dans quel pays se trouve le volcan Eyjafjallajökull ?', answer: 'Islande', hint: 'Éruption de 2010' },
+{ type: 'text', difficulty: 3, question: '🏝️ Dans quel pays se trouve l\'archipel de Socotra ?', answer: 'Yémen', hint: 'Arbres dragon' },
+{ type: 'text', difficulty: 3, question: '🏛️ Dans quel pays se trouve la cité antique de Carthage ?', answer: 'Tunisie', hint: 'Empire punique' },
+{ type: 'text', difficulty: 3, question: '⛰️ Dans quel pays se trouve le mont Ararat ?', answer: 'Turquie', hint: 'Arche de Noé selon la Bible' },
+
+// Histoire et culture
+{ type: 'text', difficulty: 3, question: '📚 Dans quel pays se trouve la bibliothèque de Celsius ?', answer: 'Turquie', hint: 'Éphèse, ruines romaines' },
+{ type: 'text', difficulty: 3, question: '🏺 Dans quel pays se trouve le site de Palmyre ?', answer: 'Syrie', hint: 'Reine Zénobie' },
+{ type: 'text', difficulty: 3, question: '🎨 Dans quel pays le mouvement Bauhaus est-il né ?', answer: 'Allemagne', hint: 'École d\'art et d\'architecture' },
+{ type: 'text', difficulty: 3, question: '🎭 Dans quel pays le Festival d\'Avignon a-t-il été créé ?', answer: 'France', hint: 'Théâtre et culture' },
+{ type: 'text', difficulty: 1, question: '🎵 Dans quel pays Mozart est-il né ?', answer: 'Autriche', hint: 'Salzbourg' },
+				
+// Extrêmement pointu
+{ type: 'text', difficulty: 3, question: '🏛️ Dans quel pays se trouve Samarcande, sur la Route de la Soie ?', answer: 'Ouzbékistan', hint: 'Asie centrale' },
+{ type: 'text', difficulty: 3, question: '⛪ Dans quel pays se trouve le monastère de Rila ?', answer: 'Bulgarie', hint: 'Patrimoine UNESCO' },
+{ type: 'text', difficulty: 3, question: '🏰 Dans quel pays se trouve le fort de Gwalior ?', answer: 'Inde', hint: 'État du Madhya Pradesh' },
+{ type: 'text', difficulty: 3, question: '🕌 Dans quel pays se trouve la mosquée de Djenné ?', answer: 'Mali', hint: 'Plus grande structure en terre' },
+{ type: 'text', difficulty: 3, question: '🏛️ Dans quel pays se trouve la ville antique de Sigiriya ?', answer: 'Sri Lanka', hint: 'Rocher du Lion' },
+			];
+
+			let currentQuizQuestion = 0;
+			let quizScore = 0;
+			let quizCorrect = 0;
+			let quizWrong = 0;
+			let currentQuizQuestions = [];
+
+			function openGamesModal() {
+			    document.getElementById('games-modal').style.display = 'block';
+			    document.getElementById('overlay').classList.add('active');
+			    showGamesMenu();
+			}
+
+			function closeGamesModal() {
+			    document.getElementById('games-modal').style.display = 'none';
+			    document.getElementById('overlay').classList.remove('active');
+			}
+
+			function showGamesMenu() {
+			    document.getElementById('games-menu').style.display = 'block';
+			    document.getElementById('quiz-game').style.display = 'none';
+			    document.getElementById('quiz-end').style.display = 'none';
+			}
+
+			function backToGamesMenu() {
+			    showGamesMenu();
+			}
+
+			let currentDifficulty = 'mix'; // Variable pour stocker le niveau choisi
+			
+
+			function startQuizGame(difficulty) {
+			    // Sauvegarder le niveau choisi
+			    currentDifficulty = difficulty;
+    
+			    // Réinitialiser
+			    currentQuizQuestion = 0;
+			    quizScore = 0;
+			    quizCorrect = 0;
+			    quizWrong = 0;
+    
+			    // Filtrer les questions selon le niveau
+			    let filteredQuestions = [];
+    
+			    if (difficulty === 'mix') {
+			        // Mode MIX : toutes les questions
+			        filteredQuestions = [...quizDatabase];
+			    } else {
+			        // Filtrer par difficulté (1, 2, ou 3)
+			        filteredQuestions = quizDatabase.filter(q => q.difficulty === difficulty);
+			    }
+    
+			    // Vérifier qu'il y a assez de questions
+			    if (filteredQuestions.length < 10) {
+			        alert(`⚠️ Pas assez de questions pour ce niveau (${filteredQuestions.length} disponibles). Ajoutez plus de questions !`);
+			        return;
+			    }
+    
+			    // Sélectionner 10 questions aléatoires
+			    currentQuizQuestions = filteredQuestions
+			        .sort(() => Math.random() - 0.5)
+			        .slice(0, 10);
+    
+			    // Afficher le jeu
+			    document.getElementById('games-menu').style.display = 'none';
+			    document.getElementById('quiz-end').style.display = 'none';
+			    document.getElementById('quiz-game').style.display = 'block';
+    
+			    // Afficher le niveau choisi
+			    updateQuizHeader();
+    
+			    // Charger la première question
+			    loadQuizQuestion();
+			}
+			
+			function updateQuizHeader() {
+			    const header = document.querySelector('#quiz-game > div:first-child');
+    
+			    let difficultyBadge = '';
+			    let color = '';
+    
+			    switch(currentDifficulty) {
+			        case 1:
+			            difficultyBadge = '🟢 FACILE';
+			            color = '#4CAF50';
+			            break;
+			        case 2:
+			            difficultyBadge = '🟡 MOYEN';
+			            color = '#FF9800';
+			            break;
+			        case 3:
+			            difficultyBadge = '🔴 DIFFICILE';
+			            color = '#f44336';
+			            break;
+			        case 'mix':
+			            difficultyBadge = '🎯 MIX';
+			            color = '#9C27B0';
+			            break;
+			    }
+    
+			    // Ajouter le badge si pas déjà présent
+			    if (!document.getElementById('difficulty-badge')) {
+			        const badge = document.createElement('div');
+			        badge.id = 'difficulty-badge';
+			        badge.style.cssText = `display: inline-block; padding: 8px 16px; background: ${color}; border-radius: 20px; font-size: 14px; font-weight: bold; margin-left: 15px;`;
+			        badge.textContent = difficultyBadge;
+        
+			        header.querySelector('span').insertAdjacentElement('afterend', badge);
+			    }
+			}
+
+			function loadQuizQuestion() {
+			    if (currentQuizQuestion >= currentQuizQuestions.length) {
+			        endQuizGame();
+			        return;
+			    }
+    
+			    const question = currentQuizQuestions[currentQuizQuestion];
+    
+			    // Mettre à jour le score
+			    document.getElementById('quiz-score').textContent = `${currentQuizQuestion + 1}`;
+			    document.getElementById('quiz-correct').textContent = quizCorrect;
+			    document.getElementById('quiz-wrong').textContent = quizWrong;
+    
+			    // Afficher la question
+			    document.getElementById('quiz-question').textContent = question.question;
+			    document.getElementById('quiz-hint').textContent = '💡 ' + question.hint;
+    
+			    // Masquer le feedback et le bouton suivant
+			    document.getElementById('quiz-feedback').style.display = 'none';
+			    document.getElementById('quiz-next-btn').style.display = 'none';
+    
+			    // Générer les options (la bonne réponse + 3 autres pays aléatoires)
+			    const correctAnswer = question.answer;
+			    const allCountries = [];
+    
+			    // Collecter tous les pays disponibles
+			    Object.values(continents).forEach(continent => {
+			        continent.countries.forEach(country => {
+			            if (country !== correctAnswer) {
+			                allCountries.push(country);
+			            }
+			        });
+			    });
+    
+			    // Sélectionner 3 pays aléatoires
+			    const wrongAnswers = allCountries.sort(() => Math.random() - 0.5).slice(0, 3);
+			    const options = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+    
+			    // Afficher les options
+			    const optionsContainer = document.getElementById('quiz-options');
+			    optionsContainer.innerHTML = '';
+    
+			    options.forEach(option => {
+			        const btn = document.createElement('button');
+			        btn.textContent = option;
+			        btn.style.cssText = 'padding: 20px; background: rgba(100, 100, 100, 0.3); border: 2px solid #666; border-radius: 10px; color: white; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;';
+			        btn.onmouseenter = () => {
+			            if (!btn.disabled) {
+			                btn.style.background = 'rgba(156, 39, 176, 0.4)';
+			                btn.style.borderColor = '#9C27B0';
+			            }
+			        };
+			        btn.onmouseleave = () => {
+			            if (!btn.disabled && !btn.classList.contains('correct') && !btn.classList.contains('wrong')) {
+			                btn.style.background = 'rgba(100, 100, 100, 0.3)';
+			                btn.style.borderColor = '#666';
+			            }
+			        };
+			        btn.onclick = () => checkQuizAnswer(option, correctAnswer, btn);
+			        optionsContainer.appendChild(btn);
+			    });
+			}
+
+			function checkQuizAnswer(selected, correct, button) {
+			    const feedback = document.getElementById('quiz-feedback');
+			    const allButtons = document.querySelectorAll('#quiz-options button');
+    
+			    // Désactiver tous les boutons
+			    allButtons.forEach(btn => btn.disabled = true);
+    
+			    if (selected === correct) {
+			        // Bonne réponse
+			        quizScore++;
+			        quizCorrect++;
+			        button.style.background = '#4CAF50';
+			        button.style.borderColor = '#4CAF50';
+			        button.classList.add('correct');
+        
+			        feedback.style.display = 'block';
+			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.color = '#4CAF50';
+			        feedback.textContent = '✓ Correct ! Bien joué !';
+			    } else {
+			        // Mauvaise réponse
+			        quizWrong++;
+			        button.style.background = '#f44336';
+			        button.style.borderColor = '#f44336';
+			        button.classList.add('wrong');
+        
+			        // Mettre en vert la bonne réponse
+			        allButtons.forEach(btn => {
+			            if (btn.textContent === correct) {
+			                btn.style.background = '#4CAF50';
+			                btn.style.borderColor = '#4CAF50';
+			                btn.classList.add('correct');
+			            }
+			        });
+        
+			        feedback.style.display = 'block';
+			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.color = '#f44336';
+			        feedback.textContent = `✗ Incorrect ! La bonne réponse était ${correct}`;
+			    }
+    
+			    // Afficher le bouton suivant
+			    document.getElementById('quiz-next-btn').style.display = 'inline-block';
+			}
+
+			function nextQuizQuestion() {
+			    currentQuizQuestion++;
+			    loadQuizQuestion();
+			}
+
+			function endQuizGame() {
+			    document.getElementById('quiz-game').style.display = 'none';
+			    document.getElementById('quiz-end').style.display = 'block';
+    
+			    document.getElementById('final-score').textContent = quizScore;
+				
+				// Afficher le niveau joué
+				const difficultyNames = {
+				    1: '🟢 Facile',
+				    2: '🟡 Moyen',
+				    3: '🔴 Difficile',
+				    'mix': '🎯 Mix'
+				};
+
+				const levelPlayed = document.createElement('div');
+				levelPlayed.style.cssText = 'font-size: 16px; color: #888; margin-bottom: 20px;';
+				levelPlayed.textContent = `Niveau: ${difficultyNames[currentDifficulty]}`;
+				document.getElementById('final-score').parentElement.appendChild(levelPlayed);
+    
+				const messageEl = document.getElementById('quiz-message');
+				let message = '';
+
+				if (quizScore === 10) {
+				    message = currentDifficulty === 3 ? 
+				        '🏆 INCROYABLE ! Tu es un EXPERT absolu en géographie !' : 
+				        '🎉 Parfait ! Tu es un vrai expert !';
+				    messageEl.style.color = '#FFD700';
+				} else if (quizScore >= 7) {
+				    message = currentDifficulty === 3 ? 
+				        '🌟 Excellent ! Très impressionnant pour ce niveau !' : 
+				        '👍 Excellent travail ! Tu connais bien le monde !';
+				    messageEl.style.color = '#4CAF50';
+				} else if (quizScore >= 5) {
+				    message = currentDifficulty === 1 ? 
+				        '😊 Pas mal ! Continue à explorer !' : 
+				        '💪 Bon effort ! Ce niveau est difficile !';
+				    messageEl.style.color = '#FF9800';
+				} else {
+				    message = currentDifficulty === 3 ? 
+				        '🎯 Ce niveau est très difficile ! Réessaie en mode Facile d\'abord !' : 
+				        '💪 C\'est un début ! Voyage plus pour améliorer ton score !';
+				    messageEl.style.color = '#2196F3';
+				}
+
+				messageEl.textContent = message;
+			}
+			
+			// Rendre les fonctions accessibles globalement
+			window.startQuizGame = startQuizGame;
+			window.backToGamesMenu = backToGamesMenu;
+			window.nextQuizQuestion = nextQuizQuestion;
+
+			// Event listeners
+			document.getElementById('games-btn').addEventListener('click', openGamesModal);
+			document.getElementById('close-games-btn').addEventListener('click', closeGamesModal);
+			
 			
 	    </script>
 	</body>
