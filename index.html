@@ -592,6 +592,14 @@
             <div style="font-size: 20px; margin-bottom: 8px;">Quiz Géographie</div>
             <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine le pays à partir d'indices</div>
         </button>
+		
+        <!-- Jeu Higher or Lower -->
+		
+		<button onclick="showHigherLowerLevels()" style="padding: 30px; background: linear-gradient(135deg, #f093fb, #f5576c); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
+		    <div style="font-size: 40px; margin-bottom: 10px;">📊</div>
+		    <div style="font-size: 20px; margin-bottom: 8px;">Higher or Lower</div>
+		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine quel pays a le plus !</div>
+		</button>
         
         <!-- Placeholder jeux futurs -->
         <div style="padding: 30px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 12px; text-align: center; color: #888;">
@@ -630,6 +638,113 @@
         <button onclick="startQuizGame('mix')" style="padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
             🎯 MIX
             <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Tous les niveaux</div>
+        </button>
+    </div>
+</div>
+
+<!-- Menu Higher or Lower -->
+<div id="higher-lower-menu" style="display: none;">
+    <button onclick="backToGamesMenu()" style="margin-bottom: 20px; padding: 10px 20px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+        ← Retour aux jeux
+    </button>
+    
+    <h3 style="color: #f093fb; margin-bottom: 20px; text-align: center;">📊 Higher or Lower</h3>
+    <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis une catégorie</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <button onclick="startHigherLower('population')" style="padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            👥 POPULATION
+            <div style="font-size: 12px; margin-top: 8px;">Nombre d'habitants</div>
+        </button>
+        
+        <button onclick="startHigherLower('surface')" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🗺️ SUPERFICIE
+            <div style="font-size: 12px; margin-top: 8px;">Taille en km²</div>
+        </button>
+        
+        <button onclick="startHigherLower('pib')" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            💰 PIB
+            <div style="font-size: 12px; margin-top: 8px;">Richesse économique</div>
+        </button>
+        
+        <button onclick="startHigherLower('medailles')" style="padding: 25px; background: linear-gradient(135deg, #FFD700, #FFA500); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🥇 MÉDAILLES JO
+            <div style="font-size: 12px; margin-top: 8px;">Cumul historique</div>
+        </button>
+        
+        <button onclick="startHigherLower('batailles')" style="padding: 25px; background: linear-gradient(135deg, #f44336, #d32f2f); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ⚔️ BATAILLES
+            <div style="font-size: 12px; margin-top: 8px;">Victoires historiques</div>
+        </button>
+        
+        <button onclick="startHigherLower('random')" style="padding: 25px; background: linear-gradient(135deg, #9C27B0, #E91E63); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🎲 ALÉATOIRE
+            <div style="font-size: 12px; margin-top: 8px;">Catégorie surprise !</div>
+        </button>
+    </div>
+</div>
+
+<!-- Zone de jeu Higher or Lower -->
+<div id="higher-lower-game" style="display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <div style="display: inline-block; padding: 10px 20px; background: rgba(240, 147, 251, 0.3); border-radius: 20px;">
+            <span style="font-size: 18px; font-weight: bold; color: #f093fb;">Streak: <span id="hl-streak">0</span></span>
+            <span style="margin: 0 15px; color: #666;">|</span>
+            <span style="font-size: 18px; font-weight: bold; color: #4CAF50;">Record: <span id="hl-record">0</span></span>
+        </div>
+    </div>
+    
+    <div id="hl-category" style="text-align: center; font-size: 24px; font-weight: bold; color: #f093fb; margin-bottom: 20px;"></div>
+    
+    <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center;">
+        <!-- Pays de gauche -->
+        <div id="hl-left-card" style="background: rgba(100, 100, 100, 0.3); border-radius: 15px; padding: 30px; text-align: center; border: 3px solid #666;">
+            <div id="hl-left-country" style="font-size: 32px; font-weight: bold; margin-bottom: 20px;"></div>
+            <div id="hl-left-value" style="font-size: 48px; font-weight: bold; color: #4CAF50;"></div>
+        </div>
+        
+        <!-- VS -->
+        <div style="font-size: 48px; font-weight: bold; color: #f093fb;">VS</div>
+        
+        <!-- Pays de droite -->
+        <div id="hl-right-card" style="background: rgba(100, 100, 100, 0.3); border-radius: 15px; padding: 30px; text-align: center; border: 3px solid #666;">
+            <div id="hl-right-country" style="font-size: 32px; font-weight: bold; margin-bottom: 20px;"></div>
+            <div id="hl-right-value" style="font-size: 48px; font-weight: bold; color: transparent; text-shadow: 0 0 20px rgba(255,255,255,0.3);">???</div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button id="hl-btn-higher" onclick="guessHigherLower('higher')" style="flex: 1; padding: 20px; background: #4CAF50; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 18px;">
+                    ⬆️ PLUS
+                </button>
+                <button id="hl-btn-lower" onclick="guessHigherLower('lower')" style="flex: 1; padding: 20px; background: #f44336; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 18px;">
+                    ⬇️ MOINS
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="hl-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px;"></div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="backToGamesMenu()" style="padding: 10px 25px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            ← Retour au menu
+        </button>
+    </div>
+</div>
+
+<!-- Écran Game Over -->
+<div id="higher-lower-end" style="display: none; text-align: center;">
+    <div style="font-size: 60px; margin-bottom: 20px;">💔</div>
+    <h3 style="color: #f44336; font-size: 32px; margin-bottom: 20px;">Game Over !</h3>
+    <div style="font-size: 24px; margin-bottom: 30px;">
+        Streak final: <span id="hl-final-streak" style="color: #f093fb; font-weight: bold;">0</span>
+    </div>
+    <div id="hl-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
+    <div style="display: flex; gap: 15px; justify-content: center;">
+        <button onclick="restartHigherLower()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🔄 Rejouer
+        </button>
+        <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ← Menu
         </button>
     </div>
 </div>
@@ -908,6 +1023,59 @@
                 ]
             }
         };
+		
+		const countriesData = {
+		    'France': { population: 67970000, surface: 643801, pib: 2778000, medaillesJO: 840, batailles: 1115 },
+		    'Allemagne': { population: 83200000, surface: 357022, pib: 4259000, medaillesJO: 1757, batailles: 987 },
+		    'États-Unis': { population: 333000000, surface: 9833517, pib: 25440000, medaillesJO: 2959, batailles: 830 },
+		    'Chine': { population: 1412000000, surface: 9596961, pib: 17960000, medaillesJO: 713, batailles: 950 },
+		    'Japon': { population: 125100000, surface: 377975, pib: 4231000, medaillesJO: 558, batailles: 420 },
+		    'Inde': { population: 1408000000, surface: 3287263, pib: 3385000, medaillesJO: 35, batailles: 610 },
+		    'Royaume-Uni': { population: 67330000, surface: 242495, pib: 3071000, medaillesJO: 916, batailles: 1105 },
+		    'Brésil': { population: 214300000, surface: 8515767, pib: 1920000, medaillesJO: 150, batailles: 180 },
+		    'Italie': { population: 58850000, surface: 301340, pib: 2010000, medaillesJO: 742, batailles: 1080 },
+		    'Canada': { population: 38250000, surface: 9984670, pib: 2139000, medaillesJO: 524, batailles: 140 },
+		    'Russie': { population: 144100000, surface: 17098242, pib: 2240000, medaillesJO: 1624, batailles: 1020 },
+		    'Australie': { population: 25740000, surface: 7692024, pib: 1702000, medaillesJO: 547, batailles: 95 },
+		    'Espagne': { population: 47420000, surface: 505992, pib: 1397000, medaillesJO: 174, batailles: 820 },
+		    'Mexique': { population: 126700000, surface: 1964375, pib: 1414000, medaillesJO: 73, batailles: 310 },
+		    'Corée du Sud': { population: 51740000, surface: 100210, pib: 1673000, medaillesJO: 366, batailles: 240 },
+		    'Indonésie': { population: 273800000, surface: 1904569, pib: 1319000, medaillesJO: 37, batailles: 150 },
+		    'Pays-Bas': { population: 17590000, surface: 41543, pib: 991000, medaillesJO: 466, batailles: 340 },
+		    'Arabie Saoudite': { population: 35950000, surface: 2149690, pib: 1108000, medaillesJO: 4, batailles: 190 },
+		    'Turquie': { population: 84780000, surface: 783562, pib: 905000, medaillesJO: 104, batailles: 890 },
+		    'Suisse': { population: 8700000, surface: 41285, pib: 807000, medaillesJO: 372, batailles: 110 },
+		    'Pologne': { population: 37750000, surface: 312685, pib: 688000, medaillesJO: 321, batailles: 580 },
+		    'Suède': { population: 10420000, surface: 450295, pib: 585000, medaillesJO: 652, batailles: 310 },
+		    'Belgique': { population: 11590000, surface: 30528, pib: 578000, medaillesJO: 164, batailles: 420 },
+		    'Argentine': { population: 45810000, surface: 2780400, pib: 632000, medaillesJO: 77, batailles: 160 },
+		    'Thaïlande': { population: 71600000, surface: 513120, pib: 495000, medaillesJO: 35, batailles: 120 },
+		    'Autriche': { population: 8930000, surface: 83871, pib: 471000, medaillesJO: 348, batailles: 640 },
+		    'Norvège': { population: 5410000, surface: 385207, pib: 579000, medaillesJO: 568, batailles: 180 },
+		    'Égypte': { population: 109300000, surface: 1001450, pib: 476000, medaillesJO: 38, batailles: 540 },
+		    'Afrique du Sud': { population: 59390000, surface: 1221037, pib: 405000, medaillesJO: 89, batailles: 145 },
+		    'Vietnam': { population: 98170000, surface: 331210, pib: 408000, medaillesJO: 5, batailles: 390 },
+		    'Grèce': { population: 10640000, surface: 131957, pib: 219000, medaillesJO: 121, batailles: 720 },
+		    'Portugal': { population: 10330000, surface: 92212, pib: 251000, medaillesJO: 28, batailles: 310 },
+		    'Danemark': { population: 5857000, surface: 43094, pib: 395000, medaillesJO: 209, batailles: 240 },
+		    'Finlande': { population: 5541000, surface: 338424, pib: 280000, medaillesJO: 470, batailles: 130 },
+		    'Irlande': { population: 5030000, surface: 70273, pib: 529000, medaillesJO: 35, batailles: 190 },
+		    'Chili': { population: 19210000, surface: 756102, pib: 301000, medaillesJO: 13, batailles: 110 },
+		    'Colombie': { population: 51270000, surface: 1141748, pib: 343000, medaillesJO: 34, batailles: 140 },
+		    'République Tchèque': { population: 10510000, surface: 78867, pib: 290000, medaillesJO: 170, batailles: 350 },
+		    'Roumanie': { population: 19120000, surface: 238391, pib: 301000, medaillesJO: 309, batailles: 380 },
+		    'Hongrie': { population: 9710000, surface: 93028, pib: 178000, medaillesJO: 511, batailles: 490 },
+		    'Ukraine': { population: 38000000, surface: 603500, pib: 160000, medaillesJO: 147, batailles: 450 },
+		    'Israël': { population: 9364000, surface: 20770, pib: 522000, medaillesJO: 13, batailles: 180 },
+		    'Nouvelle-Zélande': { population: 5123000, surface: 268021, pib: 247000, medaillesJO: 142, batailles: 60 },
+		    'Maroc': { population: 37340000, surface: 446550, pib: 134000, medaillesJO: 24, batailles: 290 },
+		    'Algérie': { population: 44180000, surface: 2381741, pib: 191000, medaillesJO: 17, batailles: 210 },
+		    'Pakistan': { population: 231400000, surface: 796095, pib: 376000, medaillesJO: 10, batailles: 320 },
+		    'Philippines': { population: 113900000, surface: 300000, pib: 404000, medaillesJO: 14, batailles: 190 },
+		    'Singapour': { population: 5454000, surface: 728, pib: 466000, medaillesJO: 5, batailles: 15 },
+		    'Kenya': { population: 53010000, surface: 580367, pib: 113000, medaillesJO: 113, batailles: 80 },
+		    'Éthiopie': { population: 120300000, surface: 1104300, pib: 126000, medaillesJO: 58, batailles: 250 }
+		};
 
         function loadData() {
             const saved = localStorage.getItem('travelData');
@@ -2988,6 +3156,10 @@
 			    document.getElementById('quiz-levels-menu').style.display = 'none';
 			    document.getElementById('quiz-game').style.display = 'none';
 			    document.getElementById('quiz-end').style.display = 'none';
+			    // Ajoute ces 3 lignes :
+			    document.getElementById('higher-lower-menu').style.display = 'none';
+			    document.getElementById('higher-lower-game').style.display = 'none';
+			    document.getElementById('higher-lower-end').style.display = 'none';
 			}
 			
 			function showQuizLevels() {
@@ -2998,7 +3170,14 @@
 			}
 
 			function backToGamesMenu() {
-			    showGamesMenu();
+			    // Masquer tous les écrans de jeux
+			    document.getElementById('games-menu').style.display = 'block';
+			    document.getElementById('quiz-levels-menu').style.display = 'none';
+			    document.getElementById('quiz-game').style.display = 'none';
+			    document.getElementById('quiz-end').style.display = 'none';
+			    document.getElementById('higher-lower-menu').style.display = 'none';
+			    document.getElementById('higher-lower-game').style.display = 'none';
+			    document.getElementById('higher-lower-end').style.display = 'none';
 			}
 
 			let currentDifficulty = 'mix'; // Variable pour stocker le niveau choisi
@@ -3244,6 +3423,191 @@
 
 				messageEl.textContent = message;
 			}
+			
+			// Variables Higher or Lower
+			let hlCurrentCategory = '';
+			let hlCurrentStreak = 0;
+			let hlBestRecord = 0;
+			let hlLeftCountry = null;
+			let hlRightCountry = null;
+			let hlUsedCountries = [];
+
+			function showHigherLowerLevels() {
+			    document.getElementById('games-menu').style.display = 'none';
+			    document.getElementById('higher-lower-menu').style.display = 'block';
+			}
+
+			function startHigherLower(category) {
+			    hlCurrentCategory = category;
+			    hlCurrentStreak = 0;
+			    hlUsedCountries = [];
+    
+			    // Charger le record depuis localStorage
+			    const recordKey = `hl_record_${category}`;
+			    hlBestRecord = parseInt(localStorage.getItem(recordKey) || '0');
+    
+			    document.getElementById('higher-lower-menu').style.display = 'none';
+			    document.getElementById('higher-lower-game').style.display = 'block';
+			    document.getElementById('higher-lower-end').style.display = 'none';
+    
+			    loadNewRound();
+			}
+
+			function loadNewRound() {
+			    // Mettre à jour l'affichage
+			    document.getElementById('hl-streak').textContent = hlCurrentStreak;
+			    document.getElementById('hl-record').textContent = hlBestRecord;
+    
+			    const categoryLabels = {
+			        population: '👥 Population',
+			        surface: '🗺️ Superficie',
+			        pib: '💰 PIB',
+			        medailles: '🥇 Médailles JO',
+			        batailles: '⚔️ Batailles',
+			        random: '🎲 Aléatoire'
+			    };
+    
+			    let displayCategory = hlCurrentCategory;
+			    if (hlCurrentCategory === 'random') {
+			        const categories = ['population', 'surface', 'pib', 'medailles', 'batailles'];
+			        displayCategory = categories[Math.floor(Math.random() * categories.length)];
+			    }
+    
+			    document.getElementById('hl-category').textContent = categoryLabels[displayCategory];
+    
+			    // Si premier round ou le pays de droite devient celui de gauche
+			    if (!hlLeftCountry) {
+			        hlLeftCountry = getRandomCountry();
+			    } else {
+			        hlLeftCountry = hlRightCountry;
+			    }
+    
+			    hlRightCountry = getRandomCountry();
+    
+			    // Afficher les pays
+			    document.getElementById('hl-left-country').textContent = hlLeftCountry;
+			    document.getElementById('hl-right-country').textContent = hlRightCountry;
+    
+			    const leftValue = countriesData[hlLeftCountry][displayCategory];
+			    document.getElementById('hl-left-value').textContent = formatValue(leftValue, displayCategory);
+    
+			    // Cacher la valeur de droite
+			    document.getElementById('hl-right-value').style.color = 'transparent';
+			    document.getElementById('hl-right-value').textContent = '???';
+    
+			    // Réactiver les boutons
+			    document.getElementById('hl-btn-higher').disabled = false;
+			    document.getElementById('hl-btn-lower').disabled = false;
+			    document.getElementById('hl-feedback').style.display = 'none';
+			}
+
+			function getRandomCountry() {
+			    const availableCountries = Object.keys(countriesData).filter(c => !hlUsedCountries.includes(c));
+    
+			    if (availableCountries.length === 0) {
+			        hlUsedCountries = [];
+			        return getRandomCountry();
+			    }
+    
+			    const country = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+			    hlUsedCountries.push(country);
+			    return country;
+			}
+
+			function formatValue(value, category) {
+			    switch(category) {
+			        case 'population':
+			            return (value / 1000000).toFixed(1) + 'M';
+			        case 'surface':
+			            return value.toLocaleString() + ' km²';
+			        case 'pib':
+			            return (value / 1000).toFixed(0) + ' Md$';
+			        case 'medailles':
+			        case 'batailles':
+			            return value.toLocaleString();
+			        default:
+			            return value;
+			    }
+			}
+
+			function guessHigherLower(guess) {
+			    let category = hlCurrentCategory;
+			    if (category === 'random') {
+			        const categories = ['population', 'surface', 'pib', 'medailles', 'batailles'];
+			        category = categories[Math.floor(Math.random() * categories.length)];
+			    }
+    
+			    const leftValue = countriesData[hlLeftCountry][category];
+			    const rightValue = countriesData[hlRightCountry][category];
+    
+			    const isCorrect = (guess === 'higher' && rightValue >= leftValue) || 
+			                      (guess === 'lower' && rightValue <= leftValue);
+    
+			    // Afficher la valeur
+			    document.getElementById('hl-right-value').style.color = isCorrect ? '#4CAF50' : '#f44336';
+			    document.getElementById('hl-right-value').textContent = formatValue(rightValue, category);
+    
+			    // Désactiver les boutons
+			    document.getElementById('hl-btn-higher').disabled = true;
+			    document.getElementById('hl-btn-lower').disabled = true;
+    
+			    const feedback = document.getElementById('hl-feedback');
+			    feedback.style.display = 'block';
+    
+			    if (isCorrect) {
+			        hlCurrentStreak++;
+			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.color = '#4CAF50';
+			        feedback.textContent = '✓ Correct ! Continue...';
+        
+			        // Mettre à jour le record
+			        if (hlCurrentStreak > hlBestRecord) {
+			            hlBestRecord = hlCurrentStreak;
+			            const recordKey = `hl_record_${hlCurrentCategory}`;
+			            localStorage.setItem(recordKey, hlBestRecord);
+			        }
+        
+			        setTimeout(loadNewRound, 2000);
+			    } else {
+			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.color = '#f44336';
+			        feedback.textContent = '✗ Perdu ! Game Over';
+        
+			        setTimeout(endHigherLower, 2000);
+			    }
+			}
+
+			function endHigherLower() {
+			    document.getElementById('higher-lower-game').style.display = 'none';
+			    document.getElementById('higher-lower-end').style.display = 'block';
+    
+			    document.getElementById('hl-final-streak').textContent = hlCurrentStreak;
+    
+			    const message = document.getElementById('hl-end-message');
+			    if (hlCurrentStreak >= 20) {
+			        message.textContent = '🏆 INCROYABLE ! Tu es un génie de la géographie !';
+			        message.style.color = '#FFD700';
+			    } else if (hlCurrentStreak >= 10) {
+			        message.textContent = '🌟 Excellent ! Tu connais bien le monde !';
+			        message.style.color = '#4CAF50';
+			    } else if (hlCurrentStreak >= 5) {
+			        message.textContent = '👍 Pas mal ! Continue à t\'entraîner !';
+			        message.style.color = '#FF9800';
+			    } else {
+			        message.textContent = '💪 C\'est un début ! Réessaie pour battre ton record !';
+			        message.style.color = '#2196F3';
+			    }
+			}
+
+			function restartHigherLower() {
+			    hlLeftCountry = null;
+			    startHigherLower(hlCurrentCategory);
+			}
+
+			window.showHigherLowerLevels = showHigherLowerLevels;
+			window.startHigherLower = startHigherLower;
+			window.guessHigherLower = guessHigherLower;
+			window.restartHigherLower = restartHigherLower;
 			
 			// Rendre les fonctions accessibles globalement
 			window.startQuizGame = startQuizGame;
