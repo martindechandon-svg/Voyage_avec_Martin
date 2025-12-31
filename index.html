@@ -582,37 +582,57 @@
     <h2 style="color: #9C27B0; margin-bottom: 30px; text-align: center;">🎮 Mini-Jeux</h2>
     
     <!-- Menu des jeux -->
-    <div id="games-menu" style="display: block;">
-        <h3 style="color: #9C27B0; margin-bottom: 20px; text-align: center;">🌍 Quiz Géographie</h3>
-        <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis ton niveau de difficulté</p>
+<div id="games-menu" style="display: block;">
+    <h3 style="color: #9C27B0; margin-bottom: 20px; text-align: center;">Choisis ton jeu</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+        <!-- Jeu Quiz -->
+        <button onclick="showQuizLevels()" style="padding: 30px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 10px;">🌍</div>
+            <div style="font-size: 20px; margin-bottom: 8px;">Quiz Géographie</div>
+            <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine le pays à partir d'indices</div>
+        </button>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button onclick="startQuizGame(1)" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
-                🟢 FACILE
-                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Un niveau accessible à tout âge</div>
-            </button>
-            
-            <button onclick="startQuizGame(2)" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
-                🟡 MOYEN
-                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Pas si simple</div>
-            </button>
-            
-            <button onclick="startQuizGame(3)" style="padding: 25px; background: linear-gradient(135deg, #f44336, #d32f2f); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
-                🔴 DIFFICILE
-                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Pour les experts</div>
-            </button>
-            
-            <button onclick="startQuizGame('mix')" style="padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
-                🎯 MIX
-                <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Tous les niveaux</div>
-            </button>
-        </div>
-        
-        <div style="padding: 25px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 10px; text-align: center; color: #888; margin-top: 15px;">
-            <div style="font-size: 40px; margin-bottom: 10px;">🔜</div>
-            <div style="font-weight: bold;">Plus de jeux bientôt...</div>
+        <!-- Placeholder jeux futurs -->
+        <div style="padding: 30px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 12px; text-align: center; color: #888;">
+            <div style="font-size: 40px; margin-bottom: 10px;">📜</div>
+            <div style="font-weight: bold; font-size: 16px;">Plus de jeux bientôt...</div>
+            <div style="font-size: 13px; margin-top: 5px;">Drapeaux, Capitales, et plus encore !</div>
         </div>
     </div>
+</div>
+
+<!-- Menu de sélection des niveaux -->
+<div id="quiz-levels-menu" style="display: none;">
+    <button onclick="backToGamesMenu()" style="margin-bottom: 20px; padding: 10px 20px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+        ← Retour aux jeux
+    </button>
+    
+    <h3 style="color: #9C27B0; margin-bottom: 20px; text-align: center;">🌍 Quiz Géographie</h3>
+    <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis ton niveau de difficulté</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <button onclick="startQuizGame(1)" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+            🟢 FACILE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Un niveau accessible à tout âge</div>
+        </button>
+        
+        <button onclick="startQuizGame(2)" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+            🟡 MOYEN
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Pas si simple</div>
+        </button>
+        
+        <button onclick="startQuizGame(3)" style="padding: 25px; background: linear-gradient(135deg, #f44336, #d32f2f); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+            🔴 DIFFICILE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Pour les experts</div>
+        </button>
+        
+        <button onclick="startQuizGame('mix')" style="padding: 25px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s;">
+            🎯 MIX
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Tous les niveaux</div>
+        </button>
+    </div>
+</div>
     
     <!-- Zone de jeu du Quiz -->
     <div id="quiz-game" style="display: none;">
@@ -2569,6 +2589,75 @@
 
 			// Base de données des questions du quiz
 			const quizDatabase = [
+				
+				// Faciles
+				{ type: 'text', difficulty: 1, question: '🏰 Dans quel pays se trouve le château de Versailles ?', answer: 'France', hint: 'Roi Louis XIV' },
+				{ type: 'text', difficulty: 1, question: '🗽 Dans quel pays se trouve le Mont Rushmore ?', answer: 'États-Unis', hint: '4 présidents sculptés' },
+				{ type: 'text', difficulty: 1, question: '🌉 Dans quel pays se trouve le pont du Golden Gate ?', answer: 'États-Unis', hint: 'San Francisco' },
+				{ type: 'text', difficulty: 1, question: '🏛️ Dans quel pays se trouve l\'Acropole ?', answer: 'Grèce', hint: 'Athènes' },
+				{ type: 'text', difficulty: 1, question: '🗼 Dans quel pays se trouve la Tour CN ?', answer: 'Canada', hint: 'Toronto' },
+				{ type: 'text', difficulty: 1, question: '🍕 Dans quel pays les gelatos sont-ils originaires ?', answer: 'Italie', hint: 'Glace artisanale' },
+				{ type: 'text', difficulty: 1, question: '🥨 Dans quel pays les bretzels sont-ils traditionnels ?', answer: 'Allemagne', hint: 'Pain torsadé' },
+				{ type: 'text', difficulty: 1, question: '🌮 Dans quel pays le guacamole est-il originaire ?', answer: 'Mexique', hint: 'À base d\'avocat' },
+				{ type: 'text', difficulty: 1, question: '🍜 Dans quel pays les ramen sont-ils populaires ?', answer: 'Japon', hint: 'Soupe de nouilles' },
+				{ type: 'text', difficulty: 1, question: '🧇 Dans quel pays les gaufres sont-elles spécialité ?', answer: 'Belgique', hint: 'Bruxelles et Liège' },
+				{ type: 'text', difficulty: 1, question: '🏛️ Oslo est la capitale de quel pays ?', answer: 'Norvège', hint: 'Pays scandinave' },
+				{ type: 'text', difficulty: 1, question: '🏛️ Bruxelles est la capitale de quel pays ?', answer: 'Belgique', hint: 'Capitale européenne' },
+				{ type: 'text', difficulty: 1, question: '🏛️ Prague est la capitale de quel pays ?', answer: 'Tchéquie', hint: 'Ville aux 100 tours' },
+				{ type: 'text', difficulty: 1, question: '🏛️ Rome est la capitale de quel pays ?', answer: 'Italie', hint: 'Ville éternelle' },
+				{ type: 'text', difficulty: 1, question: '⚽ Quel pays a inventé le basket-ball ?', answer: 'États-Unis', hint: 'Sport avec panier' },
+				{ type: 'text', difficulty: 1, question: '🎾 Dans quel pays se déroule Roland-Garros ?', answer: 'France', hint: 'Tournoi sur terre battue' },
+				{ type: 'text', difficulty: 1, question: '🦅 Quel pays a l\'aigle comme symbole national ?', answer: 'États-Unis', hint: 'Aigle à tête blanche' },
+				{ type: 'text', difficulty: 1, question: '🐼 Quel pays a le panda comme symbole ?', answer: 'Chine', hint: 'Animal menacé' },
+				{ type: 'text', difficulty: 1, question: '🦁 Dans quel pays vivent les lions en liberté (safari) ?', answer: 'Kenya', hint: 'Safaris africains' },
+				{ type: 'text', difficulty: 1, question: '🎬 Dans quel pays se trouve Hollywood ?', answer: 'États-Unis', hint: 'Los Angeles' },
+				
+				// Moyennes
+				
+				{ type: 'text', difficulty: 2, question: '🗿 Dans quel pays se trouve Chichén Itzá ?', answer: 'Mexique', hint: 'Pyramide maya' },
+				{ type: 'text', difficulty: 2, question: '🏰 Dans quel pays se trouve le Palais de l\'Alhambra ?', answer: 'Espagne', hint: 'Grenade, architecture mauresque' },
+				{ type: 'text', difficulty: 2, question: '⛩️ Dans quel pays se trouvent les milliers de torii de Fushimi Inari ?', answer: 'Japon', hint: 'Kyoto' },
+				{ type: 'text', difficulty: 2, question: '🕌 Dans quel pays se trouve la Grande Mosquée de Kairouan ?', answer: 'Tunisie', hint: 'Ville sainte' },
+				{ type: 'text', difficulty: 2, question: '🏰 Dans quel pays se trouve le château d\'Édimbourg ?', answer: 'Royaume-Uni', hint: 'Écosse' },
+				{ type: 'text', difficulty: 2, question: '🍷 Dans quel pays le vin de Rioja est-il produit ?', answer: 'Espagne', hint: 'Région viticole' },
+				{ type: 'text', difficulty: 2, question: '🧀 Dans quel pays le Parmigiano-Reggiano est-il produit ?', answer: 'Italie', hint: 'Parmesan authentique' },
+				{ type: 'text', difficulty: 2, question: '🥃 Dans quel pays le whisky est-il traditionnel ?', answer: 'Royaume-Uni', hint: 'Écosse principalement' },
+				{ type: 'text', difficulty: 2, question: '🍫 Dans quel pays Lindt est-il fabriqué ?', answer: 'Suisse', hint: 'Chocolat premium' },
+				{ type: 'text', difficulty: 2, question: '🦞 Dans quel pays les homards sont-ils spécialité ?', answer: 'Canada', hint: 'Côte atlantique' },
+				{ type: 'text', difficulty: 2, question: '🏛️ Helsinki est la capitale de quel pays ?', answer: 'Finlande', hint: 'Pays nordique' },
+				{ type: 'text', difficulty: 2, question: '🏛️ Dublin est la capitale de quel pays ?', answer: 'Irlande', hint: 'Île verte' },
+				{ type: 'text', difficulty: 2, question: '🏛️ Varsovie est la capitale de quel pays ?', answer: 'Pologne', hint: 'Europe de l\'Est' },
+				{ type: 'text', difficulty: 2, question: '🏛️ Budapest est la capitale de quel pays ?', answer: 'Hongrie', hint: 'Divisée par le Danube' },
+				{ type: 'text', difficulty: 2, question: '🏛️ Bucarest est la capitale de quel pays ?', answer: 'Roumanie', hint: 'Paris de l\'Est' },
+				{ type: 'text', difficulty: 2, question: '🏐 Dans quel pays le volley-ball de plage est-il très populaire ?', answer: 'Brésil', hint: 'Copacabana' },
+				{ type: 'text', difficulty: 2, question: '🏏 Dans quel pays le cricket est-il sport national ?', answer: 'Inde', hint: 'Sport britannique adopté' },
+				{ type: 'text', difficulty: 2, question: '🎭 Dans quel pays le kabuki est-il originaire ?', answer: 'Japon', hint: 'Théâtre traditionnel' },
+				{ type: 'text', difficulty: 2, question: '🎨 Dans quel pays Picasso est-il né ?', answer: 'Espagne', hint: 'Malaga' },
+				{ type: 'text', difficulty: 2, question: '🎵 Dans quel pays le fado est-il chanté ?', answer: 'Portugal', hint: 'Musique mélancolique' },
+				
+				// Difficiles	
+				
+				{ type: 'text', difficulty: 3, question: '🏛️ Dans quel pays se trouve Borobudur ?', answer: 'Indonésie', hint: 'Plus grand temple bouddhiste' },
+				{ type: 'text', difficulty: 3, question: '🗿 Dans quel pays se trouve Lalibela ?', answer: 'Éthiopie', hint: 'Églises creusées dans la roche' },
+				{ type: 'text', difficulty: 3, question: '🏰 Dans quel pays se trouve le Palais du Potala ?', answer: 'Chine', hint: 'Tibet, résidence du Dalaï-lama' },
+				{ type: 'text', difficulty: 3, question: '⛪ Dans quel pays se trouve la cathédrale de Brasília ?', answer: 'Brésil', hint: 'Architecture moderne' },
+				{ type: 'text', difficulty: 3, question: '🕌 Dans quel pays se trouve la mosquée du Vendredi d\'Ispahan ?', answer: 'Iran', hint: 'Architecture persane' },
+				{ type: 'text', difficulty: 3, question: '🏛️ Oulan-Bator est la capitale de quel pays ?', answer: 'Mongolie', hint: 'Pays d\'Asie centrale' },
+				{ type: 'text', difficulty: 3, question: '🏛️ Asunción est la capitale de quel pays ?', answer: 'Paraguay', hint: 'Amérique du Sud' },
+				{ type: 'text', difficulty: 3, question: '🏛️ Tbilissi est la capitale de quel pays ?', answer: 'Géorgie', hint: 'Caucase' },
+				{ type: 'text', difficulty: 3, question: '🏛️ Tallinn est la capitale de quel pays ?', answer: 'Estonie', hint: 'Pays balte' },
+				{ type: 'text', difficulty: 3, question: '🏛️ Ljubljana est la capitale de quel pays ?', answer: 'Slovénie', hint: 'Ex-Yougoslavie' },
+				{ type: 'text', difficulty: 3, question: '🌊 Dans quel pays se trouve le lac Baïkal ?', answer: 'Russie', hint: 'Plus profond lac du monde' },
+				{ type: 'text', difficulty: 3, question: '🏔️ Dans quel pays se trouve l\'Aconcagua ?', answer: 'Argentine', hint: 'Plus haut sommet des Amériques' },
+				{ type: 'text', difficulty: 3, question: '🌋 Dans quel pays se trouve le mont Erebus ?', answer: 'Antarctique', hint: 'Volcan actif le plus austral' },
+				{ type: 'text', difficulty: 3, question: '🏜️ Dans quel pays se trouve le désert du Kalahari ?', answer: 'Botswana', hint: 'Afrique australe' },
+				{ type: 'text', difficulty: 3, question: '🌊 Dans quel pays se trouve le delta de l\'Okavango ?', answer: 'Botswana', hint: 'Delta intérieur' },
+				{ type: 'text', difficulty: 3, question: '🎨 Dans quel pays Frida Kahlo est-elle née ?', answer: 'Mexique', hint: 'Peintre surréaliste' },
+				{ type: 'text', difficulty: 3, question: '🎭 Dans quel pays le kathakali est-il pratiqué ?', answer: 'Inde', hint: 'Danse-théâtre du Kerala' },
+				{ type: 'text', difficulty: 3, question: '🎵 Dans quel pays le gamelan est-il joué ?', answer: 'Indonésie', hint: 'Orchestre traditionnel' },
+				{ type: 'text', difficulty: 3, question: '📚 Dans quel pays se trouve la bibliothèque de Joanina ?', answer: 'Portugal', hint: 'Université de Coimbra' },
+				{ type: 'text', difficulty: 3, question: '🏺 Dans quel pays se trouve Göbekli Tepe ?', answer: 'Turquie', hint: 'Plus ancien temple du monde' },	
+				
 			    // Monuments célèbres
 			    { type: 'text', difficulty: 1, question: '🗼 Dans quel pays se trouve la Tour Eiffel ?', answer: 'France', hint: 'Capitale: Paris' },
 			    { type: 'text', difficulty: 1, question: '🗽 Dans quel pays se trouve la Statue de la Liberté ?', answer: 'États-Unis', hint: 'Ville: New York' },
@@ -2716,6 +2805,14 @@
 
 			function showGamesMenu() {
 			    document.getElementById('games-menu').style.display = 'block';
+			    document.getElementById('quiz-levels-menu').style.display = 'none';
+			    document.getElementById('quiz-game').style.display = 'none';
+			    document.getElementById('quiz-end').style.display = 'none';
+			}
+			
+			function showQuizLevels() {
+			    document.getElementById('games-menu').style.display = 'none';
+			    document.getElementById('quiz-levels-menu').style.display = 'block';
 			    document.getElementById('quiz-game').style.display = 'none';
 			    document.getElementById('quiz-end').style.display = 'none';
 			}
@@ -2763,6 +2860,7 @@
 			    document.getElementById('games-menu').style.display = 'none';
 			    document.getElementById('quiz-end').style.display = 'none';
 			    document.getElementById('quiz-game').style.display = 'block';
+				document.getElementById('quiz-levels-menu').style.display = 'none';
     
 			    // Afficher le niveau choisi
 			    updateQuizHeader();
@@ -2971,6 +3069,7 @@
 			window.startQuizGame = startQuizGame;
 			window.backToGamesMenu = backToGamesMenu;
 			window.nextQuizQuestion = nextQuizQuestion;
+			window.showQuizLevels = showQuizLevels;
 
 			// Event listeners
 			document.getElementById('games-btn').addEventListener('click', openGamesModal);
