@@ -667,7 +667,7 @@
             <div style="font-size: 12px; margin-top: 8px;">Richesse économique</div>
         </button>
         
-        <button onclick="startHigherLower('medailles')" style="padding: 25px; background: linear-gradient(135deg, #FFD700, #FFA500); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+        <button onclick="startHigherLower('medaillesJO')" style="padding: 25px; background: linear-gradient(135deg, #FFD700, #FFA500); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
             🥇 MÉDAILLES JO
             <div style="font-size: 12px; margin-top: 8px;">Cumul historique</div>
         </button>
@@ -1062,7 +1062,7 @@
 		    'Irlande': { population: 5030000, surface: 70273, pib: 529000, medaillesJO: 35, batailles: 190 },
 		    'Chili': { population: 19210000, surface: 756102, pib: 301000, medaillesJO: 13, batailles: 110 },
 		    'Colombie': { population: 51270000, surface: 1141748, pib: 343000, medaillesJO: 34, batailles: 140 },
-		    'République Tchèque': { population: 10510000, surface: 78867, pib: 290000, medaillesJO: 170, batailles: 350 },
+		    'Tchéquie': { population: 10510000, surface: 78867, pib: 290000, medaillesJO: 170, batailles: 350 },
 		    'Roumanie': { population: 19120000, surface: 238391, pib: 301000, medaillesJO: 309, batailles: 380 },
 		    'Hongrie': { population: 9710000, surface: 93028, pib: 178000, medaillesJO: 511, batailles: 490 },
 		    'Ukraine': { population: 38000000, surface: 603500, pib: 160000, medaillesJO: 147, batailles: 450 },
@@ -3431,6 +3431,7 @@
 			let hlLeftCountry = null;
 			let hlRightCountry = null;
 			let hlUsedCountries = [];
+			let hlCurrentDisplayCategory = '';
 
 			function showHigherLowerLevels() {
 			    document.getElementById('games-menu').style.display = 'none';
@@ -3438,6 +3439,11 @@
 			}
 
 			function startHigherLower(category) {
+				
+			 // TEST : Vérifier que les données existent
+			    console.log('Nombre de pays dans countriesData:', Object.keys(countriesData).length);
+			    console.log('Premier pays:', Object.keys(countriesData)[0], countriesData[Object.keys(countriesData)[0]]);
+				
 			    hlCurrentCategory = category;
 			    hlCurrentStreak = 0;
 			    hlUsedCountries = [];
@@ -3454,46 +3460,66 @@
 			}
 
 			function loadNewRound() {
-			    // Mettre à jour l'affichage
-			    document.getElementById('hl-streak').textContent = hlCurrentStreak;
-			    document.getElementById('hl-record').textContent = hlBestRecord;
-    
-			    const categoryLabels = {
-			        population: '👥 Population',
-			        surface: '🗺️ Superficie',
-			        pib: '💰 PIB',
-			        medailles: '🥇 Médailles JO',
-			        batailles: '⚔️ Batailles',
-			        random: '🎲 Aléatoire'
-			    };
-    
+			    // 1️⃣ Déterminer la nouvelle catégorie EN PREMIER
 			    let displayCategory = hlCurrentCategory;
 			    if (hlCurrentCategory === 'random') {
-			        const categories = ['population', 'surface', 'pib', 'medailles', 'batailles'];
+			        const categories = ['population', 'surface', 'pib', 'medaillesJO', 'batailles'];
 			        displayCategory = categories[Math.floor(Math.random() * categories.length)];
 			    }
     
-			    document.getElementById('hl-category').textContent = categoryLabels[displayCategory];
+			    // 2️⃣ Sauvegarder la catégorie AVANT de manipuler les pays
+			    hlCurrentDisplayCategory = displayCategory;
     
-			    // Si premier round ou le pays de droite devient celui de gauche
+			    // 3️⃣ ENSUITE gérer les pays
 			    if (!hlLeftCountry) {
 			        hlLeftCountry = getRandomCountry();
 			    } else {
-			        hlLeftCountry = hlRightCountry;
+			        hlLeftCountry = hlRightCountry; // ⚠️ Le pays de droite devient gauche
 			    }
     
 			    hlRightCountry = getRandomCountry();
     
-			    // Afficher les pays
+			    // 4️⃣ Vérification de sécurité
+			    if (!hlLeftCountry || !hlRightCountry || 
+			        !countriesData[hlLeftCountry] || !countriesData[hlRightCountry]) {
+			        console.error('Données manquantes pour', hlLeftCountry, 'ou', hlRightCountry);
+			        hlLeftCountry = null;
+			        loadNewRound();
+			        return;
+			    }
+    
+			    // 5️⃣ Mettre à jour le score
+			    document.getElementById('hl-streak').textContent = hlCurrentStreak;
+			    document.getElementById('hl-record').textContent = hlBestRecord;
+    
+			    // 6️⃣ Labels des catégories
+			    const categoryLabels = {
+			        population: '👥 Population',
+			        surface: '🗺️ Superficie',
+			        pib: '💰 PIB',
+			        medaillesJO: '🥇 Médailles JO',
+			        batailles: '⚔️ Batailles',
+			        random: '🎲 Aléatoire'
+			    };
+    
+			    document.getElementById('hl-category').textContent = categoryLabels[displayCategory];
+    
+			    // 7️⃣ Afficher les pays
 			    document.getElementById('hl-left-country').textContent = hlLeftCountry;
 			    document.getElementById('hl-right-country').textContent = hlRightCountry;
     
+			    // 8️⃣ ⚠️ CRUCIAL : Récupérer les valeurs avec la NOUVELLE catégorie
 			    const leftValue = countriesData[hlLeftCountry][displayCategory];
+			    const rightValue = countriesData[hlRightCountry][displayCategory];
+    
+			    // 9️⃣ Afficher la valeur de gauche
 			    document.getElementById('hl-left-value').textContent = formatValue(leftValue, displayCategory);
     
-			    // Cacher la valeur de droite
-			    document.getElementById('hl-right-value').style.color = 'transparent';
-			    document.getElementById('hl-right-value').textContent = '???';
+			    // 🔟 Cacher la valeur de droite
+			    const rightValueEl = document.getElementById('hl-right-value');
+			    rightValueEl.style.color = 'transparent';
+			    rightValueEl.style.textShadow = '0 0 20px rgba(255,255,255,0.3)';
+			    rightValueEl.textContent = '???';
     
 			    // Réactiver les boutons
 			    document.getElementById('hl-btn-higher').disabled = false;
@@ -3502,6 +3528,7 @@
 			}
 
 			function getRandomCountry() {
+			    // Ne prendre QUE les pays qui ont des données
 			    const availableCountries = Object.keys(countriesData).filter(c => !hlUsedCountries.includes(c));
     
 			    if (availableCountries.length === 0) {
@@ -3522,7 +3549,7 @@
 			            return value.toLocaleString() + ' km²';
 			        case 'pib':
 			            return (value / 1000).toFixed(0) + ' Md$';
-			        case 'medailles':
+			        case 'medaillesJO':
 			        case 'batailles':
 			            return value.toLocaleString();
 			        default:
@@ -3531,11 +3558,8 @@
 			}
 
 			function guessHigherLower(guess) {
-			    let category = hlCurrentCategory;
-			    if (category === 'random') {
-			        const categories = ['population', 'surface', 'pib', 'medailles', 'batailles'];
-			        category = categories[Math.floor(Math.random() * categories.length)];
-			    }
+			    // Utiliser la catégorie sauvegardée au lieu de recalculer
+			    const category = hlCurrentDisplayCategory;
     
 			    const leftValue = countriesData[hlLeftCountry][category];
 			    const rightValue = countriesData[hlRightCountry][category];
