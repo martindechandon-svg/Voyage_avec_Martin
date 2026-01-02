@@ -371,6 +371,7 @@
         .arrow.open {
             transform: rotate(90deg);
         }
+		
     </style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -577,6 +578,7 @@
 </div>
 
 <div id="games-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #9C27B0; width: 85%; max-width: 900px; max-height: 85vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+
     <button id="close-games-btn" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
     
     <h2 style="color: #9C27B0; margin-bottom: 30px; text-align: center;">🎮 Mini-Jeux</h2>
@@ -607,6 +609,15 @@
 		    <div style="font-size: 40px; margin-bottom: 10px;">🍺</div>
 		    <div style="font-size: 20px; margin-bottom: 8px;">Hold my Beer</div>
 		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Retrouve l'origine des bières</div>
+		</button>
+		
+        <!-- Jeu Interpol : Chasse à l'homme -->
+		
+		
+		<button onclick="showInterpolLevels()" style="padding: 30px; background: linear-gradient(135deg, #DC143C, #8B0000); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
+		    <div style="font-size: 40px; margin-bottom: 10px;">🕵️</div>
+		    <div style="font-size: 20px; margin-bottom: 8px;">Interpol : Chasse à l'homme</div>
+		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Retrouve le fugitif avec des indices</div>
 		</button>
         
         <!-- Placeholder jeux futurs -->
@@ -831,6 +842,106 @@
     <div id="beer-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
     <div style="display: flex; gap: 15px; justify-content: center;">
         <button onclick="restartBeerGame()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🔄 Rejouer
+        </button>
+        <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ← Menu
+        </button>
+    </div>
+</div>
+
+<!-- Menu Interpol -->
+<div id="interpol-levels-menu" style="display: none;">
+    <button onclick="backToGamesMenu()" style="margin-bottom: 20px; padding: 10px 20px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+        ← Retour aux jeux
+    </button>
+    
+    <h3 style="color: #DC143C; margin-bottom: 20px; text-align: center;">🕵️ Interpol : Chasse à l'homme</h3>
+    <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis ton niveau de difficulté</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <button onclick="startInterpolGame('easy')" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🟢 FACILE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">5 indices, 10 tentatives</div>
+        </button>
+        
+        <button onclick="startInterpolGame('medium')" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🟡 MOYEN
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">4 indices, 8 tentatives</div>
+        </button>
+        
+        <button onclick="startInterpolGame('hard')" style="padding: 25px; background: linear-gradient(135deg, #f44336, #d32f2f); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🔴 DIFFICILE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">3 indices, 5 tentatives</div>
+        </button>
+        
+        <button onclick="startInterpolGame('expert')" style="padding: 25px; background: linear-gradient(135deg, #9C27B0, #7B1FA2); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ⚫ EXPERT
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">2 indices, 3 tentatives</div>
+        </button>
+    </div>
+</div>
+
+<!-- Zone de jeu Interpol -->
+<div id="interpol-game" style="display: none;">
+    <div style="display: flex; flex-direction: column; height: 100%; gap: 20px;">
+        
+        <!-- Header avec mission -->
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div style="padding: 15px 25px; background: rgba(220, 20, 60, 0.3); border-radius: 20px;">
+                <span style="font-size: 20px; font-weight: bold; color: #DC143C;">
+                    🎯 Tentatives: <span id="interpol-attempts">0</span>/<span id="interpol-max-attempts">10</span>
+                </span>
+            </div>
+            
+            <div style="flex: 1; background: rgba(220, 20, 60, 0.2); padding: 20px; border-radius: 10px; border-left: 4px solid #DC143C;">
+                <h3 style="color: #DC143C; margin-bottom: 10px; font-size: 18px;">🚨 Mission Interpol</h3>
+                <p id="interpol-mission" style="color: #fff; font-size: 14px; line-height: 1.6;"></p>
+            </div>
+        </div>
+        
+        <!-- Zone principale : Indices + Recherche -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1;">
+            
+            <!-- Colonne gauche : Indices -->
+            <div style="background: rgba(100, 100, 100, 0.3); padding: 20px; border-radius: 10px; overflow-y: auto; border: 2px solid #FFD700;">
+                <h3 style="color: #FFD700; margin-bottom: 15px; font-size: 20px;">🔍 Dossier confidentiel</h3>
+                <div id="interpol-clues" style="color: #fff;"></div>
+                
+                <button id="interpol-next-clue-btn" onclick="revealNextClue()" style="width: 100%; margin-top: 20px; padding: 15px; background: #FFD700; border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: bold; font-size: 16px;">
+                    💡 Révéler un nouvel indice
+                </button>
+            </div>
+            
+            <!-- Colonne droite : Recherche de pays -->
+            <div style="background: rgba(220, 20, 60, 0.15); padding: 20px; border-radius: 10px; border: 2px solid #DC143C; display: flex; flex-direction: column;">
+                <h3 style="color: #DC143C; margin-bottom: 15px; font-size: 20px;">🌍 Où se cache le fugitif ?</h3>
+                
+                <input type="text" id="interpol-search" placeholder="🔎 Tapez un pays pour l'arrêter..." style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #DC143C; border-radius: 8px; background: #1a1a1a; color: #fff; margin-bottom: 15px;">
+                
+                <div id="interpol-countries-list" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <!-- Les pays seront générés ici -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="interpol-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold;"></div>
+        
+        <div style="text-align: center;">
+            <button onclick="backToGamesMenu(); destroyInterpolMap();" style="padding: 12px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 14px;">
+                ← Retour au menu
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Écran de fin Interpol -->
+<div id="interpol-end" style="display: none; text-align: center;">
+    <div id="interpol-end-icon" style="font-size: 60px; margin-bottom: 20px;"></div>
+    <h3 id="interpol-end-title" style="font-size: 32px; margin-bottom: 20px;"></h3>
+    <div id="interpol-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
+    <div style="display: flex; gap: 15px; justify-content: center;">
+        <button onclick="restartInterpolGame()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
             🔄 Rejouer
         </button>
         <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
@@ -3416,6 +3527,7 @@
 			}
 
 			function backToGamesMenu() {
+
 			    // Masquer tous les écrans de jeux
 			    document.getElementById('games-menu').style.display = 'block';
 			    document.getElementById('quiz-levels-menu').style.display = 'none';
@@ -3428,6 +3540,9 @@
 			    document.getElementById('beer-mixologue-game').style.display = 'none';
 			    document.getElementById('beer-tour-game').style.display = 'none';
 			    document.getElementById('beer-end').style.display = 'none';
+			    document.getElementById('interpol-levels-menu').style.display = 'none';
+			    document.getElementById('interpol-game').style.display = 'none';
+			    document.getElementById('interpol-end').style.display = 'none';
 			}
 
 			let currentDifficulty = 'mix'; // Variable pour stocker le niveau choisi
@@ -4123,7 +4238,316 @@
 			// Rendre les fonctions accessibles globalement
 			window.showBeerLevels = showBeerLevels;
 			window.startBeerGame = startBeerGame;
-			window.restartBeerGame = restartBeerGame;			
+			window.restartBeerGame = restartBeerGame;
+			
+			// ===== INTERPOL GAME =====
+			let interpolTargetCountry = '';
+			let interpolCurrentClues = [];
+			let interpolRevealedClues = 0;
+			let interpolAttempts = 0;
+			let interpolMaxAttempts = 10;
+			let interpolDifficulty = 'easy';
+			let interpolGameActive = false;
+			let interpolAllClues = [];
+
+			const interpolCluesDatabase = {
+			    population: (country) => {
+			        const pop = countriesData[country]?.population;
+			        if (!pop) return null;
+			        if (pop > 100000000) return `🌍 Plus de 100 millions d'habitants`;
+			        if (pop > 50000000) return `👥 Entre 50 et 100 millions d'habitants`;
+			        if (pop > 20000000) return `🏙️ Entre 20 et 50 millions d'habitants`;
+			        if (pop > 10000000) return `🌆 Entre 10 et 20 millions d'habitants`;
+			        return `🏘️ Moins de 10 millions d'habitants`;
+			    },
+			    surface: (country) => {
+			        const surf = countriesData[country]?.surface;
+			        if (!surf) return null;
+			        if (surf > 5000000) return `🗺️ Immense territoire (>5M km²)`;
+			        if (surf > 1000000) return `📐 Très grand pays (1-5M km²)`;
+			        if (surf > 500000) return `🌄 Grand pays (500k-1M km²)`;
+			        if (surf > 100000) return `🏞️ Pays moyen (100-500k km²)`;
+			        return `🏝️ Petit pays (<100k km²)`;
+			    },
+			    pib: (country) => {
+			        const pib = countriesData[country]?.pib;
+			        if (!pib) return null;
+			        if (pib > 10000000) return `💰 Économie puissante (>10 000 Md$)`;
+			        if (pib > 2000000) return `💵 Grande économie (2-10k Md$)`;
+			        if (pib > 500000) return `💸 Économie moyenne (500-2k Md$)`;
+			        return `💴 Économie modeste (<500 Md$)`;
+			    },
+			    medaillesJO: (country) => {
+			        const medals = countriesData[country]?.medaillesJO;
+			        if (!medals) return null;
+			        if (medals > 1000) return `🥇 Plus de 1000 médailles aux JO`;
+			        if (medals > 500) return `🏅 Entre 500 et 1000 médailles aux JO`;
+			        if (medals > 100) return `🎖️ Entre 100 et 500 médailles aux JO`;
+			        if (medals > 20) return `🏆 Entre 20 et 100 médailles aux JO`;
+			        return `🎯 Moins de 20 médailles aux JO`;
+			    },
+			    batailles: (country) => {
+			        const bat = countriesData[country]?.batailles;
+			        if (!bat) return null;
+			        if (bat > 800) return `⚔️ Plus de 800 batailles historiques`;
+			        if (bat > 400) return `🛡️ Entre 400 et 800 batailles`;
+			        if (bat > 200) return `🗡️ Entre 200 et 400 batailles`;
+			        return `⚔️ Moins de 200 batailles`;
+			    },
+			    beer: (country) => {
+			        if (beerData[country]) {
+			            const beers = beerData[country].beers;
+			            return `🍺 On y boit la "${beers[Math.floor(Math.random() * beers.length)]}"`;
+			        }
+			        return null;
+			    },
+			    continent: (country) => {
+			        for (const [continentName, continent] of Object.entries(continents)) {
+			            if (continent.countries.includes(country)) {
+			                return `${continent.emoji} Se trouve en ${continentName}`;
+			            }
+			        }
+			        return null;
+			    },
+			    altitude: (country) => {
+			        // Simulé - tu peux ajouter ces données plus tard
+			        const highMountains = ['Chine', 'Népal', 'Pakistan', 'Inde', 'Argentine', 'Chili'];
+			        const medMountains = ['Suisse', 'Autriche', 'France', 'Italie', 'Espagne', 'Turquie'];
+        
+			        if (highMountains.includes(country)) return `🏔️ Point culminant > 5000m`;
+			        if (medMountains.includes(country)) return `⛰️ Point culminant entre 2000 et 5000m`;
+			        return `🗻 Point culminant < 2000m`;
+			    }
+			};
+
+			function showInterpolLevels() {
+			    document.getElementById('games-menu').style.display = 'none';
+			    document.getElementById('interpol-levels-menu').style.display = 'block';
+			}
+
+			function startInterpolGame(difficulty) {
+			    interpolDifficulty = difficulty;
+			    interpolGameActive = true;
+    
+			    // Paramètres selon difficulté
+			    const settings = {
+			        easy: { clues: 5, attempts: 10 },
+			        medium: { clues: 4, attempts: 8 },
+			        hard: { clues: 3, attempts: 5 },
+			        expert: { clues: 2, attempts: 3 }
+			    };
+    
+			    const config = settings[difficulty];
+			    interpolMaxAttempts = config.attempts;
+			    interpolAttempts = 0;
+			    interpolRevealedClues = 0;
+    
+			    // Choisir un pays avec toutes les données
+			    const validCountries = Object.keys(countriesData).filter(c => 
+			        countriesData[c] && beerData[c]
+			    );
+			    interpolTargetCountry = validCountries[Math.floor(Math.random() * validCountries.length)];
+    
+			    // Générer tous les indices possibles
+			    interpolAllClues = [];
+			    Object.keys(interpolCluesDatabase).forEach(clueType => {
+			        const clue = interpolCluesDatabase[clueType](interpolTargetCountry);
+			        if (clue) interpolAllClues.push(clue);
+			    });
+    
+			    // Mélanger et limiter au nombre d'indices
+			    interpolAllClues = interpolAllClues.sort(() => Math.random() - 0.5).slice(0, config.clues);
+			    interpolCurrentClues = [];
+    
+			    // Afficher le jeu
+			    document.getElementById('interpol-levels-menu').style.display = 'none';
+			    document.getElementById('interpol-game').style.display = 'block';
+    
+				// ✨ CRÉER LE PLANISPHÈRE INTERACTIF
+				setTimeout(() => {
+				    createInterpolMap();
+				}, 100);
+    
+			    document.getElementById('interpol-attempts').textContent = interpolAttempts;
+			    document.getElementById('interpol-max-attempts').textContent = interpolMaxAttempts;
+			    document.getElementById('interpol-mission').textContent = `Un dangereux criminel s'est enfui ! Il se cache dans un pays mystère. Vous disposez de ${interpolMaxAttempts} tentatives pour le localiser. Révélez des indices et cliquez sur le pays suspect sur le globe !`;
+			    document.getElementById('interpol-clues').innerHTML = '<p style="color: #888; font-style: italic;">Aucun indice révélé pour l\'instant...</p>';
+			    document.getElementById('interpol-feedback').style.display = 'none';
+			    document.getElementById('interpol-next-clue-btn').style.display = 'inline-block';
+			    document.getElementById('interpol-next-clue-btn').disabled = false;
+			    document.getElementById('interpol-next-clue-btn').style.background = '#FFD700';
+			    document.getElementById('interpol-next-clue-btn').textContent = '💡 Révéler un indice';
+			}
+			
+			let interpolMapCountries = {};
+
+			function createInterpolMap() {
+			    const searchInput = document.getElementById('interpol-search');
+			    const countriesList = document.getElementById('interpol-countries-list');
+    
+			    // Tous les pays disponibles
+			    const allCountries = Object.keys(countriesData).sort();
+    
+			    function renderCountries(filter = '') {
+			        countriesList.innerHTML = '';
+        
+			        const filtered = allCountries.filter(country => 
+			            country.toLowerCase().includes(filter.toLowerCase())
+			        );
+        
+			        filtered.forEach(country => {
+			            const btn = document.createElement('button');
+			            btn.textContent = country;
+			            btn.style.cssText = `
+			                padding: 15px;
+			                background: rgba(100, 100, 100, 0.4);
+			                border: 2px solid #666;
+			                border-radius: 8px;
+			                color: white;
+			                cursor: pointer;
+			                font-size: 14px;
+			                font-weight: bold;
+			                transition: all 0.3s;
+			                text-align: center;
+			            `;
+            
+			            btn.addEventListener('mouseenter', () => {
+			                btn.style.background = 'rgba(220, 20, 60, 0.6)';
+			                btn.style.borderColor = '#DC143C';
+			                btn.style.transform = 'scale(1.05)';
+			            });
+            
+			            btn.addEventListener('mouseleave', () => {
+			                btn.style.background = 'rgba(100, 100, 100, 0.4)';
+			                btn.style.borderColor = '#666';
+			                btn.style.transform = 'scale(1)';
+			            });
+            
+			            btn.onclick = () => {
+			                if (interpolGameActive) {
+			                    checkInterpolGuess(country);
+			                }
+			            };
+            
+			            countriesList.appendChild(btn);
+			        });
+        
+			        if (filtered.length === 0) {
+			            countriesList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Aucun pays trouvé...</p>';
+			        }
+			    }
+    
+			    // Recherche en temps réel
+			    searchInput.addEventListener('input', (e) => {
+			        renderCountries(e.target.value);
+			    });
+    
+			    // Afficher tous les pays au début
+			    renderCountries();
+			}
+			
+			function destroyInterpolMap() {
+			    const svg = document.getElementById('interpol-map');
+			    if (svg) {
+			        svg.innerHTML = '';
+			    }
+			    interpolMapCountries = {};
+			    interpolGameActive = false;
+			}
+
+			function revealNextClue() {
+			    if (interpolRevealedClues >= interpolAllClues.length) {
+			        document.getElementById('interpol-next-clue-btn').style.display = 'none';
+			        return;
+			    }
+    
+			    interpolCurrentClues.push(interpolAllClues[interpolRevealedClues]);
+			    interpolRevealedClues++;
+    
+			    const cluesDiv = document.getElementById('interpol-clues');
+			    cluesDiv.innerHTML = '';
+    
+			    interpolCurrentClues.forEach((clue, index) => {
+			        const clueEl = document.createElement('div');
+			        clueEl.style.cssText = 'padding: 12px; background: rgba(255, 215, 0, 0.2); border-left: 3px solid #FFD700; border-radius: 5px; margin-bottom: 10px; animation: slideIn 0.5s;';
+			        clueEl.innerHTML = `<strong>Indice ${index + 1}:</strong> ${clue}`;
+			        cluesDiv.appendChild(clueEl);
+			    });
+    
+			    if (interpolRevealedClues >= interpolAllClues.length) {
+			        document.getElementById('interpol-next-clue-btn').textContent = '🔒 Tous les indices révélés';
+			        document.getElementById('interpol-next-clue-btn').disabled = true;
+			        document.getElementById('interpol-next-clue-btn').style.background = '#666';
+			    }
+			}
+
+			function checkInterpolGuess(guessedCountry) {
+			    if (!interpolGameActive) return;
+    
+			    interpolAttempts++;
+			    document.getElementById('interpol-attempts').textContent = interpolAttempts;
+    
+			    const feedback = document.getElementById('interpol-feedback');
+			    feedback.style.display = 'block';
+    
+			    if (guessedCountry === interpolTargetCountry) {
+			        // VICTOIRE !
+			        interpolGameActive = false;
+			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.color = '#4CAF50';
+			        feedback.textContent = '🎉 CAPTURÉ ! Vous avez trouvé le fugitif !';
+        
+			        setTimeout(() => endInterpolGame(true), 2000);
+			    } else {
+			        // Mauvaise réponse
+			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.color = '#f44336';
+			        feedback.textContent = `❌ Raté ! Ce n'est pas ${guessedCountry}. Le fugitif court toujours...`;
+        
+			        if (interpolAttempts >= interpolMaxAttempts) {
+			            interpolGameActive = false;
+			            setTimeout(() => endInterpolGame(false), 2000);
+			        } else {
+			            setTimeout(() => {
+			                feedback.style.display = 'none';
+			            }, 2000);
+			        }
+			    }
+			}
+
+			function endInterpolGame(won) {
+			    document.getElementById('interpol-game').style.display = 'none';
+			    document.getElementById('interpol-end').style.display = 'block';
+    
+			    const icon = document.getElementById('interpol-end-icon');
+			    const title = document.getElementById('interpol-end-title');
+			    const message = document.getElementById('interpol-end-message');
+    
+			    if (won) {
+			        icon.textContent = '🚔';
+			        title.textContent = 'MISSION RÉUSSIE !';
+			        title.style.color = '#4CAF50';
+			        message.innerHTML = `Vous avez capturé le fugitif caché en <strong>${interpolTargetCountry}</strong> en ${interpolAttempts} tentative${interpolAttempts > 1 ? 's' : ''} !<br><br>🎯 Excellent travail, détective !`;
+			    } else {
+			        icon.textContent = '💨';
+			        title.textContent = 'LE FUGITIF S\'EST ÉCHAPPÉ !';
+			        title.style.color = '#f44336';
+			        message.innerHTML = `Le criminel était caché en <strong>${interpolTargetCountry}</strong>.<br><br>😔 Il a réussi à fuir... Réessayez pour le capturer !`;
+			    }
+    
+			    // Détruire le planisphère
+			    destroyInterpolMap();
+			}
+
+			function restartInterpolGame() {
+			    startInterpolGame(interpolDifficulty);
+			}
+
+			// Rendre accessibles globalement
+			window.showInterpolLevels = showInterpolLevels;
+			window.startInterpolGame = startInterpolGame;
+			window.revealNextClue = revealNextClue;
+			window.restartInterpolGame = restartInterpolGame;						
 			
 	    </script>
 	</body>
