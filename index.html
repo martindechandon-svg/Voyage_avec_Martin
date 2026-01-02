@@ -372,6 +372,17 @@
             transform: rotate(90deg);
         }
 		
+		@keyframes popIn {
+		    0% {
+		        transform: translate(-50%, -50%) scale(0.5);
+		        opacity: 0;
+		    }
+		    100% {
+		        transform: translate(-50%, -50%) scale(1);
+		        opacity: 1;
+		    }
+		}
+		
     </style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -587,42 +598,38 @@
 <div id="games-menu" style="display: block;">
     <h3 style="color: #9C27B0; margin-bottom: 20px; text-align: center;">Choisis ton jeu</h3>
     
-    <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
         <!-- Jeu Quiz -->
-        <button onclick="showQuizLevels()" style="padding: 30px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
-            <div style="font-size: 40px; margin-bottom: 10px;">🌍</div>
-            <div style="font-size: 20px; margin-bottom: 8px;">Quiz Géographie</div>
-            <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine le pays à partir d'indices</div>
+        <button onclick="showQuizLevels()" style="padding: 25px 20px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; text-align: center;">
+            <div style="font-size: 35px; margin-bottom: 8px;">🌍</div>
+            <div style="font-size: 18px; margin-bottom: 6px;">Quiz Géographie</div>
+            <div style="font-size: 13px; font-weight: normal; opacity: 0.9;">Devine le pays à partir d'indices</div>
         </button>
-		
-        <!-- Jeu Higher or Lower -->
-		
-		<button onclick="showHigherLowerLevels()" style="padding: 30px; background: linear-gradient(135deg, #f093fb, #f5576c); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
-		    <div style="font-size: 40px; margin-bottom: 10px;">📊</div>
-		    <div style="font-size: 20px; margin-bottom: 8px;">Higher or Lower</div>
-		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine quel pays a le plus !</div>
-		</button>
-		
-        <!-- Jeu Hold my beer -->
-		
-		<button onclick="showBeerLevels()" style="padding: 30px; background: linear-gradient(135deg, #FFA500, #FF6347); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
-		    <div style="font-size: 40px; margin-bottom: 10px;">🍺</div>
-		    <div style="font-size: 20px; margin-bottom: 8px;">Hold my Beer</div>
-		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Retrouve l'origine des bières</div>
-		</button>
-		
-        <!-- Jeu Interpol : Chasse à l'homme -->
-		
-		
-		<button onclick="showInterpolLevels()" style="padding: 30px; background: linear-gradient(135deg, #DC143C, #8B0000); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
-		    <div style="font-size: 40px; margin-bottom: 10px;">🕵️</div>
-		    <div style="font-size: 20px; margin-bottom: 8px;">Interpol : Chasse à l'homme</div>
-		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Retrouve le fugitif avec des indices</div>
-		</button>
         
-        <!-- Placeholder jeux futurs -->
-        <div style="padding: 30px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 12px; text-align: center; color: #888;">
-            <div style="font-size: 40px; margin-bottom: 10px;">📜</div>
+        <!-- Jeu Higher or Lower -->
+        <button onclick="showHigherLowerLevels()" style="padding: 25px 20px; background: linear-gradient(135deg, #f093fb, #f5576c); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; text-align: center;">
+            <div style="font-size: 35px; margin-bottom: 8px;">📊</div>
+            <div style="font-size: 18px; margin-bottom: 6px;">Higher or Lower</div>
+            <div style="font-size: 13px; font-weight: normal; opacity: 0.9;">Devine quel pays a le plus !</div>
+        </button>
+        
+        <!-- Jeu Hold my beer -->
+        <button onclick="showBeerLevels()" style="padding: 25px 20px; background: linear-gradient(135deg, #FFA500, #FF6347); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; text-align: center;">
+            <div style="font-size: 35px; margin-bottom: 8px;">🍺</div>
+            <div style="font-size: 18px; margin-bottom: 6px;">Hold my Beer</div>
+            <div style="font-size: 13px; font-weight: normal; opacity: 0.9;">Retrouve l'origine des bières</div>
+        </button>
+        
+        <!-- Jeu Interpol : Chasse à l'homme -->
+        <button onclick="showInterpolLevels()" style="padding: 25px 20px; background: linear-gradient(135deg, #DC143C, #8B0000); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: transform 0.2s; text-align: center;">
+            <div style="font-size: 35px; margin-bottom: 8px;">🕵️</div>
+            <div style="font-size: 18px; margin-bottom: 6px;">Interpol : Chasse à l'homme</div>
+            <div style="font-size: 13px; font-weight: normal; opacity: 0.9;">Retrouve le fugitif avec des indices</div>
+        </button>
+        
+        <!-- Placeholder jeux futurs - Prend toute la largeur -->
+        <div style="grid-column: 1 / -1; padding: 25px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 12px; text-align: center; color: #888;">
+            <div style="font-size: 35px; margin-bottom: 8px;">📜</div>
             <div style="font-weight: bold; font-size: 16px;">Plus de jeux bientôt...</div>
             <div style="font-size: 13px; margin-top: 5px;">Drapeaux, Capitales, et plus encore !</div>
         </div>
@@ -919,14 +926,12 @@
                 
                 <input type="text" id="interpol-search" placeholder="🔎 Tapez un pays pour l'arrêter..." style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #DC143C; border-radius: 8px; background: #1a1a1a; color: #fff; margin-bottom: 15px;">
                 
-                <div id="interpol-countries-list" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div id="interpol-countries-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto;">
                     <!-- Les pays seront générés ici -->
                 </div>
             </div>
         </div>
-        
-        <div id="interpol-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold;"></div>
-        
+                
         <div style="text-align: center;">
             <button onclick="backToGamesMenu(); destroyInterpolMap();" style="padding: 12px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 14px;">
                 ← Retour au menu
@@ -4385,17 +4390,88 @@
 			    const searchInput = document.getElementById('interpol-search');
 			    const countriesList = document.getElementById('interpol-countries-list');
     
-			    // Tous les pays disponibles
-			    const allCountries = Object.keys(countriesData).sort();
+			    let currentView = 'continents'; // 'continents' ou 'countries'
+			    let selectedContinent = null;
     
-			    function renderCountries(filter = '') {
+				function renderContinents() {
+				    countriesList.innerHTML = '';
+				    currentView = 'continents';
+    
+				    Object.keys(continents).forEach(continentName => {
+				        const continent = continents[continentName];
+				        const countryCount = continent.countries.filter(c => countriesData[c]).length;
+        
+				        const btn = document.createElement('button');
+				        btn.innerHTML = `${continent.emoji} ${continentName}<br><span style="font-size: 11px; opacity: 0.8;">${countryCount} pays</span>`;
+				        btn.style.cssText = `
+				            padding: 15px 10px;
+				            background: rgba(100, 100, 100, 0.4);
+				            border: 2px solid #666;
+				            border-radius: 8px;
+				            color: white;
+				            cursor: pointer;
+				            font-size: 14px;
+				            font-weight: bold;
+				            transition: all 0.3s;
+				            text-align: center;
+				        `;
+        
+				        btn.addEventListener('mouseenter', () => {
+				            btn.style.background = 'rgba(220, 20, 60, 0.6)';
+				            btn.style.borderColor = '#DC143C';
+				            btn.style.transform = 'scale(1.05)';
+				        });
+        
+				        btn.addEventListener('mouseleave', () => {
+				            btn.style.background = 'rgba(100, 100, 100, 0.4)';
+				            btn.style.borderColor = '#666';
+				            btn.style.transform = 'scale(1)';
+				        });
+        
+				        btn.onclick = () => {
+				            selectedContinent = continentName;
+				            renderCountries(continentName);
+				        };
+        
+				        countriesList.appendChild(btn);
+				    });
+				}
+    
+			    function renderCountries(continentName, filter = '') {
 			        countriesList.innerHTML = '';
+			        currentView = 'countries';
         
-			        const filtered = allCountries.filter(country => 
-			            country.toLowerCase().includes(filter.toLowerCase())
-			        );
+			        // Bouton retour
+			        const backBtn = document.createElement('button');
+			        backBtn.innerHTML = '← Retour aux continents';
+			        backBtn.style.cssText = `
+			            grid-column: 1/-1;
+			            padding: 12px;
+			            background: #555;
+			            border: 2px solid #777;
+			            border-radius: 8px;
+			            color: white;
+			            cursor: pointer;
+			            font-size: 14px;
+			            font-weight: bold;
+			            margin-bottom: 10px;
+			        `;
+			        backBtn.onclick = renderContinents;
+			        countriesList.appendChild(backBtn);
         
-			        filtered.forEach(country => {
+			        // Titre du continent
+			        const title = document.createElement('div');
+			        title.style.cssText = 'grid-column: 1/-1; text-align: center; color: #DC143C; font-size: 18px; font-weight: bold; margin-bottom: 10px;';
+			        title.textContent = `${continents[continentName].emoji} ${continentName}`;
+			        countriesList.appendChild(title);
+        
+			        // Liste des pays
+			        const continentCountries = continents[continentName].countries
+			            .filter(c => countriesData[c])
+			            .filter(c => c.toLowerCase().includes(filter.toLowerCase()))
+			            .sort();
+        
+			        continentCountries.forEach(country => {
 			            const btn = document.createElement('button');
 			            btn.textContent = country;
 			            btn.style.cssText = `
@@ -4432,18 +4508,21 @@
 			            countriesList.appendChild(btn);
 			        });
         
-			        if (filtered.length === 0) {
-			            countriesList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Aucun pays trouvé...</p>';
+			        if (continentCountries.length === 0) {
+			            countriesList.innerHTML += '<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">Aucun pays trouvé...</p>';
 			        }
 			    }
     
-			    // Recherche en temps réel
+			    // Recherche - maintenant elle cherche dans le continent actuel
 			    searchInput.addEventListener('input', (e) => {
-			        renderCountries(e.target.value);
+			        const search = e.target.value;
+			        if (currentView === 'countries' && selectedContinent) {
+			            renderCountries(selectedContinent, search);
+			        }
 			    });
     
-			    // Afficher tous les pays au début
-			    renderCountries();
+			    // Afficher les continents au démarrage
+			    renderContinents();
 			}
 			
 			function destroyInterpolMap() {
@@ -4487,30 +4566,64 @@
 			    interpolAttempts++;
 			    document.getElementById('interpol-attempts').textContent = interpolAttempts;
     
-			    const feedback = document.getElementById('interpol-feedback');
-			    feedback.style.display = 'block';
+			    // Créer un feedback en plein centre de l'écran
+			    const feedback = document.createElement('div');
+			    feedback.style.cssText = `
+			        position: fixed;
+			        top: 50%;
+			        left: 50%;
+			        transform: translate(-50%, -50%);
+			        background: rgba(20, 20, 20, 0.98);
+			        padding: 40px 60px;
+			        border-radius: 15px;
+			        font-size: 24px;
+			        font-weight: bold;
+			        text-align: center;
+			        z-index: 2000;
+			        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
+			        animation: popIn 0.3s ease-out;
+			        min-width: 400px;
+			    `;
     
 			    if (guessedCountry === interpolTargetCountry) {
 			        // VICTOIRE !
 			        interpolGameActive = false;
-			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.border = '3px solid #4CAF50';
 			        feedback.style.color = '#4CAF50';
-			        feedback.textContent = '🎉 CAPTURÉ ! Vous avez trouvé le fugitif !';
+			        feedback.innerHTML = `
+			            <div style="font-size: 60px; margin-bottom: 15px;">🎉</div>
+			            <div>CAPTURÉ !</div>
+			            <div style="font-size: 18px; margin-top: 15px; color: #ccc;">Vous avez trouvé le fugitif !</div>
+			        `;
         
-			        setTimeout(() => endInterpolGame(true), 2000);
+			        document.body.appendChild(feedback);
+			        setTimeout(() => {
+			            feedback.remove();
+			            endInterpolGame(true);
+			        }, 3000);
 			    } else {
 			        // Mauvaise réponse
-			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.border = '3px solid #f44336';
 			        feedback.style.color = '#f44336';
-			        feedback.textContent = `❌ Raté ! Ce n'est pas ${guessedCountry}. Le fugitif court toujours...`;
+			        feedback.innerHTML = `
+			            <div style="font-size: 60px; margin-bottom: 15px;">❌</div>
+			            <div>Raté !</div>
+			            <div style="font-size: 16px; margin-top: 15px; color: #ccc;">Ce n'est pas ${guessedCountry}</div>
+			            <div style="font-size: 14px; margin-top: 10px; color: #DC143C;">Tentatives restantes: ${interpolMaxAttempts - interpolAttempts}</div>
+			        `;
+        
+			        document.body.appendChild(feedback);
         
 			        if (interpolAttempts >= interpolMaxAttempts) {
 			            interpolGameActive = false;
-			            setTimeout(() => endInterpolGame(false), 2000);
+			            setTimeout(() => {
+			                feedback.remove();
+			                endInterpolGame(false);
+			            }, 3000);
 			        } else {
 			            setTimeout(() => {
-			                feedback.style.display = 'none';
-			            }, 2000);
+			                feedback.remove();
+			            }, 3000);
 			        }
 			    }
 			}
