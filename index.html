@@ -372,6 +372,26 @@
             transform: rotate(90deg);
         }
 		
+		@keyframes pulse {
+		    0%, 100% {
+		        transform: scale(1);
+		        opacity: 1;
+		    }
+		    50% {
+		        transform: scale(1.5);
+		        opacity: 0.7;
+		    }
+		}
+
+		@keyframes glow {
+		    0%, 100% {
+		        box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700;
+		    }
+		    50% {
+		        box-shadow: 0 0 30px #FFD700, 0 0 60px #FFD700, 0 0 80px #FFD700;
+		    }
+		}
+		
 		@keyframes popIn {
 		    0% {
 		        transform: translate(-50%, -50%) scale(0.5);
@@ -5336,15 +5356,14 @@
 			function displayItineraryOnGlobe(steps) {
 			    clearItineraryFromGlobe();
     
-			    // Vérifier que tous les pays ont des coordonnées
-			    const validSteps = steps.filter(country => countryCoordinates[country]);
+			    const validSteps = steps.filter(location => countryCoordinates[location]);
     
 			    if (validSteps.length < 2) {
-			        alert('⚠️ Certains pays n\'ont pas de coordonnées définies. Pays manquants : ' + steps.filter(s => !countryCoordinates[s]).join(', '));
+			        alert('⚠️ Certains lieux n\'ont pas de coordonnées définies.');
 			        return;
 			    }
     
-			    // ✨ Créer des arcs modernes avec dégradé
+			    // 🔥 PHASE 1 : Créer les arcs avec effet arc-en-ciel
 			    const arcsData = [];
 			    for (let i = 0; i < validSteps.length - 1; i++) {
 			        const from = countryCoordinates[validSteps[i]];
@@ -5355,98 +5374,223 @@
 			            startLng: from.lng,
 			            endLat: to.lat,
 			            endLng: to.lng,
-			            arcIndex: i
+			            arcIndex: i,
+			            progress: i / (validSteps.length - 1)
 			        });
 			    }
     
-			    // ✨ Points DORÉS bien visibles sur tous les pays
-			    const pointsData = validSteps.map((country, index) => ({
-			        lat: countryCoordinates[country].lat,
-			        lng: countryCoordinates[country].lng,
-			        size: 0.5,
-			        altitude: 0.02,  // Légèrement surélevés
-			        color: '#FFD700',  // ✅ OR - visible sur tous les pays
-			        label: `<div style="background: rgba(0,0,0,0.9); padding: 8px 14px; border-radius: 8px; border-left: 3px solid #FFD700; font-family: 'Segoe UI', sans-serif; font-size: 13px; backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);">
-			            <div style="color: #FFD700; font-weight: bold; margin-bottom: 3px;">📍 Étape ${index + 1}</div>
-			            <div style="color: white;">${country}</div>
-			        </div>`
-			    }));
+			    // 🔥 PHASE 2 : Créer des points HTML ultra-stylés
+			    const pointsData = validSteps.map((location, index) => {
+			        const coords = countryCoordinates[location];
+			        return {
+			            lat: coords.lat,
+			            lng: coords.lng,
+			            location: location,
+			            index: index,
+			            type: coords.type || 'country',
+			            country: coords.country || location
+			        };
+			    });
     
-			    console.log('Arcs à afficher:', arcsData);
-			    console.log('Points à afficher:', pointsData);
+			    console.log('🎨 Arcs:', arcsData.length, '| Points:', pointsData.length);
     
 			    setTimeout(() => {
+			        // 🌈 Arcs avec gradient arc-en-ciel progressif
 			        myGlobe
-			            // ✨ Arcs avec effet néon moderne
-			            .arcsData(arcsData)
+			            .arcsData([])  // Reset d'abord
+			            .htmlElementsData([]);  // Reset les points
+        
+			        // 🎬 Animation progressive des arcs (un par un)
+			        arcsData.forEach((arc, i) => {
+			            setTimeout(() => {
+			                myGlobe.arcsData([...myGlobe.arcsData(), arc]);
+                
+			                // Son "whoosh" (optionnel - décommenter si tu veux)
+			                // new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwNUKvm8LlnHwU7k9r0yXkpBSh+zPLaizsKGGS56OihUhMLS6Hn87FaGAQugdH12Ys2CBlpvO/jnU4MjJaegTcAYQVgbF90m6yskGM4OF6h1d+nYBwGP5vb8L9yJQUsgs7y2Ik3CBlou+zkm00QDFCn4/C2YxwGOJHX8stzLgUnd8fw3Y9ACxNes+n0qFYUCkaf4PLAayIFK4HO8tmJNggaa73v5JxODA1Qq+fwuWcfBTqT2vTJeSkFKH7M8tqLOwoYZLno6aJSEwtKoefzsVoYBC6C0fXYizYIGWm87uOdTgyLlp+WMwBjBWBsX3SaqKuQcyQ==').play();
+			            }, i * 600);  // Délai de 600ms entre chaque arc
+			        });
+        
+			        // Configuration des arcs
+			        myGlobe
 			            .arcColor(d => {
-			                const colors = ['#00FFD1', '#1E90FF', '#9D4EDD', '#FF006E'];
-			                return colors[d.arcIndex % colors.length];
+			                // 🌈 Gradient arc-en-ciel selon la position
+			                const hue = (d.progress * 360).toFixed(0);
+			                return `hsl(${hue}, 100%, 60%)`;
 			            })
-			            .arcStroke(0.8)
-			            .arcAltitude(d => 0.15 + (d.arcIndex * 0.05))
-			            .arcDashLength(0.6)
-			            .arcDashGap(0.15)
-			            .arcDashAnimateTime(4000)
-			            .arcDashInitialGap(() => Math.random())
-			            // ✨ Points dorés
-			            .pointsData(pointsData)
-			            .pointColor(d => d.color)
-			            .pointAltitude(d => d.altitude)
-			            .pointRadius(d => d.size)
-			            .pointLabel(d => d.label)
-			            .pointResolution(12)
-			            .pointsMerge(false);
+			            .arcStroke(1.2)
+			            .arcAltitude(d => 0.2 + (d.arcIndex * 0.03))
+			            .arcDashLength(0.4)
+			            .arcDashGap(0.2)
+			            .arcDashAnimateTime(3000)
+			            .arcDashInitialGap(() => Math.random());
         
-			        // ✨ Ajouter un effet de pulsation aux points
-			        addPulsingEffect();
+			        // 🎯 PHASE 3 : Points HTML ultra-stylés avec halos
+			        setTimeout(() => {
+			            myGlobe
+			                .htmlElementsData(pointsData)
+			                .htmlElement(d => {
+			                    const el = document.createElement('div');
+			                    el.style.cssText = 'pointer-events: auto; cursor: pointer;';
+                    
+			                    const icon = d.type === 'city' ? '🏙️' : '🌍';
+			                    const delay = d.index * 0.3;
+                    
+			                    el.innerHTML = `
+			                        <div style="
+			                            position: relative;
+			                            width: 30px;
+			                            height: 30px;
+			                            display: flex;
+			                            align-items: center;
+			                            justify-content: center;
+			                            animation: pulse 2s infinite ${delay}s;
+			                        ">
+			                            <!-- Halo extérieur -->
+			                            <div style="
+			                                position: absolute;
+			                                width: 50px;
+			                                height: 50px;
+			                                background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, transparent 70%);
+			                                border-radius: 50%;
+			                                animation: glow 2s infinite ${delay}s;
+			                            "></div>
+                            
+			                            <!-- Point central doré -->
+			                            <div style="
+			                                width: 15px;
+			                                height: 15px;
+			                                background: linear-gradient(135deg, #FFD700, #FFA500);
+			                                border-radius: 50%;
+			                                box-shadow: 
+			                                    0 0 10px #FFD700,
+			                                    0 0 20px #FFD700,
+			                                    0 0 30px rgba(255,215,0,0.5),
+			                                    inset 0 -2px 5px rgba(0,0,0,0.3);
+			                                border: 2px solid rgba(255,255,255,0.8);
+			                                z-index: 2;
+			                            "></div>
+                            
+			                            <!-- Numéro de l'étape -->
+			                            <div style="
+			                                position: absolute;
+			                                top: -25px;
+			                                background: linear-gradient(135deg, #FFD700, #FFA500);
+			                                color: #000;
+			                                padding: 4px 8px;
+			                                border-radius: 12px;
+			                                font-weight: bold;
+			                                font-size: 11px;
+			                                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+			                                border: 1px solid rgba(255,255,255,0.5);
+			                            ">${d.index + 1}</div>
+			                        </div>
+			                    `;
+                    
+			                    // 💡 Tooltip au survol
+			                    el.title = `${icon} ${d.location}${d.type === 'city' ? ' (' + d.country + ')' : ''}`;
+                    
+			                    return el;
+			                })
+			                .htmlAltitude(0.015);
+            
+			        }, arcsData.length * 600 + 500);  // Attendre que tous les arcs soient tracés
         
-			        console.log('✨ Itinéraire moderne appliqué');
 			    }, 100);
     
-			    // Fermer le modal
 			    closeItineraryModal();
-    
-			    // ✅ AJOUTER LE BOUTON POUR QUITTER LA VISUALISATION
 			    showExitItineraryButton();
     
-			    // Animation de caméra plus fluide
+			    // 🎬 PHASE 4 : Animation cinématique de caméra
 			    setTimeout(() => {
-			        animateCameraAlongItinerary(validSteps);
-			    }, 500);
+			        cinematicCameraFlight(validSteps);
+			    }, arcsData.length * 600 + 1000);
     
-			    // ✨ Message de confirmation moderne
+			    // 🎉 Message de confirmation ultra-stylé
 			    const confirmDiv = document.createElement('div');
 			    confirmDiv.style.cssText = `
 			        position: fixed;
 			        top: 20px;
 			        left: 50%;
 			        transform: translateX(-50%);
-			        background: rgba(0, 255, 209, 0.15);
-			        backdrop-filter: blur(10px);
-			        border: 1px solid rgba(0, 255, 209, 0.4);
-			        color: #00FFD1;
-			        padding: 15px 30px;
-			        border-radius: 12px;
+			        background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.2));
+			        backdrop-filter: blur(15px);
+			        border: 2px solid rgba(255,215,0,0.5);
+			        color: #FFD700;
+			        padding: 20px 40px;
+			        border-radius: 16px;
 			        z-index: 2000;
 			        font-weight: bold;
-			        box-shadow: 0 8px 32px rgba(0, 255, 209, 0.2);
-			        animation: slideInDown 0.5s ease-out;
+			        font-size: 16px;
+			        box-shadow: 
+			            0 8px 32px rgba(255,215,0,0.3),
+			            0 0 60px rgba(255,215,0,0.2),
+			            inset 0 1px 0 rgba(255,255,255,0.3);
+			        animation: slideInDown 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 			    `;
 			    confirmDiv.innerHTML = `
-			        <div style="display: flex; align-items: center; gap: 12px;">
-			            <div style="font-size: 24px;">✨</div>
-			            <div>Itinéraire de ${validSteps.length} étapes affiché</div>
+			        <div style="display: flex; align-items: center; gap: 15px;">
+			            <div style="font-size: 32px; animation: pulse 1s infinite;">✨</div>
+			            <div>
+			                <div style="font-size: 18px; margin-bottom: 4px;">Itinéraire Premium</div>
+			                <div style="font-size: 14px; opacity: 0.9;">${validSteps.length} étapes • Animation Next-Gen</div>
+			            </div>
 			        </div>
 			    `;
 			    document.body.appendChild(confirmDiv);
     
 			    setTimeout(() => {
-			        confirmDiv.style.animation = 'slideOutUp 0.5s ease-out';
-			        setTimeout(() => confirmDiv.remove(), 500);
-			    }, 3000);
+			        confirmDiv.style.animation = 'slideOutUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+			        setTimeout(() => confirmDiv.remove(), 600);
+			    }, 4000);
 			}
-
+			
+			function cinematicCameraFlight(steps) {
+			    if (activeItineraryAnimation) {
+			        clearTimeout(activeItineraryAnimation);
+			    }
+    
+			    let currentStep = 0;
+    
+			    function flyToNext() {
+			        if (currentStep >= steps.length) {
+			            currentStep = 0;
+			        }
+        
+			        const coords = countryCoordinates[steps[currentStep]];
+			        const locData = countryCoordinates[steps[currentStep]];
+        
+			        // 🎬 Phase 1 : Vue panoramique large
+			        myGlobe.pointOfView({ 
+			            lat: coords.lat, 
+			            lng: coords.lng, 
+			            altitude: 2.2 
+			        }, 1500);
+        
+			        setTimeout(() => {
+			            // 🎬 Phase 2 : Zoom dramatique avec légère rotation
+			            myGlobe.pointOfView({ 
+			                lat: coords.lat + 3, 
+			                lng: coords.lng, 
+			                altitude: 0.4 
+			            }, 2500);
+			        }, 1700);
+        
+			        setTimeout(() => {
+			            // 🎬 Phase 3 : Position finale stable
+			            myGlobe.pointOfView({ 
+			                lat: coords.lat, 
+			                lng: coords.lng, 
+			                altitude: 0.8 
+			            }, 1000);
+			        }, 4400);
+        
+			        currentStep++;
+			        activeItineraryAnimation = setTimeout(flyToNext, 6000);
+			    }
+    
+			    flyToNext();
+			}
+			
 			// ✅ NOUVELLE FONCTION : Afficher le bouton pour quitter la visualisation
 			function showExitItineraryButton() {
 			    // Supprimer l'ancien bouton s'il existe
@@ -5518,31 +5662,6 @@
 			    document.body.appendChild(exitBtn);
 			}
 
-			// ✨ Fonction pour ajouter un effet de pulsation aux points DORÉS
-			function addPulsingEffect() {
-			    let scale = 1;
-			    let direction = 1;
-    
-			    const pulse = setInterval(() => {
-			        if (!document.getElementById('globe-container')) {
-			            clearInterval(pulse);
-			            return;
-			        }
-        
-			        scale += direction * 0.04;
-        
-			        if (scale >= 1.25) direction = -1;
-			        if (scale <= 1) direction = 1;
-        
-			        myGlobe.pointRadius(d => d.size * scale);
-			    }, 60);
-    
-			    // Arrêter après 10 secondes
-			    setTimeout(() => {
-			        clearInterval(pulse);
-			        myGlobe.pointRadius(d => d.size);  // Retour à la taille normale
-			    }, 10000);
-			}
 			// ✨ Fonction pour ajouter un effet de pulsation aux points
 			function addPulsingEffect() {
 			    let scale = 1;
@@ -5604,13 +5723,14 @@
 			        activeItineraryAnimation = null;
 			    }
     
-			    // Réinitialiser correctement les données
+			    // ✅ Réinitialiser correctement TOUTES les données
 			    if (myGlobe) {
 			        myGlobe
-			            .arcsData([])
+			            .arcsData([])           // Supprimer les arcs
 			            .arcAltitude(0)
-			            .pointsData([])
-			            .pointAltitude(0);
+			            .pointsData([])         // Supprimer les points classiques
+			            .pointAltitude(0)
+			            .htmlElementsData([]);  // ✅ AJOUTER CETTE LIGNE : Supprimer les points HTML
 			    }
     
 			    // ✅ Supprimer le bouton de sortie s'il existe
