@@ -600,6 +600,14 @@
 		    <div style="font-size: 20px; margin-bottom: 8px;">Higher or Lower</div>
 		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Devine quel pays a le plus !</div>
 		</button>
+		
+        <!-- Jeu Hold my beer -->
+		
+		<button onclick="showBeerLevels()" style="padding: 30px; background: linear-gradient(135deg, #FFA500, #FF6347); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 18px; transition: transform 0.2s; text-align: center;">
+		    <div style="font-size: 40px; margin-bottom: 10px;">🍺</div>
+		    <div style="font-size: 20px; margin-bottom: 8px;">Hold my Beer</div>
+		    <div style="font-size: 14px; font-weight: normal; opacity: 0.9;">Retrouve l'origine des bières</div>
+		</button>
         
         <!-- Placeholder jeux futurs -->
         <div style="padding: 30px; background: rgba(100, 100, 100, 0.3); border: 2px dashed #666; border-radius: 12px; text-align: center; color: #888;">
@@ -741,6 +749,88 @@
     <div id="hl-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
     <div style="display: flex; gap: 15px; justify-content: center;">
         <button onclick="restartHigherLower()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🔄 Rejouer
+        </button>
+        <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ← Menu
+        </button>
+    </div>
+</div>
+
+<!-- Menu Beer Game -->
+<div id="beer-levels-menu" style="display: none;">
+    <button onclick="backToGamesMenu()" style="margin-bottom: 20px; padding: 10px 20px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer;">
+        ← Retour aux jeux
+    </button>
+    
+    <h3 style="color: #FFA500; margin-bottom: 20px; text-align: center;">🍺 Hold my Beer</h3>
+    <p style="text-align: center; color: #ccc; margin-bottom: 25px; font-size: 14px;">Choisis ton mode de jeu</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <button onclick="startBeerGame('mixologue')" style="padding: 25px; background: linear-gradient(135deg, #4CAF50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            🗺️ LE MIXOLOGUE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Clique sur le pays d'origine de cette marque de bière !</div>
+        </button>
+        
+        <button onclick="startBeerGame('tour')" style="padding: 25px; background: linear-gradient(135deg, #FF9800, #F57C00); border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
+            ✈️ TOUR DU MONDE
+            <div style="font-size: 12px; font-weight: normal; margin-top: 8px; opacity: 0.9;">Devine la bière locale selon le pays dans lequel se trouve Martin !</div>
+        </button>
+    </div>
+</div>
+
+<!-- Zone de jeu Mixologue -->
+<div id="beer-mixologue-game" style="display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 18px; font-weight: bold; color: #FFA500;">Score: <span id="beer-score">0</span>/10</span>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 10px;">De quel pays vient cette bière ?</div>
+        <div id="beer-brand" style="font-size: 48px; font-weight: bold; color: #FFA500; margin: 20px 0;">🍺 ---</div>
+        <div style="font-size: 14px; color: #888;">Clique sur un pays de la liste</div>
+    </div>
+    
+    <div id="beer-countries-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 300px; overflow-y: auto;"></div>
+    
+    <div id="beer-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px;"></div>
+    
+    <button onclick="backToGamesMenu()" style="margin-top: 20px; padding: 10px 25px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer; display: block; margin-left: auto; margin-right: auto;">
+        ← Retour au menu
+    </button>
+</div>
+
+<!-- Zone de jeu Tour du Monde -->
+<div id="beer-tour-game" style="display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 18px; font-weight: bold; color: #FFA500;">Score: <span id="beer-tour-score">0</span>/10</span>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 20px; color: #fff; margin-bottom: 15px;">Martin est en voyage...</div>
+        <div id="beer-tour-country" style="font-size: 36px; font-weight: bold; color: #FFA500; margin: 20px 0;">🌍 ---</div>
+        <div style="font-size: 18px; color: #ccc;">Quelle bière va-t-on lui servir ?</div>
+    </div>
+    
+    <div id="beer-tour-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;"></div>
+    
+    <div id="beer-tour-feedback" style="display: none; padding: 20px; border-radius: 10px; text-align: center; font-size: 16px; margin-top: 20px;"></div>
+    
+    <button onclick="backToGamesMenu()" style="margin-top: 20px; padding: 10px 25px; background: #555; border: none; border-radius: 5px; color: white; cursor: pointer; display: block; margin-left: auto; margin-right: auto;">
+        ← Retour au menu
+    </button>
+</div>
+
+<!-- Écran de fin Beer Game -->
+<div id="beer-end" style="display: none; text-align: center;">
+    <div style="font-size: 60px; margin-bottom: 20px;">🍻</div>
+    <h3 style="color: #FFA500; font-size: 32px; margin-bottom: 20px;">Partie terminée !</h3>
+    <div style="font-size: 24px; margin-bottom: 30px;">
+        Score final: <span id="beer-final-score" style="color: #FFA500; font-weight: bold;">0</span>/10
+    </div>
+    <div id="beer-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
+    <div style="display: flex; gap: 15px; justify-content: center;">
+        <button onclick="restartBeerGame()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
             🔄 Rejouer
         </button>
         <button onclick="backToGamesMenu()" style="padding: 15px 30px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
@@ -1024,6 +1114,64 @@
             }
         };
 		
+		const beerData = {
+		    'France': { beers: ['Kronenbourg', '1664', 'Pelforth'], anecdote: 'La France possède le plus grand nombre de brasseries en Europe, avec une explosion des micro-brasseries artisanales.' },
+		    'Allemagne': { beers: ['Paulaner', 'Beck\'s', 'Warsteiner'], anecdote: 'En Bavière, la bière est officiellement considérée comme un aliment de base, au même titre que le pain.' },
+		    'Belgique': { beers: ['Stella Artois', 'Leffe', 'Duvel'], anecdote: 'Les moines trappistes brassent encore selon des méthodes ancestrales au sein de leurs abbayes.' },
+		    'États-Unis': { beers: ['Budweiser', 'Miller', 'Coors'], anecdote: 'Le mouvement des "Craft Beers" a révolutionné le marché mondial en réintroduisant des houblons très aromatiques.' },
+		    'Mexique': { beers: ['Corona', 'Dos Equis', 'Modelo'], anecdote: 'Le Mexique est le premier exportateur mondial de bière, devançant largement les pays européens.' },
+		    'Pays-Bas': { beers: ['Heineken', 'Grolsch', 'Amstel'], anecdote: 'Les Hollandais ont inventé les navires-brasseries au 17ème siècle pour fournir de la bière fraîche lors des longs voyages.' },
+		    'Royaume-Uni': { beers: ['Bass Pale Ale','Carling', 'Newcastle Brown Ale'], anecdote: 'La tradition du "Real Ale" impose que la bière finisse sa fermentation naturellement dans le fût du pub.' },
+		    'Irlande': { beers: ['Guinness', 'Murphy\'s', 'Smithwick\'s'], anecdote: 'La bière brune est si emblématique qu\'on la surnomme parfois "le pain liquide" ou "la substance noire".' },
+		    'Italie': { beers: ['Peroni', 'Moretti', 'Nastro Azzurro'], anecdote: 'L\'Italie est pionnière dans le style "Italian Grape Ale", une bière brassée avec du moût de raisin.' },
+		    'Espagne': { beers: ['Mahou', 'Estrella Damm', 'Cruzcampo'], anecdote: 'C\'est le pays d\'Europe où l\'on consomme le plus de bière sans alcool (près de 15% du marché).' },
+		    'Japon': { beers: ['Asahi', 'Sapporo', 'Kirin'], anecdote: 'Au Japon, on trouve des distributeurs automatiques de bière dans les rues, accessibles avec une carte d\'identité.' },
+		    'Chine': { beers: ['Tsingtao', 'Snow', 'Yanjing'], anecdote: 'La Chine est le plus grand producteur mondial de bière en volume total, devant les États-Unis.' },
+		    'Brésil': { beers: ['Skol', 'Brahma', 'Antarctica'], anecdote: 'Les bouteilles de 600ml sont partagées dans des petits verres appelés "Americano" pour que la bière reste toujours glacée.' },
+		    'Australie': { beers: ['Foster\'s', 'Victoria Bitter', 'Coopers'], anecdote: 'Les Australiens commandent leur bière par "Schooner" ou "Pot", des tailles de verres qui varient selon les États.' },
+		    'Canada': { beers: ['Molson', 'Labatt', 'Moosehead'], anecdote: 'Le Québec possède une culture brassicole unique, très influencée par les méthodes artisanales belges.' },
+		    'Tchéquie': { beers: ['Pilsner Urquell', 'Budvar', 'Staropramen'], anecdote: 'Les Tchèques consomment environ 140 litres de bière par an et par habitant, le record absolu.' },
+		    'Danemark': { beers: ['Carlsberg', 'Tuborg', 'Mikkeller'], anecdote: 'Le Danemark a été l\'un des premiers pays au monde à instaurer un système de consigne pour les bouteilles.' },
+		    'Portugal': { beers: ['Super Bock', 'Sagres'], anecdote: 'La consommation de bière dépasse celle du vin lors des fêtes populaires comme la Saint-Jean.' },
+		    'Thaïlande': { beers: ['Singha', 'Chang', 'Leo'], anecdote: 'En raison de la chaleur, la bière y est quasi systématiquement servie avec des glaçons dans le verre.' },
+		    'Turquie': { beers: ['Efes', 'Bomonti'], anecdote: 'Des preuves archéologiques montrent que l\'on brassait déjà des céréales en Anatolie il y a 10 000 ans.' },
+		    'Grèce': { beers: ['Mythos', 'Fix', 'Alfa'], anecdote: 'La bière est la boisson préférée pour accompagner les "Mezzés" en bord de mer durant l\'été.' },
+		    'Pologne': { beers: ['Tyskie', 'Żywiec', 'Lech'], anecdote: 'Une tradition polonaise consiste à boire la bière chaude avec du sirop de framboise ou des épices en hiver.' },
+		    'Vietnam': { beers: ['Saigon Beer', '333', 'Hanoi Beer'], anecdote: 'Le "Bia Hoi" est une bière de rue brassée quotidiennement, sans conservateurs, et bue dans la journée.' },
+		    'Philippines': { beers: ['San Miguel', 'Red Horse'], anecdote: 'La bière est souvent servie avec des "Pulutan", des amuse-gueules locaux comme le porc croustillant.' },
+		    'Argentine': { beers: ['Quilmes', 'Isenbeck'], anecdote: 'Les Argentins consomment souvent la bière en grands formats de 1 litre à partager entre amis.' },
+		    'Colombie': { beers: ['Club Colombia', 'Águila', 'Poker'], anecdote: 'Le "Tejo", sport national, se joue traditionnellement en buvant de la bière dans des jardins dédiés.' },
+		    'Afrique du Sud': { beers: ['Castle Lager', 'Carling Black Label'], anecdote: 'La bière traditionnelle "Umqombothi", à base de sorgho et de maïs, est au cœur des cérémonies zouloues.' },
+		    'Égypte': { beers: ['Stella (EGY)', 'Sakara'], anecdote: 'Dans l\'Antiquité égyptienne, la bière servait de monnaie pour payer les ouvriers des pyramides.' },
+		    'Maroc': { beers: ['Casablanca', 'Flag Spéciale', 'Stork'], anecdote: 'Le pays produit des bières légères adaptées au climat méditerranéen depuis le début du 20ème siècle.' },
+		    'Algérie': { beers: ['Tango', 'Sélecto (brasseries)'], anecdote: 'L\'Algérie a une longue tradition de culture du houblon et de l\'orge sur les hauts plateaux.' },
+		    'Russie': { beers: ['Baltika', 'Zhigulevskoye'], anecdote: 'Ce n\'est qu\'en 2011 que la bière a été officiellement classée comme boisson alcoolisée (et non plus alimentaire).' },
+		    'Ukraine': { beers: ['Obolon', 'Lvivske', 'Chernigivske'], anecdote: 'Lviv est considérée comme la capitale de la bière de l\'Est, avec des brasseries datant du Moyen-Âge.' },
+		    'Inde': { beers: ['Kingfisher', 'Haywards 5000'], anecdote: 'L\'IPA (India Pale Ale) a été créée par les Anglais pour que la bière survive au voyage en bateau vers l\'Inde.' },
+		    'Indonésie': { beers: ['Bintang', 'Anker'], anecdote: 'Malgré les restrictions culturelles, l\'île de Bali possède l\'une des plus fortes consommations de bière d\'Asie.' },
+		    'Suisse': { beers: ['Feldschlösschen', 'Appenzeller', 'Calanda'], anecdote: 'La Suisse détient le record mondial du nombre de brasseries par habitant.' },
+		    'Islande': { beers: ['Einstök', 'Gull', 'Viking'], anecdote: 'Le "Jour de la Bière" est fêté chaque 1er mars pour célébrer la fin de la prohibition en 1989.' },
+		    'Tunisie': { beers: ['Celtia'], anecdote: 'La bière nationale est une véritable institution culturelle, servie dans des petites bouteilles en verre de 25cl.' },
+		    'Bangladesh': { beers: ['Hunter'], anecdote: 'La vente d\'alcool est très réglementée, mais une bière locale au malt est autorisée sous certaines conditions.' },
+		    'Kenya': { beers: ['Tusker', 'White Cap'], anecdote: 'L\'orge utilisée est cultivée directement sur les pentes des montagnes d\'Afrique de l\'Est.' },
+		    'Nigeria': { beers: ['Star', 'Gulder'], anecdote: 'Le Nigeria est le deuxième plus gros marché de Guinness au monde, juste après le Royaume-Uni.' },
+		    'Tanzanie': { beers: ['Safari', 'Kilimanjaro'], anecdote: 'Il est courant de boire la bière à température ambiante plutôt que glacée dans certaines régions.' },
+		    'Ghana': { beers: ['Club Premium', 'Star'], anecdote: 'La bière de maïs et de millet est une alternative artisanale très populaire en zone rurale.' },
+		    'Iran': { beers: ['Delster', 'Istak'], anecdote: 'Depuis 1979, on ne consomme que de la bière 0.0% alcool, souvent aromatisée aux fruits.' },
+		    'Irak': { beers: ['Farida'], anecdote: 'Bagdad était autrefois réputée pour ses jardins de bière le long du fleuve Tigre.' },
+		    'Émirats Arabes Unis': { beers: ['Craft by Side Hustle'], anecdote: 'La culture de la bière artisanale se développe via des brasseries qui ne produisent que sur place (sans mise en bouteille).' },
+		    'Kazakhstan': { beers: ['Shymkent', 'Karaganda'], anecdote: 'La culture de la bière y est influencée par les traditions russes et la proximité de l\'Asie Centrale.' },
+		    'Autriche': { beers: ['Stiegl', 'Ottakringer'], anecdote: 'Salzbourg est considérée comme la capitale autrichienne de la bière avec ses jardins ombragés par des marronniers.' },
+		    'Suède': { beers: ['Pistonhead', 'Falcon'], anecdote: 'Le gouvernement gère un monopole (Systembolaget) pour la vente de bières de plus de 3.5%.' },
+		    'Finlande': { beers: ['Karhu', 'Lapin Kulta'], anecdote: 'Les Finlandais apprécient la bière après une séance de sauna, c\'est une tradition quasi sacrée.' },
+		    'Norvège': { beers: ['Ringnes', 'Frydenlund'], anecdote: 'Les prix de la bière en Norvège sont parmi les plus élevés au monde en raison des taxes sur l\'alcool.' },
+		    'Israël': { beers: ['Goldstar', 'Maccabee'], anecdote: 'Des chercheurs israéliens ont récemment recréé une bière en utilisant des levures vieilles de 5 000 ans.' },
+		    'Liban': { beers: ['Almaza', 'Beirut Beer'], anecdote: 'Le Liban possède les plus anciennes brasseries modernes du monde arabe.' },
+		    'Corée du Nord': { beers: ['Taedonggang'], anecdote: 'Le pays organise parfois son propre festival de la bière à Pyongyang, inspiré de l\'Oktoberfest.' },
+		    'Pakistan': { beers: ['Murree Beer'], anecdote: 'L\'unique brasserie du pays existe depuis 1860 et produit légalement pour les minorités et les étrangers.' },
+		    'Uruguay': { beers: ['Patricia', 'Pilsen'], anecdote: 'La bière y est souvent consommée dans des "Chop", des chopes en céramique typiques.' }
+		};
+		
 		const countriesData = {
 		    'France': { population: 67970000, surface: 643801, pib: 2778000, medaillesJO: 840, batailles: 1115 },
 		    'Allemagne': { population: 83200000, surface: 357022, pib: 4259000, medaillesJO: 1757, batailles: 987 },
@@ -1074,7 +1222,105 @@
 		    'Philippines': { population: 113900000, surface: 300000, pib: 404000, medaillesJO: 14, batailles: 190 },
 		    'Singapour': { population: 5454000, surface: 728, pib: 466000, medaillesJO: 5, batailles: 15 },
 		    'Kenya': { population: 53010000, surface: 580367, pib: 113000, medaillesJO: 113, batailles: 80 },
-		    'Éthiopie': { population: 120300000, surface: 1104300, pib: 126000, medaillesJO: 58, batailles: 250 }
+		    'Éthiopie': { population: 120300000, surface: 1104300, pib: 126000, medaillesJO: 58, batailles: 250 },
+		'Bangladesh': { population: 169400000, surface: 147570, pib: 460000, medaillesJO: 0, batailles: 45 },
+		    'Tunisie': { population: 12356000, surface: 163610, pib: 46000, medaillesJO: 15, batailles: 120 },
+		    'Nigeria': { population: 218500000, surface: 923768, pib: 477000, medaillesJO: 27, batailles: 85 },
+		    'Tanzanie': { population: 63590000, surface: 945087, pib: 75000, medaillesJO: 2, batailles: 30 },
+		    'Ghana': { population: 32830000, surface: 238533, pib: 72000, medaillesJO: 5, batailles: 40 },
+		    'Soudan': { population: 45660000, surface: 1861484, pib: 34000, medaillesJO: 1, batailles: 110 },
+		    'Iran': { population: 87920000, surface: 1648195, pib: 388000, medaillesJO: 76, batailles: 740 },
+		    'Irak': { population: 43530000, surface: 438317, pib: 264000, medaillesJO: 1, batailles: 480 },
+		    'Syrie': { population: 22130000, surface: 185180, pib: 12000, medaillesJO: 4, batailles: 320 },
+		    'Jordanie': { population: 11290000, surface: 89342, pib: 47000, medaillesJO: 3, batailles: 65 },
+		    'Liban': { population: 5490000, surface: 10452, pib: 23000, medaillesJO: 4, batailles: 95 },
+		    'Émirats Arabes Unis': { population: 9440000, surface: 83600, pib: 507000, medaillesJO: 2, batailles: 25 },
+		    'Afghanistan': { population: 41130000, surface: 652230, pib: 14000, medaillesJO: 2, batailles: 520 },
+		    'Kazakhstan': { population: 19400000, surface: 2724900, pib: 220000, medaillesJO: 71, batailles: 140 },
+		    'Ouzbékistan': { population: 35650000, surface: 447400, pib: 80000, medaillesJO: 36, batailles: 90 },
+		    'Bulgarie': { population: 6878000, surface: 110879, pib: 89000, medaillesJO: 224, batailles: 380 },
+		    'Serbie': { population: 6660000, surface: 77474, pib: 63000, medaillesJO: 24, batailles: 410 },
+		    'Slovaquie': { population: 5435000, surface: 49035, pib: 115000, medaillesJO: 42, batailles: 120 },
+		    'Croatie': { population: 3850000, surface: 56594, pib: 70000, medaillesJO: 41, batailles: 210 },
+		    'Bosnie-Herzégovine': { population: 3230000, surface: 51129, pib: 24000, medaillesJO: 0, batailles: 160 },
+		    'Albanie': { population: 2810000, surface: 28748, pib: 18000, medaillesJO: 0, batailles: 140 },
+		    'Lituanie': { population: 2800000, surface: 65300, pib: 70000, medaillesJO: 26, batailles: 95 },
+		    'Slovénie': { population: 2110000, surface: 20273, pib: 62000, medaillesJO: 28, batailles: 45 },
+		    'Lettonie': { population: 1880000, surface: 64589, pib: 41000, medaillesJO: 21, batailles: 50 },
+		    'Estonie': { population: 1330000, surface: 45227, pib: 38000, medaillesJO: 27, batailles: 40 },
+		    'Biélorussie': { population: 9300000, surface: 207600, pib: 72000, medaillesJO: 103, batailles: 180 },
+		    'Moldavie': { population: 2600000, surface: 33846, pib: 14000, medaillesJO: 6, batailles: 55 },
+		    'Arménie': { population: 2780000, surface: 29743, pib: 19000, medaillesJO: 18, batailles: 130 },
+		    'Géorgie': { population: 3700000, surface: 69700, pib: 24000, medaillesJO: 40, batailles: 170 },
+		    'Azerbaïdjan': { population: 10140000, surface: 86600, pib: 78000, medaillesJO: 49, batailles: 110 },
+		    'Venezuela': { population: 28300000, surface: 912050, pib: 80000, medaillesJO: 19, batailles: 140 },
+		    'Pérou': { population: 33700000, surface: 1285216, pib: 242000, medaillesJO: 4, batailles: 110 },
+		    'Équateur': { population: 17800000, surface: 283561, pib: 115000, medaillesJO: 5, batailles: 65 },
+		    'Bolivie': { population: 12000000, surface: 1098581, pib: 43000, medaillesJO: 0, batailles: 55 },
+		    'Paraguay': { population: 6700000, surface: 406752, pib: 41000, medaillesJO: 1, batailles: 45 },
+		    'Uruguay': { population: 3400000, surface: 176215, pib: 71000, medaillesJO: 10, batailles: 60 },
+		    'Cuba': { population: 11200000, surface: 109884, pib: 107000, medaillesJO: 241, batailles: 40 },
+		    'Haïti': { population: 11400000, surface: 27750, pib: 20000, medaillesJO: 2, batailles: 35 },
+		    'République Dominicaine': { population: 11100000, surface: 48671, pib: 113000, medaillesJO: 15, batailles: 30 },
+		    'Guatemala': { population: 17600000, surface: 108889, pib: 95000, medaillesJO: 1, batailles: 35 },
+		    'Honduras': { population: 10200000, surface: 112492, pib: 31000, medaillesJO: 0, batailles: 25 },
+		    'Nicaragua': { population: 6850000, surface: 130373, pib: 15000, medaillesJO: 0, batailles: 30 },
+		    'Costa Rica': { population: 5150000, surface: 51100, pib: 68000, medaillesJO: 4, batailles: 15 },
+		    'Panama': { population: 4350000, surface: 75417, pib: 76000, medaillesJO: 3, batailles: 20 },
+		    'Jamaïque': { population: 2820000, surface: 10991, pib: 17000, medaillesJO: 87, batailles: 10 },
+		    'Malaisie': { population: 33500000, surface: 329847, pib: 406000, medaillesJO: 13, batailles: 45 },
+		    'Myanmar': { population: 53800000, surface: 676578, pib: 59000, medaillesJO: 0, batailles: 95 },
+		    'Cambodge': { population: 16700000, surface: 181035, pib: 29000, medaillesJO: 0, batailles: 110 },
+		    'Laos': { population: 7400000, surface: 236800, pib: 15000, medaillesJO: 0, batailles: 40 },
+		    'Népal': { population: 30000000, surface: 147516, pib: 40000, medaillesJO: 0, batailles: 50 },
+		    'Sri Lanka': { population: 22150000, surface: 65610, pib: 74000, medaillesJO: 2, batailles: 60 },
+		    'Mongolie': { population: 3340000, surface: 1564116, pib: 17000, medaillesJO: 30, batailles: 160 },
+		    'Corée du Nord': { population: 25900000, surface: 120540, pib: 16000, medaillesJO: 56, batailles: 130 },
+		    'Taïwan': { population: 23570000, surface: 36197, pib: 760000, medaillesJO: 36, batailles: 80 },
+		    'Yémen': { population: 33000000, surface: 527968, pib: 21000, medaillesJO: 0, batailles: 150 },
+		    'Oman': { population: 4500000, surface: 309500, pib: 114000, medaillesJO: 0, batailles: 40 },
+		    'Koweït': { population: 4250000, surface: 17818, pib: 184000, medaillesJO: 3, batailles: 25 },
+		    'Qatar': { population: 2700000, surface: 11586, pib: 237000, medaillesJO: 8, batailles: 10 },
+		    'Bahreïn': { population: 1460000, surface: 765, pib: 44000, medaillesJO: 4, batailles: 15 },
+		    'Libye': { population: 6700000, surface: 1759540, pib: 45000, medaillesJO: 0, batailles: 90 },
+		    'Mali': { population: 21900000, surface: 1240192, pib: 18000, medaillesJO: 0, batailles: 75 },
+		    'Niger': { population: 25250000, surface: 1267000, pib: 15000, medaillesJO: 2, batailles: 40 },
+		    'Tchad': { population: 17180000, surface: 1284000, pib: 12000, medaillesJO: 0, batailles: 60 },
+		    'Mauritanie': { population: 4600000, surface: 1030700, pib: 10000, medaillesJO: 0, batailles: 35 },
+		    'Sénégal': { population: 16800000, surface: 196722, pib: 27000, medaillesJO: 1, batailles: 50 },
+		    'Guinée': { population: 13500000, surface: 245857, pib: 21000, medaillesJO: 0, batailles: 45 },
+		    'Côte d\'Ivoire': { population: 27480000, surface: 322463, pib: 70000, medaillesJO: 4, batailles: 55 },
+		    'Burkina Faso': { population: 22100000, surface: 274200, pib: 18000, medaillesJO: 1, batailles: 40 },
+		    'Bénin': { population: 13000000, surface: 112622, pib: 17000, medaillesJO: 0, batailles: 30 },
+		    'Togo': { population: 8600000, surface: 56785, pib: 8000, medaillesJO: 1, batailles: 25 },
+		    'Cameroun': { population: 27200000, surface: 475442, pib: 44000, medaillesJO: 6, batailles: 65 },
+		    'Gabon': { population: 2300000, surface: 267667, pib: 21000, medaillesJO: 1, batailles: 20 },
+		    'Congo': { population: 5800000, surface: 342000, pib: 14000, medaillesJO: 0, batailles: 35 },
+		    'République Démocratique du Congo': { population: 95890000, surface: 2344858, pib: 58000, medaillesJO: 0, batailles: 140 },
+		    'Angola': { population: 34500000, surface: 1246700, pib: 106000, medaillesJO: 0, batailles: 95 },
+		    'Zambie': { population: 19470000, surface: 752618, pib: 29000, medaillesJO: 2, batailles: 30 },
+		    'Zimbabwe': { population: 15990000, surface: 390757, pib: 28000, medaillesJO: 8, batailles: 55 },
+		    'Mozambique': { population: 32000000, surface: 799380, pib: 18000, medaillesJO: 2, batailles: 65 },
+		    'Madagascar': { population: 28900000, surface: 587041, pib: 15000, medaillesJO: 0, batailles: 45 },
+		    'Botswana': { population: 2580000, surface: 581730, pib: 17000, medaillesJO: 2, batailles: 20 },
+		    'Namibie': { population: 2530000, surface: 824292, pib: 12000, medaillesJO: 5, batailles: 35 },
+		    'Rwanda': { population: 13400000, surface: 26338, pib: 13000, medaillesJO: 0, batailles: 60 },
+		    'Burundi': { population: 12550000, surface: 27834, pib: 3000, medaillesJO: 1, batailles: 45 },
+		    'Somalie': { population: 17000000, surface: 637657, pib: 8000, medaillesJO: 0, batailles: 110 },
+		    'Érythrée': { population: 3600000, surface: 117600, pib: 2000, medaillesJO: 1, batailles: 55 },
+		    'Djibouti': { population: 1100000, surface: 23200, pib: 3500, medaillesJO: 1, batailles: 20 },
+		    'Gambie': { population: 2600000, surface: 10689, pib: 2000, medaillesJO: 0, batailles: 15 },
+		    'Bhoutan': { population: 777000, surface: 38394, pib: 2500, medaillesJO: 0, batailles: 25 },
+		    'Maldives': { population: 520000, surface: 298, pib: 6000, medaillesJO: 0, batailles: 5 },
+		    'Brunei': { population: 445000, surface: 5765, pib: 16000, medaillesJO: 0, batailles: 10 },
+		    'Fidji': { population: 924000, surface: 18274, pib: 5000, medaillesJO: 3, batailles: 10 },
+		    'Turkménistan': { population: 6340000, surface: 488100, pib: 56000, medaillesJO: 1, batailles: 40 },
+		    'Kirghizistan': { population: 6600000, surface: 199951, pib: 10000, medaillesJO: 7, batailles: 50 },
+		    'Tadjikistan': { population: 9750000, surface: 144100, pib: 10000, medaillesJO: 4, batailles: 45 },
+		    'Andorre': { population: 79000, surface: 468, pib: 3300, medaillesJO: 0, batailles: 5 },
+		    'Monaco': { population: 36000, surface: 2, pib: 8500, medaillesJO: 0, batailles: 2 },
+		    'Monténégro': { population: 620000, surface: 13812, pib: 6000, medaillesJO: 1, batailles: 65 },
+		    'Cap-Vert': { population: 587000, surface: 4033, pib: 2000, medaillesJO: 1, batailles: 5 }
 		};
 
         function loadData() {
@@ -3178,6 +3424,10 @@
 			    document.getElementById('higher-lower-menu').style.display = 'none';
 			    document.getElementById('higher-lower-game').style.display = 'none';
 			    document.getElementById('higher-lower-end').style.display = 'none';
+			    document.getElementById('beer-levels-menu').style.display = 'none';
+			    document.getElementById('beer-mixologue-game').style.display = 'none';
+			    document.getElementById('beer-tour-game').style.display = 'none';
+			    document.getElementById('beer-end').style.display = 'none';
 			}
 
 			let currentDifficulty = 'mix'; // Variable pour stocker le niveau choisi
@@ -3643,6 +3893,237 @@
 			document.getElementById('games-btn').addEventListener('click', openGamesModal);
 			document.getElementById('close-games-btn').addEventListener('click', closeGamesModal);
 			
+			// ===== BEER GAME =====
+			let beerCurrentMode = '';
+			let beerCurrentQuestion = 0;
+			let beerScore = 0;
+			let beerCurrentBrand = '';
+			let beerCurrentCountry = '';
+
+			function showBeerLevels() {
+			    document.getElementById('games-menu').style.display = 'none';
+			    document.getElementById('beer-levels-menu').style.display = 'block';
+			}
+
+			function startBeerGame(mode) {
+			    beerCurrentMode = mode;
+			    beerCurrentQuestion = 0;
+			    beerScore = 0;
+    
+			    document.getElementById('beer-levels-menu').style.display = 'none';
+			    document.getElementById('beer-end').style.display = 'none';
+    
+			    if (mode === 'mixologue') {
+			        document.getElementById('beer-mixologue-game').style.display = 'block';
+			        loadMixologueQuestion();
+			    } else {
+			        document.getElementById('beer-tour-game').style.display = 'block';
+			        loadTourQuestion();
+			    }
+			}
+
+			function loadMixologueQuestion() {
+			    if (beerCurrentQuestion >= 10) {
+			        endBeerGame();
+			        return;
+			    }
+    
+			    document.getElementById('beer-score').textContent = beerCurrentQuestion;
+			    document.getElementById('beer-feedback').style.display = 'none';
+    
+			    // Choisir un pays aléatoire
+			    const countries = Object.keys(beerData);
+			    beerCurrentCountry = countries[Math.floor(Math.random() * countries.length)];
+			    const beers = beerData[beerCurrentCountry].beers;
+			    beerCurrentBrand = beers[Math.floor(Math.random() * beers.length)];
+    
+			    document.getElementById('beer-brand').textContent = `🍺 ${beerCurrentBrand}`;
+    
+				// Créer une liste de 4 pays (le bon + 3 mauvais)
+				const wrongCountries = countries.filter(c => c !== beerCurrentCountry);
+				const selectedWrong = wrongCountries.sort(() => Math.random() - 0.5).slice(0, 3);
+				const options = [beerCurrentCountry, ...selectedWrong].sort(() => Math.random() - 0.5);
+
+				// Afficher la liste de 4 pays
+				const listEl = document.getElementById('beer-countries-list');
+				listEl.innerHTML = '';
+
+				options.forEach(country => {
+				    const btn = document.createElement('button');
+				    btn.textContent = country;
+				    // ... reste du code identique
+			        btn.style.cssText = 'padding: 12px; background: rgba(100, 100, 100, 0.3); border: 2px solid #666; border-radius: 8px; color: white; cursor: pointer; font-size: 14px; transition: all 0.3s;';
+			        btn.onmouseenter = () => {
+			            if (!btn.disabled) {
+			                btn.style.background = 'rgba(255, 165, 0, 0.4)';
+			                btn.style.borderColor = '#FFA500';
+			            }
+			        };
+			        btn.onmouseleave = () => {
+			            if (!btn.disabled && !btn.classList.contains('correct') && !btn.classList.contains('wrong')) {
+			                btn.style.background = 'rgba(100, 100, 100, 0.3)';
+			                btn.style.borderColor = '#666';
+			            }
+			        };
+			        btn.onclick = () => checkMixologueAnswer(country, btn);
+			        listEl.appendChild(btn);
+			    });
+			}
+
+			function checkMixologueAnswer(selected, button) {
+			    const allButtons = document.querySelectorAll('#beer-countries-list button');
+			    allButtons.forEach(btn => btn.disabled = true);
+    
+			    const feedback = document.getElementById('beer-feedback');
+			    feedback.style.display = 'block';
+    
+			    if (selected === beerCurrentCountry) {
+			        beerScore++;
+			        button.style.background = '#4CAF50';
+			        button.style.borderColor = '#4CAF50';
+			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.color = '#4CAF50';
+			        feedback.innerHTML = `✔ Correct ! ${beerData[beerCurrentCountry].anecdote}`;
+			    } else {
+			        button.style.background = '#f44336';
+			        button.style.borderColor = '#f44336';
+        
+			        allButtons.forEach(btn => {
+			            if (btn.textContent === beerCurrentCountry) {
+			                btn.style.background = '#4CAF50';
+			                btn.style.borderColor = '#4CAF50';
+			            }
+			        });
+        
+			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.color = '#f44336';
+			        feedback.innerHTML = `✗ Incorrect ! C'était ${beerCurrentCountry}. ${beerData[beerCurrentCountry].anecdote}`;
+			    }
+    
+			    beerCurrentQuestion++;
+			    setTimeout(loadMixologueQuestion, 3000);
+			}
+
+			function loadTourQuestion() {
+			    if (beerCurrentQuestion >= 10) {
+			        endBeerGame();
+			        return;
+			    }
+    
+			    document.getElementById('beer-tour-score').textContent = beerCurrentQuestion;
+			    document.getElementById('beer-tour-feedback').style.display = 'none';
+    
+			    const countries = Object.keys(beerData);
+			    beerCurrentCountry = countries[Math.floor(Math.random() * countries.length)];
+			    const correctBeers = beerData[beerCurrentCountry].beers;
+			    const correctBeer = correctBeers[Math.floor(Math.random() * correctBeers.length)];
+    
+			    document.getElementById('beer-tour-country').textContent = `🌍 ${beerCurrentCountry}`;
+    
+			    // Générer 3 mauvaises réponses
+			    const wrongBeers = [];
+			    while (wrongBeers.length < 3) {
+			        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+			        if (randomCountry !== beerCurrentCountry) {
+			            const randomBeer = beerData[randomCountry].beers[Math.floor(Math.random() * beerData[randomCountry].beers.length)];
+			            if (!wrongBeers.includes(randomBeer) && randomBeer !== correctBeer) {
+			                wrongBeers.push(randomBeer);
+			            }
+			        }
+			    }
+    
+			    const options = [correctBeer, ...wrongBeers].sort(() => Math.random() - 0.5);
+    
+			    const optionsEl = document.getElementById('beer-tour-options');
+			    optionsEl.innerHTML = '';
+    
+			    options.forEach(beer => {
+			        const btn = document.createElement('button');
+			        btn.textContent = beer;
+			        btn.style.cssText = 'padding: 20px; background: rgba(100, 100, 100, 0.3); border: 2px solid #666; border-radius: 10px; color: white; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s;';
+			        btn.onmouseenter = () => {
+			            if (!btn.disabled) {
+			                btn.style.background = 'rgba(255, 165, 0, 0.4)';
+			                btn.style.borderColor = '#FFA500';
+			            }
+			        };
+			        btn.onmouseleave = () => {
+			            if (!btn.disabled && !btn.classList.contains('correct') && !btn.classList.contains('wrong')) {
+			                btn.style.background = 'rgba(100, 100, 100, 0.3)';
+			                btn.style.borderColor = '#666';
+			            }
+			        };
+			        btn.onclick = () => checkTourAnswer(beer, correctBeer, btn);
+			        optionsEl.appendChild(btn);
+			    });
+			}
+
+			function checkTourAnswer(selected, correct, button) {
+			    const allButtons = document.querySelectorAll('#beer-tour-options button');
+			    allButtons.forEach(btn => btn.disabled = true);
+    
+			    const feedback = document.getElementById('beer-tour-feedback');
+			    feedback.style.display = 'block';
+    
+			    if (selected === correct) {
+			        beerScore++;
+			        button.style.background = '#4CAF50';
+			        button.style.borderColor = '#4CAF50';
+			        feedback.style.background = 'rgba(76, 175, 80, 0.3)';
+			        feedback.style.color = '#4CAF50';
+			        feedback.innerHTML = `✔ Exact ! ${beerData[beerCurrentCountry].anecdote}`;
+			    } else {
+			        button.style.background = '#f44336';
+			        button.style.borderColor = '#f44336';
+        
+			        allButtons.forEach(btn => {
+			            if (btn.textContent === correct) {
+			                btn.style.background = '#4CAF50';
+			                btn.style.borderColor = '#4CAF50';
+			            }
+			        });
+        
+			        feedback.style.background = 'rgba(244, 67, 54, 0.3)';
+			        feedback.style.color = '#f44336';
+			        feedback.innerHTML = `✗ Raté ! C'était ${correct}. ${beerData[beerCurrentCountry].anecdote}`;
+			    }
+    
+			    beerCurrentQuestion++;
+			    setTimeout(loadTourQuestion, 3000);
+			}
+
+			function endBeerGame() {
+			    document.getElementById('beer-mixologue-game').style.display = 'none';
+			    document.getElementById('beer-tour-game').style.display = 'none';
+			    document.getElementById('beer-end').style.display = 'block';
+    
+			    document.getElementById('beer-final-score').textContent = beerScore;
+    
+			    const message = document.getElementById('beer-end-message');
+			    if (beerScore === 10) {
+			        message.textContent = '🍻 PARFAIT ! Tu es un véritable expert en bières du monde !';
+			        message.style.color = '#FFD700';
+			    } else if (beerScore >= 7) {
+			        message.textContent = '🌟 Excellent ! Tu connais bien tes bières !';
+			        message.style.color = '#4CAF50';
+			    } else if (beerScore >= 5) {
+			        message.textContent = '😊 Pas mal ! Continue à explorer !';
+			        message.style.color = '#FF9800';
+			    } else {
+			        message.textContent = '💪 C\'est un début ! Voyage plus pour découvrir de nouvelles bières !';
+			        message.style.color = '#2196F3';
+			    }
+			}
+
+			function restartBeerGame() {
+			    beerCurrentQuestion = 0;
+			    startBeerGame(beerCurrentMode);
+			}
+
+			// Rendre les fonctions accessibles globalement
+			window.showBeerLevels = showBeerLevels;
+			window.startBeerGame = startBeerGame;
+			window.restartBeerGame = restartBeerGame;			
 			
 	    </script>
 	</body>
