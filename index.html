@@ -4879,12 +4879,15 @@
 			                <div style="font-size: 13px; color: #ccc;">${itinerary.steps.join(' → ')}</div>
 			            </div>
 			            <div style="display: flex; gap: 10px;">
-			                <button onclick="visualizeItinerary(${index})" style="padding: 10px 15px; background: #E91E63; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 13px; font-weight: bold;">
-			                    👁️ Voir
-			                </button>
-			                <button onclick="deleteItinerary(${index})" style="padding: 10px 15px; background: #f44336; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 13px;">
-			                    🗑️
-			                </button>
+<button onclick="visualizeItinerary(${index})" style="padding: 10px 15px; background: #E91E63; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 13px; font-weight: bold;">
+    👁️ Voir
+</button>
+<button onclick="editItinerary(${index})" style="padding: 10px 15px; background: #FF9800; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 13px; font-weight: bold;">
+    ✏️ Modifier
+</button>
+<button onclick="deleteItinerary(${index})" style="padding: 10px 15px; background: #f44336; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 13px;">
+    🗑️
+</button>
 			            </div>
 			        `;
         
@@ -4990,21 +4993,38 @@
 			        return;
 			    }
     
-			    savedItineraries.push({
-			        name: name,
-			        steps: [...currentItinerarySteps],
-			        createdAt: new Date().toISOString()
-			    });
-    
-			    saveItineraries();
-			    renderSavedItineraries();
-    
-			    // Réinitialiser
-			    document.getElementById('itinerary-name').value = '';
-			    currentItinerarySteps = [];
-			    renderCurrentSteps();
-    
-			    alert('✅ Itinéraire enregistré !');
+			    if (editingItineraryIndex !== null) {
+			        // Mode édition : mettre à jour l'itinéraire existant
+			        savedItineraries[editingItineraryIndex] = {
+			            name: name,
+			            steps: [...currentItinerarySteps],
+			            createdAt: savedItineraries[editingItineraryIndex].createdAt,
+			            updatedAt: new Date().toISOString()
+			        };
+        
+			        saveItineraries();
+			        renderSavedItineraries();
+        
+			        alert('✅ Itinéraire mis à jour !');
+			        cancelEdit();
+			    } else {
+			        // Mode création : ajouter un nouvel itinéraire
+			        savedItineraries.push({
+			            name: name,
+			            steps: [...currentItinerarySteps],
+			            createdAt: new Date().toISOString()
+			        });
+        
+			        saveItineraries();
+			        renderSavedItineraries();
+        
+			        // Réinitialiser
+			        document.getElementById('itinerary-name').value = '';
+			        currentItinerarySteps = [];
+			        renderCurrentSteps();
+        
+			        alert('✅ Itinéraire enregistré !');
+			    }
 			});
 
 			// Effacer l'itinéraire en cours
@@ -5352,6 +5372,51 @@
 			    'Samoa': { lat: -13.8, lng: -172.1 },
 			    'Vanuatu': { lat: -15.4, lng: 166.9 }
 			};
+			
+			let editingItineraryIndex = null;
+
+			function editItinerary(index) {
+			    const itinerary = savedItineraries[index];
+			    editingItineraryIndex = index;
+    
+			    // Pré-remplir le formulaire
+			    document.getElementById('itinerary-name').value = itinerary.name;
+			    currentItinerarySteps = [...itinerary.steps];
+			    renderCurrentSteps();
+    
+			    // Changer le bouton de sauvegarde
+			    const saveBtn = document.getElementById('save-itinerary-btn');
+			    saveBtn.textContent = '💾 Mettre à jour l\'itinéraire';
+			    saveBtn.style.background = '#FF9800';
+    
+			    // Ajouter un bouton pour annuler l'édition
+			    let cancelEditBtn = document.getElementById('cancel-edit-btn');
+			    if (!cancelEditBtn) {
+			        cancelEditBtn = document.createElement('button');
+			        cancelEditBtn.id = 'cancel-edit-btn';
+			        cancelEditBtn.textContent = '❌ Annuler les modifications';
+			        cancelEditBtn.style.cssText = 'padding: 15px 20px; background: #555; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px;';
+			        cancelEditBtn.onclick = cancelEdit;
+			        document.getElementById('save-itinerary-btn').parentElement.appendChild(cancelEditBtn);
+			    }
+    
+			    // Scroller vers le formulaire
+			    document.getElementById('itinerary-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+
+			function cancelEdit() {
+			    editingItineraryIndex = null;
+			    document.getElementById('itinerary-name').value = '';
+			    currentItinerarySteps = [];
+			    renderCurrentSteps();
+    
+			    const saveBtn = document.getElementById('save-itinerary-btn');
+			    saveBtn.textContent = '💾 Enregistrer l\'itinéraire';
+			    saveBtn.style.background = '#4CAF50';
+    
+			    const cancelBtn = document.getElementById('cancel-edit-btn');
+			    if (cancelBtn) cancelBtn.remove();
+			}
 
 			function displayItineraryOnGlobe(steps) {
 			    clearItineraryFromGlobe();
@@ -5660,6 +5725,254 @@
 			    });
     
 			    document.body.appendChild(exitBtn);
+				
+			    // NOUVEAU : Bouton Export Vidéo
+			    const videoBtn = document.createElement('button');
+			    videoBtn.id = 'export-video-btn';
+			    videoBtn.innerHTML = '🎥 Exporter en vidéo';
+			    videoBtn.style.cssText = `
+			        position: fixed;
+			        top: 80px;
+			        right: 20px;
+			        z-index: 101;
+			        padding: 12px 20px;
+			        background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+			        border: none;
+			        border-radius: 8px;
+			        color: white;
+			        cursor: pointer;
+			        font-size: 14px;
+			        font-weight: bold;
+			        box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+			        transition: all 0.3s;
+			        animation: slideInRight 0.5s ease-out 0.2s;
+			        animation-fill-mode: both;
+			    `;
+    
+			    videoBtn.addEventListener('mouseenter', () => {
+			        videoBtn.style.transform = 'scale(1.05)';
+			        videoBtn.style.boxShadow = '0 6px 16px rgba(156, 39, 176, 0.6)';
+			    });
+    
+			    videoBtn.addEventListener('mouseleave', () => {
+			        videoBtn.style.transform = 'scale(1)';
+			        videoBtn.style.boxShadow = '0 4px 12px rgba(156, 39, 176, 0.4)';
+			    });
+    
+			    videoBtn.addEventListener('click', () => {
+			        exportItineraryVideo();
+			    });
+    
+			    document.body.appendChild(videoBtn);
+			}
+			
+			async function exportItineraryVideo() {
+			    const videoBtn = document.getElementById('export-video-btn');
+			    const originalText = videoBtn.innerHTML;
+    
+			    try {
+			        // Vérifier si l'API est disponible
+			        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+			            alert('❌ Votre navigateur ne supporte pas l\'enregistrement vidéo.\n\nUtilisez Chrome, Edge ou Firefox récent.');
+			            return;
+			        }
+        
+			        // Masquer temporairement la sidebar
+			        const sidebar = document.getElementById('sidebar');
+			        const sidebarWasOpen = sidebar.classList.contains('open');
+			        if (sidebarWasOpen) {
+			            sidebar.classList.remove('open');
+			        }
+        
+			        // Masquer le bouton toggle sidebar
+			        const toggleBtn = document.getElementById('toggle-sidebar');
+			        toggleBtn.style.display = 'none';
+        
+			        // Masquer les contrôles
+			        const controls = document.getElementById('controls');
+			        controls.style.display = 'none';
+        
+			        // Message d'instructions
+			        videoBtn.innerHTML = '⏺️ Enregistrement...';
+			        videoBtn.style.background = '#f44336';
+			        videoBtn.disabled = true;
+        
+			        const instructionsDiv = document.createElement('div');
+			        instructionsDiv.id = 'video-instructions';
+			        instructionsDiv.style.cssText = `
+			            position: fixed;
+			            top: 50%;
+			            left: 50%;
+			            transform: translate(-50%, -50%);
+			            background: rgba(20, 20, 20, 0.98);
+			            backdrop-filter: blur(20px);
+			            border: 2px solid #9C27B0;
+			            color: white;
+			            padding: 30px 40px;
+			            border-radius: 16px;
+			            z-index: 2001;
+			            font-size: 16px;
+			            max-width: 500px;
+			            text-align: center;
+			            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+			            animation: popIn 0.3s ease-out;
+			        `;
+			        instructionsDiv.innerHTML = `
+			            <div style="font-size: 48px; margin-bottom: 20px;">🎬</div>
+			            <h3 style="color: #9C27B0; margin-bottom: 15px;">Enregistrement vidéo</h3>
+			            <p style="margin-bottom: 20px; line-height: 1.6;">
+			                1️⃣ Sélectionnez <strong>"Onglet"</strong> ou <strong>"Fenêtre"</strong><br>
+			                2️⃣ Choisissez cet onglet dans la liste<br>
+			                3️⃣ Cochez <strong>"Partager l'audio de l'onglet"</strong><br>
+			                4️⃣ Cliquez sur <strong>"Partager"</strong>
+			            </p>
+			            <p style="font-size: 14px; color: #FF9800; margin-top: 15px;">
+			                ⚠️ L'enregistrement démarre automatiquement
+			            </p>
+			        `;
+			        document.body.appendChild(instructionsDiv);
+        
+			        // Attendre 4 secondes pour lire les instructions
+			        await new Promise(resolve => setTimeout(resolve, 4000));
+			        instructionsDiv.remove();
+        
+			        // Démarrer l'enregistrement d'écran
+			        const stream = await navigator.mediaDevices.getDisplayMedia({
+			            video: {
+			                width: 1920,
+			                height: 1080,
+			                frameRate: 30
+			            },
+			            audio: false
+			        });
+        
+			        const mediaRecorder = new MediaRecorder(stream, {
+			            mimeType: 'video/webm;codecs=vp9',
+			            videoBitsPerSecond: 5000000
+			        });
+        
+			        const chunks = [];
+        
+			        mediaRecorder.ondataavailable = (e) => {
+			            if (e.data.size > 0) {
+			                chunks.push(e.data);
+			            }
+			        };
+        
+			        mediaRecorder.onstop = () => {
+			            const blob = new Blob(chunks, { type: 'video/webm' });
+			            const url = URL.createObjectURL(blob);
+            
+			            // Télécharger automatiquement
+			            const a = document.createElement('a');
+			            a.href = url;
+			            a.download = `itineraire_${Date.now()}.webm`;
+			            a.click();
+            
+			            // Nettoyer
+			            stream.getTracks().forEach(track => track.stop());
+			            URL.revokeObjectURL(url);
+            
+			            // Restaurer l'interface
+			            if (sidebarWasOpen) {
+			                sidebar.classList.add('open');
+			            }
+			            toggleBtn.style.display = 'block';
+			            controls.style.display = 'flex';
+			            videoBtn.innerHTML = originalText;
+			            videoBtn.style.background = 'linear-gradient(135deg, #9C27B0, #7B1FA2)';
+			            videoBtn.disabled = false;
+            
+			            // Message de succès
+			            const successDiv = document.createElement('div');
+			            successDiv.style.cssText = `
+			                position: fixed;
+			                top: 20px;
+			                left: 50%;
+			                transform: translateX(-50%);
+			                background: rgba(76, 175, 80, 0.15);
+			                backdrop-filter: blur(10px);
+			                border: 1px solid rgba(76, 175, 80, 0.4);
+			                color: #4CAF50;
+			                padding: 15px 30px;
+			                border-radius: 8px;
+			                z-index: 2000;
+			                font-weight: bold;
+			                animation: slideInDown 0.5s ease-out;
+			            `;
+			            successDiv.textContent = '✅ Vidéo téléchargée avec succès !';
+			            document.body.appendChild(successDiv);
+            
+			            setTimeout(() => {
+			                successDiv.style.animation = 'slideOutUp 0.5s ease-out';
+			                setTimeout(() => successDiv.remove(), 500);
+			            }, 3000);
+			        };
+        
+			        // Détecter quand l'utilisateur arrête le partage
+			        stream.getVideoTracks()[0].addEventListener('ended', () => {
+			            mediaRecorder.stop();
+			        });
+        
+			        // Démarrer l'enregistrement
+			        mediaRecorder.start(100);
+        
+			        // Message d'enregistrement en cours
+			        const recordingDiv = document.createElement('div');
+			        recordingDiv.id = 'recording-indicator';
+			        recordingDiv.style.cssText = `
+			            position: fixed;
+			            top: 20px;
+			            left: 50%;
+			            transform: translateX(-50%);
+			            background: rgba(244, 67, 54, 0.15);
+			            backdrop-filter: blur(10px);
+			            border: 1px solid rgba(244, 67, 54, 0.4);
+			            color: #f44336;
+			            padding: 15px 30px;
+			            border-radius: 8px;
+			            z-index: 2000;
+			            font-weight: bold;
+			            animation: pulse 2s infinite;
+			            display: flex;
+			            align-items: center;
+			            gap: 10px;
+			        `;
+			        recordingDiv.innerHTML = `
+			            <div style="width: 12px; height: 12px; background: #f44336; border-radius: 50%; animation: pulse 1s infinite;"></div>
+			            <span>🎥 Enregistrement en cours...</span>
+			        `;
+			        document.body.appendChild(recordingDiv);
+        
+			        // Supprimer l'indicateur quand l'enregistrement s'arrête
+			        stream.getVideoTracks()[0].addEventListener('ended', () => {
+			            recordingDiv.remove();
+			        });
+        
+			    } catch (error) {
+			        console.error('Erreur:', error);
+        
+			        // Restaurer l'interface en cas d'erreur
+			        const sidebar = document.getElementById('sidebar');
+			        const toggleBtn = document.getElementById('toggle-sidebar');
+			        const controls = document.getElementById('controls');
+        
+			        sidebar.classList.remove('open');
+			        toggleBtn.style.display = 'block';
+			        controls.style.display = 'flex';
+			        videoBtn.innerHTML = originalText;
+			        videoBtn.style.background = 'linear-gradient(135deg, #9C27B0, #7B1FA2)';
+			        videoBtn.disabled = false;
+        
+			        const instructionsDiv = document.getElementById('video-instructions');
+			        if (instructionsDiv) instructionsDiv.remove();
+        
+			        if (error.name === 'NotAllowedError') {
+			            alert('❌ Vous avez refusé l\'autorisation d\'enregistrement.\n\nRelancez l\'export et acceptez le partage d\'écran.');
+			        } else {
+			            alert('❌ Erreur lors de l\'enregistrement:\n' + error.message);
+			        }
+			    }
 			}
 
 			// ✨ Fonction pour ajouter un effet de pulsation aux points
@@ -5726,16 +6039,23 @@
 			    // ✅ Réinitialiser correctement TOUTES les données
 			    if (myGlobe) {
 			        myGlobe
-			            .arcsData([])           // Supprimer les arcs
+			            .arcsData([])
 			            .arcAltitude(0)
-			            .pointsData([])         // Supprimer les points classiques
+			            .pointsData([])
 			            .pointAltitude(0)
-			            .htmlElementsData([]);  // ✅ AJOUTER CETTE LIGNE : Supprimer les points HTML
+			            .htmlElementsData([]);
 			    }
     
-			    // ✅ Supprimer le bouton de sortie s'il existe
+			    // ✅ Supprimer les boutons s'ils existent
 			    const exitBtn = document.getElementById('exit-itinerary-btn');
 			    if (exitBtn) exitBtn.remove();
+    
+			    const videoBtn = document.getElementById('export-video-btn');
+			    if (videoBtn) videoBtn.remove();
+    
+			    // Supprimer l'indicateur d'enregistrement si présent
+			    const recordingIndicator = document.getElementById('recording-indicator');
+			    if (recordingIndicator) recordingIndicator.remove();
 			}
 
 			// Event listener
@@ -5746,6 +6066,8 @@
 			window.removeStep = removeStep;
 			window.visualizeItinerary = visualizeItinerary;
 			window.deleteItinerary = deleteItinerary;
+			window.editItinerary = editItinerary;
+			window.cancelEdit = cancelEdit;
 
 			// Charger les itinéraires au démarrage
 			loadItineraries();					
