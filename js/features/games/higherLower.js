@@ -286,7 +286,6 @@
 				    supabaseClient.rpc('get_world_record', {
 				        p_game_type: 'higher_lower',
 				        p_category: this.currentCategory
-					}).abortSignal(new AbortController().signal)			
 				    })
 				]);
 
@@ -294,9 +293,14 @@
 				console.log('🔍 Profil:', profileResult);
 				console.log('🔍 Meilleur score personnel:', personalBestResult);
 				console.log('🔍 Meilleur score mondial:', globalBestResult);
+				console.log('🔍 Profil:', profileResult);
+				console.log('🔍 Meilleur score personnel RAW:', personalBestResult);
+				console.log('🔍 Meilleur score mondial RAW:', globalBestResult);
+				console.log('🔍 User ID:', user.id);
+				console.log('🔍 Catégorie:', this.currentCategory);
 
 				const currentUsername = profileResult?.username || 'Anonyme';
-				const myBestScore = personalBestResult.data?.score || this.currentStreak;
+				const myBestScore = personalBestResult?.data?.score || this.currentStreak;
 
 				// ✅ CHANGEMENT ICI : .rpc() retourne un tableau, prendre le premier élément
 				const globalBest = globalBestResult.data?.[0];  // ⬅️ AJOUTE [0] ici
