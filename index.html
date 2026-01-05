@@ -944,13 +944,20 @@
 </div>
 
 <!-- Écran Game Over -->
+<!-- Écran Game Over -->
 <div id="higher-lower-end" style="display: none; text-align: center;">
     <div style="font-size: 60px; margin-bottom: 20px;">💔</div>
     <h3 style="color: #f44336; font-size: 32px; margin-bottom: 20px;">Game Over !</h3>
-    <div style="font-size: 24px; margin-bottom: 30px;">
+    
+    <div style="font-size: 24px; margin-bottom: 20px;">
         Streak final: <span id="hl-final-streak" style="color: #f093fb; font-weight: bold;">0</span>
     </div>
-    <div id="hl-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 30px;"></div>
+    
+    <div id="hl-end-message" style="font-size: 18px; color: #ccc; margin-bottom: 20px;"></div>
+    
+    <!-- 🆕 NOUVEAU : Zone du leaderboard -->
+    <div id="hl-leaderboard" style="max-width: 400px; margin: 0 auto 30px;"></div>
+    
     <div style="display: flex; gap: 15px; justify-content: center;">
         <button onclick="restartHigherLower()" style="padding: 15px 30px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px;">
             🔄 Rejouer
