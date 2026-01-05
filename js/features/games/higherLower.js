@@ -271,41 +271,44 @@
 		        // 🔍 DEBUG : Afficher la catégorie recherchée
 		        console.log('🔍 Catégorie actuelle:', this.currentCategory);
 
-		        // 🚀 PARALLÉLISER toutes les requêtes en même temps
-		        const [profileResult, personalBestResult, globalBestResult] = await Promise.all([
-		            getUserProfile(),
-		            supabaseClient
-		                .from('game_scores')
-		                .select('score')
-		                .eq('user_id', user.id)
-		                .eq('game_type', 'higher_lower')
-		                .eq('category', this.currentCategory)
-		                .order('score', { ascending: false })
-		                .limit(1)
-		                .maybeSingle(),  // ⬅️ CHANGEMENT ICI
-					supabaseClient.rpc('get_world_record', {
-					    p_game_type: 'higher_lower',
-					    p_category: this.currentCategory
-					})
-		        ]);
+				// 🚀 PARALLÉLISER toutes les requêtes en même temps
+				const [profileResult, personalBestResult, globalBestResult] = await Promise.all([
+				    getUserProfile(),
+				    supabaseClient
+				        .from('game_scores')
+				        .select('score')
+				        .eq('user_id', user.id)
+				        .eq('game_type', 'higher_lower')
+				        .eq('category', this.currentCategory)
+				        .order('score', { ascending: false })
+				        .limit(1)
+				        .maybeSingle(),
+				    supabaseClient.rpc('get_world_record', {
+				        p_game_type: 'higher_lower',
+				        p_category: this.currentCategory
+				    })
+				]);
 
-		        // 🔍 DEBUG : Afficher les résultats
-		        console.log('🔍 Profil:', profileResult);
-		        console.log('🔍 Meilleur score personnel:', personalBestResult);
-		        console.log('🔍 Meilleur score mondial:', globalBestResult);
+				// 🔍 DEBUG : Afficher les résultats
+				console.log('🔍 Profil:', profileResult);
+				console.log('🔍 Meilleur score personnel:', personalBestResult);
+				console.log('🔍 Meilleur score mondial:', globalBestResult);
 
-		        const currentUsername = profileResult?.username || 'Anonyme';
-		        const myBestScore = personalBestResult.data?.score || this.currentStreak;
-		        const globalBest = globalBestResult.data;
+				const currentUsername = profileResult?.username || 'Anonyme';
+				const myBestScore = personalBestResult.data?.score || this.currentStreak;
 
-		        let worldRecordHTML = '';
+				// ✅ CHANGEMENT ICI : .rpc() retourne un tableau, prendre le premier élément
+				const globalBest = globalBestResult.data?.[0];  // ⬅️ AJOUTE [0] ici
 
-		        if (globalBest) {
-		            // ✅ Utiliser directement le username de la requête
-		            const championName = globalBest.username || 'Champion';
-		            const isYou = globalBest.user_id === user.id;
+				let worldRecordHTML = '';
 
-		            console.log('🔍 Champion:', championName, 'Score:', globalBest.score);
+				if (globalBest) {
+				    const championName = globalBest.username || 'Champion';
+				    const isYou = globalBest.user_id === user.id;
+
+				    console.log('🔍 Champion:', championName, 'Score:', globalBest.score);
+    
+				    // ... le reste du code
 
 		            worldRecordHTML = `
 		                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border-radius: 8px; border-left: 4px solid #FFD700;">
