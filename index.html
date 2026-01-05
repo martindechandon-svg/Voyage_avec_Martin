@@ -627,8 +627,7 @@
 <!-- Modal Itinéraire -->
 <div id="itinerary-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #E91E63; width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
     
-    <button id="close-itinerary-btn" onclick="closeItineraryModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
-    
+<button id="close-itinerary-btn" onclick="closeItineraryModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; min-width: 35px; min-height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);" onmouseover="this.style.background='#d32f2f'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='#f44336'; this.style.transform='scale(1)'">✕</button>    
     <h2 style="color: #E91E63; margin-bottom: 30px; text-align: center;">🗺️ Mes Itinéraires</h2>
     
     <!-- Liste des itinéraires sauvegardés -->
@@ -728,7 +727,7 @@
 
 <div id="games-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #9C27B0; width: 85%; max-width: 900px; max-height: 85vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
 
-    <button id="close-games-btn" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
+    <button id="close-games-btn" onclick="closeGamesModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; min-width: 35px; min-height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);" onmouseover="this.style.background='#d32f2f'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='#f44336'; this.style.transform='scale(1)'">✕</button>
     
     <h2 style="color: #9C27B0; margin-bottom: 30px; text-align: center;">🎮 Mini-Jeux</h2>
     
@@ -776,7 +775,7 @@
 
 <div id="itinerary-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #E91E63; width: 90%; max-width: 1000px; max-height: 90vh; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
     
-    <button id="close-itinerary-btn" onclick="closeItineraryModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">✕</button>
+<button id="close-itinerary-btn" onclick="closeItineraryModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; min-width: 35px; min-height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);" onmouseover="this.style.background='#d32f2f'; this.style.transform='scale(1.1)'" onmouseout="this.style.background='#f44336'; this.style.transform='scale(1)'">✕</button>
     
     <h2 style="color: #E91E63; margin-bottom: 30px; text-align: center;">🗺️ Mes Itinéraires</h2>
     
@@ -1228,6 +1227,7 @@
 	<script src="js/config/countries.js"></script>
 	<script src="js/config/continents.js"></script>
 	<script src="js/config/countryCoordinates.js"></script>
+	<script src="js/config/countriesData.js"></script>
 	<script src="js/config/beerData.js"></script>
 	<script src="js/features/games/quiz.js"></script>
 	<script src="js/features/games/higherLower.js"></script>
