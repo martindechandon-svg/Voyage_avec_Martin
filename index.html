@@ -1914,6 +1914,9 @@
 			        saveBucketList();
 			        renderBucketList();
 			        updateGlobeColorsForBucket();
+        
+			        // ✅ Notification stylée
+			        showNotification(`${countryName} a été ajouté à ta bucket list`, 'success', '🎯 Destination ajoutée');
 			    }
 			}
 
@@ -2498,10 +2501,10 @@
 			    const destination = countryAirportCodes[selectedCountry] || '';
     
 			    // Ne pas afficher d'alerte si c'est une recherche générale
-			    if (!destination && selectedCountry !== 'Destination') {
-			        alert(`Désolé, nous n'avons pas de code aéroport pour ${selectedCountry}`);
-			        return;
-			    }
+				if (!destination && selectedCountry !== 'Destination') {
+				    showNotification(`Désolé, nous n'avons pas de code aéroport pour ${selectedCountry}`, 'warning', 'Aéroport introuvable');
+				    return;
+				}
     
 			    const modal = document.createElement('div');
 			    modal.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #2196F3; z-index: 1002; min-width: 500px; max-width: 600px;';
@@ -3039,10 +3042,11 @@
 			}
 
 			function deleteItinerary(index) {
-			    if (confirm('Êtes-vous sûr de vouloir supprimer cet itinéraire ?')) {
+			    if (confirm('Es-tu sûr de vouloir supprimer cet itinéraire ?')) {
 			        savedItineraries.splice(index, 1);
 			        saveItineraries();
 			        renderSavedItineraries();
+			        showNotification('Itinéraire supprimé', 'info', 'Suppression effectuée');
 			    }
 			}
 			
@@ -4061,10 +4065,10 @@
 			            const email = document.getElementById('auth-email').value;
 			            const password = document.getElementById('auth-password').value;
             
-			            if (!username || !email || !password) {
-			                alert('⚠️ Remplis tous les champs');
-			                return;
-			            }
+						if (!username || !email || !password) {
+						    showNotification('Remplis tous les champs', 'warning', 'Champs manquants');
+						    return;
+						}
             
 			            signUp(email, password, username);
 			            closeAuthModal();
@@ -4078,10 +4082,10 @@
 			            const email = document.getElementById('auth-email').value;
 			            const password = document.getElementById('auth-password').value;
             
-			            if (!email || !password) {
-			                alert('⚠️ Remplis tous les champs');
-			                return;
-			            }
+						if (!email || !password) {
+						    showNotification('Remplis tous les champs', 'warning', 'Champs manquants');
+						    return;
+						}
             
 			            signIn(email, password); // ✅ CORRECTION ICI
 			            closeAuthModal();
