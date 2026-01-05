@@ -447,6 +447,10 @@
 		}
 		
     </style>
+	<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
@@ -457,6 +461,25 @@
 <img id="logo" src="images/logo_vam.png" alt="Logo">
                 <div id="title">🌍 Voyage avec Martin</div>
             </div>
+			
+			<div id="auth-section" style="margin-bottom: 20px; padding: 15px; background: rgba(76, 175, 80, 0.2); border-radius: 8px; text-align: center;">
+			    <div id="logged-out" style="display: block;">
+			        <p style="color: #4CAF50; margin-bottom: 10px;">💾 Sauvegarde tes voyages</p>
+			        <button onclick="showAuthModal('login')" style="width: 100%; padding: 10px; background: #4CAF50; border: none; border-radius: 5px; color: white; cursor: pointer; margin-bottom: 5px;">
+			            🔑 Connexion
+			        </button>
+			        <button onclick="showAuthModal('signup')" style="width: 100%; padding: 10px; background: #2196F3; border: none; border-radius: 5px; color: white; cursor: pointer;">
+			            ✨ Créer un compte
+			        </button>
+			    </div>
+    
+			    <div id="logged-in" style="display: none;">
+			        <p style="color: #4CAF50; margin-bottom: 10px;">👤 <span id="user-email"></span></p>
+			        <button onclick="signOut()" style="width: 100%; padding: 10px; background: #f44336; border: none; border-radius: 5px; color: white; cursor: pointer;">
+			            🚪 Déconnexion
+			        </button>
+			    </div>
+			</div>
 
 <div id="stats">
     <h3>Statistiques</h3>
@@ -1172,6 +1195,26 @@
     </div>
 </div>
 
+<div id="auth-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 20, 0.98); padding: 30px; border-radius: 12px; border: 2px solid #4CAF50; min-width: 400px; max-width: 500px; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+    
+    <button onclick="closeAuthModal()" style="position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: #f44336; border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; font-weight: bold; transition: all 0.3s;">✕</button>
+    
+    <h2 id="auth-title" style="color: #4CAF50; margin-bottom: 20px; text-align: center;">Connexion</h2>
+    
+    <input type="text" id="auth-username" placeholder="Pseudo" 
+           style="display: none; width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+    
+    <input type="email" id="auth-email" placeholder="Email" 
+           style="width: 100%; padding: 12px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+    
+    <input type="password" id="auth-password" placeholder="Mot de passe (min. 6 caractères)" 
+           style="width: 100%; padding: 12px; margin-bottom: 20px; background: #1a1a1a; border: 1px solid #444; border-radius: 5px; color: #fff; font-size: 14px;">
+    
+    <button id="auth-submit" style="width: 100%; padding: 15px; background: #4CAF50; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-size: 16px; transition: all 0.3s;" onmouseover="this.style.background='#45a049'" onmouseout="this.style.background='#4CAF50'">
+        Se connecter
+    </button>
+</div>
+
     <!-- Three.js et Globe.GL -->
     <script src="https://unpkg.com/three"></script>
     <script src="https://unpkg.com/globe.gl"></script>
@@ -1192,16 +1235,66 @@
         let myGlobe;
         let countriesGeoJson;
 		
-        function loadData() {
-            const saved = localStorage.getItem('travelData');
-            if (saved) {
-                visitedCountries = JSON.parse(saved);
-            }
-        }
+		async function loadData() {
+		    await initStorageMode();
+		    const user = await getCurrentUser();
+    
+		    if (user) {
+		        // Mode cloud : charger depuis Supabase
+		        const { data, error } = await supabaseClient
+		            .from('visited_countries')
+		            .select('*')
+		            .eq('user_id', user.id);
+        
+		        if (data) {
+		            visitedCountries = {};
+		            data.forEach(row => {
+		                visitedCountries[row.country_name] = {
+		                    visited: true,
+		                    notes: row.notes,
+		                    rating: row.rating,
+		                    date: row.visit_date,
+		                    budget: row.budget,
+		                    photos: row.photos || [],
+		                    activities: row.activities || {},
+		                    companions: row.companions || []
+		                };
+		            });
+		        }
+        
+		        // Afficher email utilisateur
+				// Afficher le pseudo de l'utilisateur
+				document.getElementById('logged-in').style.display = 'block';
+				document.getElementById('logged-out').style.display = 'none';
 
-        function saveData() {
-            localStorage.setItem('travelData', JSON.stringify(visitedCountries));
-        }
+				// Récupérer le profil pour avoir le username
+				const profile = await getUserProfile();
+				if (profile && profile.username) {
+				    document.getElementById('user-email').textContent = profile.username;
+				} else {
+				    // Fallback sur l'email si pas de pseudo
+				    document.getElementById('user-email').textContent = user.email;
+				}
+		    } else {
+		        // Mode local : charger depuis localStorage
+		        const saved = localStorage.getItem('travelData');
+		        if (saved) {
+		            visitedCountries = JSON.parse(saved);
+		        }
+		    }
+		}
+
+		async function saveData() {
+		    const user = await getCurrentUser();
+    
+		    if (user) {
+		        // Sauvegarder dans Supabase
+		        // (le code de sauvegarde sera dans saveCountryDetails)
+		    } else {
+		        // Sauvegarder en local
+		        localStorage.setItem('travelData', JSON.stringify(visitedCountries));
+		    }
+		}
 
         function initContinentsList() {
             const container = document.getElementById('continents-list');
@@ -1673,17 +1766,15 @@
 	            selectedCountry = null;
 	        }
 
-			function saveCountryDetails() {
+			async function saveCountryDetails() {
 			    const notes = document.getElementById('notes-input').value;
 			    const budget = parseFloat(document.getElementById('budget-input').value) || 0;
     
-			    // Récupérer les activités
 			    const activities = {};
 			    document.querySelectorAll('.activity-checkbox').forEach(checkbox => {
 			        activities[checkbox.dataset.activity] = checkbox.checked;
 			    });
     
-			    // Récupérer les compagnons
 			    const companions = [];
 			    document.querySelectorAll('.companion-checkbox').forEach(checkbox => {
 			        if (checkbox.checked) {
@@ -1691,7 +1782,6 @@
 			        }
 			    });
     
-			    // Récupérer les photos (en base64 depuis le preview)
 			    const photos = [];
 			    document.querySelectorAll('#photos-preview img').forEach(img => {
 			        photos.push(img.src);
@@ -1708,7 +1798,26 @@
 			        photos: photos
 			    };
     
-			    saveData();
+			    // Sauvegarder
+			    const user = await getCurrentUser();
+			    if (user) {
+			        // Supabase
+			        await supabaseClient.from('visited_countries').upsert({
+			            user_id: user.id,
+			            country_name: selectedCountry,
+			            notes: notes,
+			            rating: currentRating,
+			            budget: budget,
+			            visit_date: new Date().toISOString(),
+			            photos: photos,
+			            activities: activities,
+			            companions: companions
+			        });
+			    } else {
+			        // localStorage
+			        localStorage.setItem('travelData', JSON.stringify(visitedCountries));
+			    }
+    
 			    updateGlobeColors();
 			    updateCountryItem(selectedCountry);
 			    updateAllContinentStats();
@@ -1729,16 +1838,50 @@
 			
 			let bucketList = {};
 
-			function loadBucketList() {
-			    const saved = localStorage.getItem('bucketList');
-			    if (saved) {
-			        bucketList = JSON.parse(saved);
+			async function loadBucketList() {
+			    const user = await getCurrentUser();
+			    if (!user) {
+			        const saved = localStorage.getItem('bucketList');
+			        if (saved) bucketList = JSON.parse(saved);
+			        return;
 			    }
-			}
 
-			function saveBucketList() {
-			    localStorage.setItem('bucketList', JSON.stringify(bucketList));
-			}
+			    const { data, error } = await supabaseClient
+			        .from('bucket_list')
+			        .select('*')
+			        .eq('user_id', user.id);
+
+			    if (data) {
+			        bucketList = {};
+			        data.forEach(item => {
+			            bucketList[item.country_name] = {
+			                addedDate: item.added_date,
+			                reason: item.reason,
+			                priority: item.priority
+			            };
+			        });
+			    }
+			} 
+ 
+
+					async function saveBucketList() {
+					    const user = await getCurrentUser();
+					    if (!user) {
+					        localStorage.setItem('bucketList', JSON.stringify(bucketList));
+					        return;
+					    }
+
+					    // Sauvegarder dans Supabase
+					    for (const [country, data] of Object.entries(bucketList)) {
+					        await supabaseClient.from('bucket_list').upsert({
+					            user_id: user.id,
+					            country_name: country,
+					            added_date: data.addedDate,
+					            reason: data.reason,
+					            priority: data.priority
+					        });
+					    }
+					}
 
 			function openBucketListModal() {
 			    renderBucketList();
@@ -3891,8 +4034,68 @@
 			        background: rgba(255, 215, 0, 0.8);
 			    }
 			`;
-			document.head.appendChild(style);					
+			document.head.appendChild(style);	
 			
-	    </script>
+			function showAuthModal(mode) {
+			    document.getElementById('auth-modal').style.display = 'block';
+			    document.getElementById('overlay').classList.add('active');
+    
+			    const usernameInput = document.getElementById('auth-username');
+			    const titleEl = document.getElementById('auth-title');
+			    const submitBtn = document.getElementById('auth-submit');
+    
+			    if (mode === 'signup') {
+			        // Mode inscription
+			        usernameInput.style.display = 'block';
+			        titleEl.textContent = '✨ Créer un compte';
+			        submitBtn.textContent = "S'inscrire";
+			        submitBtn.onclick = () => {
+			            const username = document.getElementById('auth-username').value;
+			            const email = document.getElementById('auth-email').value;
+			            const password = document.getElementById('auth-password').value;
+            
+			            if (!username || !email || !password) {
+			                alert('⚠️ Remplis tous les champs');
+			                return;
+			            }
+            
+			            signUp(email, password, username);
+			            closeAuthModal();
+			        };
+			    } else {
+			        // Mode connexion
+			        usernameInput.style.display = 'none';
+			        titleEl.textContent = '🔒 Connexion';
+			        submitBtn.textContent = 'Se connecter';
+			        submitBtn.onclick = () => {
+			            const email = document.getElementById('auth-email').value;
+			            const password = document.getElementById('auth-password').value;
+            
+			            if (!email || !password) {
+			                alert('⚠️ Remplis tous les champs');
+			                return;
+			            }
+            
+			            signIn(email, password); // ✅ CORRECTION ICI
+			            closeAuthModal();
+			        };
+			    }
+			}
+			
+			window.showAuthModal = showAuthModal;
+			window.closeAuthModal = closeAuthModal;	
+
+			function closeAuthModal() {
+			    document.getElementById('auth-modal').style.display = 'none';
+			    document.getElementById('overlay').classList.remove('active');
+    
+			    // Réinitialiser les champs
+			    document.getElementById('auth-username').value = '';
+			    document.getElementById('auth-email').value = '';
+			    document.getElementById('auth-password').value = '';
+			}
+						
+</script>
+			
 	</body>
 	</html>
