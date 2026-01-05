@@ -230,9 +230,9 @@
 		async displayLeaderboard() {
 		    const statsDiv = document.getElementById('hl-leaderboard');
 		    if (!statsDiv) return;
-    
+
 		    const user = await getCurrentUser();
-    
+
 		    if (!user) {
 		        statsDiv.innerHTML = `
 		            <div style="padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; text-align: center; font-size: 14px; color: #FF9800;">
@@ -241,48 +241,74 @@
 		        `;
 		        return;
 		    }
-    
+
+		    // ✨ AFFICHAGE IMMÉDIAT avec loader
+		    statsDiv.innerHTML = `
+		        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+		            <!-- Ton score actuel (instantané) -->
+		            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(76, 175, 80, 0.2); border-radius: 8px; border-left: 4px solid #4CAF50;">
+		                <div>
+		                    <div style="font-size: 11px; color: #4CAF50; font-weight: bold; margin-bottom: 4px;">✨ TON RECORD</div>
+		                    <div style="font-size: 13px; color: #fff;">Chargement...</div>
+		                </div>
+		                <div style="font-size: 24px; font-weight: bold; color: #4CAF50;">
+		                    ${this.currentStreak}
+		                </div>
+		            </div>
+            
+		            <!-- Record mondial (loader) -->
+		            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border-radius: 8px; border-left: 4px solid #FFD700;">
+		                <div>
+		                    <div style="font-size: 11px; color: #FFD700; font-weight: bold; margin-bottom: 4px;">🏆 RECORD MONDIAL</div>
+		                    <div style="font-size: 13px; color: #fff;">Chargement...</div>
+		                </div>
+		                <div style="font-size: 24px; font-weight: bold; color: #FFD700;">
+		                    ...
+		                </div>
+		            </div>
+		        </div>
+		    `;
+
 		    try {
-		        // 1️⃣ Récupérer le username de l'utilisateur
-		        const profile = await getUserProfile();
-		        const currentUsername = profile?.username || 'Anonyme';
-        
-		        // 2️⃣ Récupérer le meilleur score personnel
-		        const { data: personalBest, error: personalError } = await supabaseClient
-		            .from('game_scores')
-		            .select('score')
-		            .eq('user_id', user.id)
-		            .eq('game_type', 'higher_lower')
-		            .eq('category', this.currentCategory)
-		            .order('score', { ascending: false })
-		            .limit(1)
-		            .single();
-        
-		        const myBestScore = personalBest?.score || this.currentStreak;
-        
-		        // 3️⃣ Récupérer le record mondial avec le pseudo
-		        const { data: globalBest, error: globalError } = await supabaseClient
-		            .from('game_scores')
-		            .select('score, user_id')
-		            .eq('game_type', 'higher_lower')
-		            .eq('category', this.currentCategory)
-		            .order('score', { ascending: false })
-		            .limit(1)
-		            .single();
-        
+		        // 🚀 PARALLÉLISER toutes les requêtes en même temps
+		        const [profileResult, personalBestResult, globalBestResult] = await Promise.all([
+		            getUserProfile(),
+		            supabaseClient
+		                .from('game_scores')
+		                .select('score')
+		                .eq('user_id', user.id)
+		                .eq('game_type', 'higher_lower')
+		                .eq('category', this.currentCategory)
+		                .order('score', { ascending: false })
+		                .limit(1)
+		                .single(),
+		            supabaseClient
+		                .from('game_scores')
+		                .select('score, user_id')
+		                .eq('game_type', 'higher_lower')
+		                .eq('category', this.currentCategory)
+		                .order('score', { ascending: false })
+		                .limit(1)
+		                .single()
+		        ]);
+
+		        const currentUsername = profileResult?.username || 'Anonyme';
+		        const myBestScore = personalBestResult.data?.score || this.currentStreak;
+		        const globalBest = globalBestResult.data;
+
 		        let worldRecordHTML = '';
-        
+
 		        if (globalBest) {
-		            // Récupérer le username du détenteur du record
+		            // Récupérer le username du champion
 		            const { data: championProfile } = await supabaseClient
 		                .from('profiles')
 		                .select('username')
 		                .eq('id', globalBest.user_id)
 		                .single();
-            
+
 		            const championName = championProfile?.username || 'Champion';
 		            const isYou = globalBest.user_id === user.id;
-            
+
 		            worldRecordHTML = `
 		                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border-radius: 8px; border-left: 4px solid #FFD700;">
 		                    <div>
@@ -297,8 +323,8 @@
 		                </div>
 		            `;
 		        }
-        
-		        // 4️⃣ Afficher les stats
+
+		        // 🎯 MISE À JOUR FINALE (beaucoup plus rapide maintenant)
 		        statsDiv.innerHTML = `
 		            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
 		                <!-- Ton meilleur score -->
@@ -316,7 +342,7 @@
 		                ${worldRecordHTML}
 		            </div>
 		        `;
-        
+
 		    } catch (error) {
 		        console.error('Erreur chargement leaderboard:', error);
 		        statsDiv.innerHTML = `
