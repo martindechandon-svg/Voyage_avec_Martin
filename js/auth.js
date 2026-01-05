@@ -31,7 +31,7 @@ async function signUp(email, password, username) {
         }
     }
     
-    alert('✅ Compte créé ! Vérifie ton email pour confirmer.');
+    alert('✅ Compte créé ! Tu peux maintenant te connecter.');
     closeAuthModal();
     return data.user;
 }
