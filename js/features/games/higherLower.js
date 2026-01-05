@@ -325,7 +325,7 @@
 		            </div>
 		        `;
 		    }
-		}
+		},
         
         // Rejouer
         restart() {
