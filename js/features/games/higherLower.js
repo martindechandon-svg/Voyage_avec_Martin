@@ -263,16 +263,22 @@
 		        }
 		        console.log('✅ Mon meilleur score:', myBestScore);
 
-		        // 🔥 RECORD MONDIAL - ULTRA SIMPLE
-		        const worldQuery = await supabaseClient
-		            .from('game_scores')
-		            .select('score, username, user_id')
-		            .eq('game_type', 'higher_lower')
-		            .eq('category', this.currentCategory)
-		            .order('score', { ascending: false })
-		            .limit(1);
+			// 🔥 RECORD MONDIAL - CORRIGÉ
+			const worldQuery = await supabaseClient
+			    .from('game_scores')
+			    .select('score, username, user_id')
+			    .eq('game_type', 'higher_lower')
+			    .eq('category', this.currentCategory)
+			    .order('score', { ascending: false })  // ✅ Plus grand d'abord
+			    .limit(1);
 
-		        console.log('🌍 World scores:', worldQuery.data);
+			console.log('🌍 TOUS les scores (pour debug):', await supabaseClient
+			    .from('game_scores')
+			    .select('score, username, category')
+			    .eq('game_type', 'higher_lower')
+			    .eq('category', this.currentCategory)
+			    .order('score', { ascending: false }));
+
 
 		        let worldRecordHTML = '';
 		        if (worldQuery.data && worldQuery.data.length > 0) {
