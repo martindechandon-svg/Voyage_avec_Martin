@@ -364,10 +364,15 @@
 	    const user = await getCurrentUser();
 	    if (!user) return;
 
+	    // ✅ Récupérer le username depuis profiles
+	    const profile = await getUserProfile();
+	    const username = profile?.username || 'Anonyme';
+
 	    const { error } = await supabaseClient
 	        .from('game_scores')
 	        .insert({
 	            user_id: user.id,
+	            username: username,  // ✅ AJOUT du username
 	            game_type: gameType,
 	            score: score,
 	            difficulty: difficulty,
