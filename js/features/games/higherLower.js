@@ -241,18 +241,12 @@
 		        return;
 		    }
 
-		    statsDiv.innerHTML = `
-		        <div style="padding: 20px; text-align: center;">
-		            <div style="font-size: 24px;">⏳ Chargement...</div>
-		        </div>
-		    `;
-
 		    try {
 		        const profile = await getUserProfile();
 		        const currentUsername = profile?.username || 'Anonyme';
 
-		        // 🔥 REQUÊTE RECORD PERSONNEL
-		        const { data: personalScores, error: personalError } = await supabaseClient
+		        // 🔥 RECORD PERSONNEL - ULTRA SIMPLE
+		        const personalQuery = await supabaseClient
 		            .from('game_scores')
 		            .select('score')
 		            .eq('user_id', user.id)
@@ -261,11 +255,16 @@
 		            .order('score', { ascending: false })
 		            .limit(1);
 
-		        console.log('📊 Personal scores:', personalScores);
-		        const myBestScore = (personalScores && personalScores.length > 0) ? personalScores[0].score : this.currentStreak;
+		        console.log('📊 Personal scores:', personalQuery.data);
+        
+		        let myBestScore = this.currentStreak;
+		        if (personalQuery.data && personalQuery.data.length > 0) {
+		            myBestScore = personalQuery.data[0].score;
+		        }
+		        console.log('✅ Mon meilleur score:', myBestScore);
 
-		        // 🔥 REQUÊTE RECORD MONDIAL
-		        const { data: worldScores, error: worldError } = await supabaseClient
+		        // 🔥 RECORD MONDIAL - ULTRA SIMPLE
+		        const worldQuery = await supabaseClient
 		            .from('game_scores')
 		            .select('score, username, user_id')
 		            .eq('game_type', 'higher_lower')
@@ -273,11 +272,13 @@
 		            .order('score', { ascending: false })
 		            .limit(1);
 
-		        console.log('🌍 World scores:', worldScores);
+		        console.log('🌍 World scores:', worldQuery.data);
 
 		        let worldRecordHTML = '';
-		        if (worldScores && worldScores.length > 0) {
-		            const champion = worldScores[0];
+		        if (worldQuery.data && worldQuery.data.length > 0) {
+		            const champion = worldQuery.data[0];
+		            console.log('🏆 Champion:', champion);
+            
 		            const championName = champion.username || 'Champion';
 		            const isYou = champion.user_id === user.id;
 
@@ -292,12 +293,6 @@
 		                    <div style="font-size: 24px; font-weight: bold; color: #FFD700;">
 		                        ${champion.score}
 		                    </div>
-		                </div>
-		            `;
-		        } else {
-		            worldRecordHTML = `
-		                <div style="padding: 12px; background: rgba(100, 100, 100, 0.2); border-radius: 8px; text-align: center; color: #888;">
-		                    Aucun record mondial
 		                </div>
 		            `;
 		        }
@@ -318,7 +313,7 @@
 		        `;
 
 		    } catch (error) {
-		        console.error('❌ Erreur:', error);
+		        console.error('❌ ERREUR TOTALE:', error);
 		        statsDiv.innerHTML = `
 		            <div style="padding: 10px; background: rgba(244, 67, 54, 0.2); border-radius: 8px; text-align: center; font-size: 13px; color: #f44336;">
 		                ⚠️ Erreur: ${error.message}
