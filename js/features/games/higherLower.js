@@ -232,7 +232,6 @@
 		    if (!statsDiv) return;
 
 		    const user = await getCurrentUser();
-
 		    if (!user) {
 		        statsDiv.innerHTML = `
 		            <div style="padding: 15px; background: rgba(255, 152, 0, 0.2); border-radius: 8px; text-align: center; font-size: 14px; color: #FF9800;">
@@ -242,78 +241,45 @@
 		        return;
 		    }
 
-		    // ✨ AFFICHAGE IMMÉDIAT avec loader
 		    statsDiv.innerHTML = `
-		        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-		            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(76, 175, 80, 0.2); border-radius: 8px; border-left: 4px solid #4CAF50;">
-		                <div>
-		                    <div style="font-size: 11px; color: #4CAF50; font-weight: bold; margin-bottom: 4px;">✨ TON RECORD</div>
-		                    <div style="font-size: 13px; color: #fff;">Chargement...</div>
-		                </div>
-		                <div style="font-size: 24px; font-weight: bold; color: #4CAF50;">
-		                    ${this.currentStreak}
-		                </div>
-		            </div>
-            
-		            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border-radius: 8px; border-left: 4px solid #FFD700;">
-		                <div>
-		                    <div style="font-size: 11px; color: #FFD700; font-weight: bold; margin-bottom: 4px;">🏆 RECORD MONDIAL</div>
-		                    <div style="font-size: 13px; color: #fff;">Chargement...</div>
-		                </div>
-		                <div style="font-size: 24px; font-weight: bold; color: #FFD700;">
-		                    ...
-		                </div>
-		            </div>
+		        <div style="padding: 20px; text-align: center;">
+		            <div style="font-size: 24px;">⏳ Chargement...</div>
 		        </div>
 		    `;
 
 		    try {
-		        // 🔍 DEBUG : Afficher la catégorie recherchée
-		        console.log('🔍 Catégorie actuelle:', this.currentCategory);
+		        const profile = await getUserProfile();
+		        const currentUsername = profile?.username || 'Anonyme';
 
-				// 🚀 PARALLÉLISER toutes les requêtes en même temps
-				const [profileResult, personalBestResult, globalBestResult] = await Promise.all([
-				    getUserProfile(),
-				    supabaseClient
-				        .from('game_scores')
-				        .select('score')
-				        .eq('user_id', user.id)
-				        .eq('game_type', 'higher_lower')
-				        .eq('category', this.currentCategory)
-				        .order('score', { ascending: false })
-				        .limit(1)
-				        .maybeSingle(),
-				    supabaseClient.rpc('get_world_record', {
-				        p_game_type: 'higher_lower',
-				        p_category: this.currentCategory
-				    })
-				]);
+		        // 🔥 REQUÊTE RECORD PERSONNEL
+		        const { data: personalScores, error: personalError } = await supabaseClient
+		            .from('game_scores')
+		            .select('score')
+		            .eq('user_id', user.id)
+		            .eq('game_type', 'higher_lower')
+		            .eq('category', this.currentCategory)
+		            .order('score', { ascending: false })
+		            .limit(1);
 
-				// 🔍 DEBUG : Afficher les résultats
-				console.log('🔍 Profil:', profileResult);
-				console.log('🔍 Meilleur score personnel:', personalBestResult);
-				console.log('🔍 Meilleur score mondial:', globalBestResult);
-				console.log('🔍 Profil:', profileResult);
-				console.log('🔍 Meilleur score personnel RAW:', personalBestResult);
-				console.log('🔍 Meilleur score mondial RAW:', globalBestResult);
-				console.log('🔍 User ID:', user.id);
-				console.log('🔍 Catégorie:', this.currentCategory);
+		        console.log('📊 Personal scores:', personalScores);
+		        const myBestScore = (personalScores && personalScores.length > 0) ? personalScores[0].score : this.currentStreak;
 
-				const currentUsername = profileResult?.username || 'Anonyme';
-				const myBestScore = personalBestResult?.data?.score || this.currentStreak;
+		        // 🔥 REQUÊTE RECORD MONDIAL
+		        const { data: worldScores, error: worldError } = await supabaseClient
+		            .from('game_scores')
+		            .select('score, username, user_id')
+		            .eq('game_type', 'higher_lower')
+		            .eq('category', this.currentCategory)
+		            .order('score', { ascending: false })
+		            .limit(1);
 
-				// ✅ CHANGEMENT ICI : .rpc() retourne un tableau, prendre le premier élément
-				const globalBest = globalBestResult.data?.[0];  // ⬅️ AJOUTE [0] ici
+		        console.log('🌍 World scores:', worldScores);
 
-				let worldRecordHTML = '';
-
-				if (globalBest) {
-				    const championName = globalBest.username || 'Champion';
-				    const isYou = globalBest.user_id === user.id;
-
-				    console.log('🔍 Champion:', championName, 'Score:', globalBest.score);
-    
-				    // ... le reste du code
+		        let worldRecordHTML = '';
+		        if (worldScores && worldScores.length > 0) {
+		            const champion = worldScores[0];
+		            const championName = champion.username || 'Champion';
+		            const isYou = champion.user_id === user.id;
 
 		            worldRecordHTML = `
 		                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border-radius: 8px; border-left: 4px solid #FFD700;">
@@ -324,18 +290,20 @@
 		                        </div>
 		                    </div>
 		                    <div style="font-size: 24px; font-weight: bold; color: #FFD700;">
-		                        ${globalBest.score}
+		                        ${champion.score}
 		                    </div>
 		                </div>
 		            `;
 		        } else {
-		            console.log('⚠️ Aucun record mondial trouvé');
+		            worldRecordHTML = `
+		                <div style="padding: 12px; background: rgba(100, 100, 100, 0.2); border-radius: 8px; text-align: center; color: #888;">
+		                    Aucun record mondial
+		                </div>
+		            `;
 		        }
 
-		        // 🎯 MISE À JOUR FINALE
 		        statsDiv.innerHTML = `
 		            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-		                <!-- Ton meilleur score -->
 		                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(76, 175, 80, 0.2); border-radius: 8px; border-left: 4px solid #4CAF50;">
 		                    <div>
 		                        <div style="font-size: 11px; color: #4CAF50; font-weight: bold; margin-bottom: 4px;">✨ TON RECORD</div>
@@ -345,21 +313,19 @@
 		                        ${myBestScore}
 		                    </div>
 		                </div>
-                
-		                <!-- Record mondial -->
 		                ${worldRecordHTML}
 		            </div>
 		        `;
 
 		    } catch (error) {
-		        console.error('❌ Erreur chargement leaderboard:', error);
+		        console.error('❌ Erreur:', error);
 		        statsDiv.innerHTML = `
 		            <div style="padding: 10px; background: rgba(244, 67, 54, 0.2); border-radius: 8px; text-align: center; font-size: 13px; color: #f44336;">
-		                ⚠️ Erreur de chargement des statistiques
+		                ⚠️ Erreur: ${error.message}
 		            </div>
 		        `;
 		    }
-		},
+		}
         
         // Rejouer
         restart() {
