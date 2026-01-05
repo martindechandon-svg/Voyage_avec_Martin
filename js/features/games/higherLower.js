@@ -289,6 +289,7 @@
 		                .eq('game_type', 'higher_lower')
 		                .eq('category', this.currentCategory)
 		                .order('score', { ascending: false })
+						.order('played_at', { ascending: true })  // ⬅️ AJOUTE CETTE LIGNE
 		                .limit(1)
 		                .maybeSingle()  // ⬅️ CHANGEMENT ICI
 		        ]);
