@@ -286,6 +286,7 @@
 				    supabaseClient.rpc('get_world_record', {
 				        p_game_type: 'higher_lower',
 				        p_category: this.currentCategory
+					}).abortSignal(new AbortController().signal)			
 				    })
 				]);
 
