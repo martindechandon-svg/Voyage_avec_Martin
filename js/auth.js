@@ -1,6 +1,7 @@
 // Inscription
 // Inscription
 async function signUp(email, password, username) {
+    // D'abord créer l'utilisateur avec le username dans les metadata
     const { data, error } = await supabaseClient.auth.signUp({
         email: email,
         password: password,
@@ -10,36 +11,47 @@ async function signUp(email, password, username) {
             }
         }
     });
-
+    
     if (error) {
-        console.error('Erreur inscription:', error);
-        showNotification(error.message, 'error', 'Erreur d\'inscription');
-    } else {
-        showNotification('Vérifie ton email pour confirmer ton compte', 'success', 'Inscription réussie');
-        
-        // Créer le profil
-        await supabaseClient.from('profiles').insert({
-            id: data.user.id,
-            username: username,
-            email: email
-        });
+        alert('Erreur inscription : ' + error.message);
+        return null;
     }
+    
+    // Créer manuellement le profil (au cas où le trigger ne marche pas)
+    if (data.user) {
+        const { error: profileError } = await supabaseClient
+            .from('profiles')
+            .insert({
+                id: data.user.id,
+                username: username
+            });
+        
+        if (profileError) {
+            console.error('Erreur création profil:', profileError);
+        }
+    }
+    
+    alert('✅ Compte créé ! Tu peux maintenant te connecter.');
+    closeAuthModal();
+    return data.user;
 }
 
 // Connexion
 async function signIn(email, password) {
-    const { error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
         email: email,
         password: password
     });
-
+    
     if (error) {
-        console.error('Erreur connexion:', error);
-        showNotification(error.message, 'error', 'Erreur de connexion');
-    } else {
-        showNotification('Tu es maintenant connecté', 'success', 'Connexion réussie');
-        location.reload();
+        alert('Erreur connexion : ' + error.message);
+        return null;
     }
+    
+    alert('✅ Connexion réussie !');
+    await syncLocalToCloud(); // Synchroniser les données localStorage
+    window.location.reload();
+    return data.user;
 }
 
 // Déconnexion
