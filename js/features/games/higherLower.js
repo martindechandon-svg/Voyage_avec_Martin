@@ -283,15 +283,10 @@
 		                .order('score', { ascending: false })
 		                .limit(1)
 		                .maybeSingle(),  // ⬅️ CHANGEMENT ICI
-		            supabaseClient
-		                .from('game_scores')
-		                .select('score, user_id, username')  // ⬅️ AJOUT de username ici
-		                .eq('game_type', 'higher_lower')
-		                .eq('category', this.currentCategory)
-		                .order('score', { ascending: false })
-						.order('played_at', { ascending: true })  // ⬅️ AJOUTE CETTE LIGNE
-		                .limit(1)
-		                .maybeSingle()  // ⬅️ CHANGEMENT ICI
+					supabaseClient.rpc('get_world_record', {
+					    p_game_type: 'higher_lower',
+					    p_category: this.currentCategory
+					})
 		        ]);
 
 		        // 🔍 DEBUG : Afficher les résultats
