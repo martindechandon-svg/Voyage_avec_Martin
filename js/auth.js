@@ -48,16 +48,16 @@ async function signIn(email, password) {
     await syncLocalToCloud();
     await syncCloudToLocal();
     
-    alert('Connexion reussie !');
-    window.location.reload();
+	showNotification('Tu es maintenant connecté !', 'success');
+	setTimeout(() => window.location.reload(), 1500);
     return data.user;
 }
 
 // Deconnexion
 async function signOut() {
     await supabaseClient.auth.signOut();
-    alert('Deconnexion reussie');
-    window.location.reload();
+	showNotification('À bientôt !','success', '👋 Déconnexion réussie');
+	setTimeout(() => window.location.reload(), 1500);
 }
 
 // Synchroniser localStorage -> Supabase
