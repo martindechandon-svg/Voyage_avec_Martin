@@ -435,3 +435,317 @@
 				
 			}
 		}
+		/* ========================================
+		   RESPONSIVE MOBILE
+		   ======================================== */
+
+		@media screen and (max-width: 768px) {
+    
+		    /* === CONTENEUR PRINCIPAL === */
+		    #container {
+		        flex-direction: column;
+		    }
+    
+		    /* === SIDEBAR === */
+		    #sidebar {
+		        width: 100%;
+		        left: -100%;
+		        height: 100vh;
+		        z-index: 1000;
+		        transition: left 0.3s ease;
+		    }
+    
+		    #sidebar.open {
+		        left: 0;
+		    }
+    
+		    /* Logo plus petit sur mobile */
+		    #logo {
+		        width: 150px;
+		        height: 150px;
+		    }
+    
+		    #title {
+		        font-size: 20px;
+		    }
+    
+		    /* === BOUTON TOGGLE SIDEBAR === */
+		    #toggle-sidebar {
+		        top: 10px;
+		        left: 10px;
+		        padding: 12px 15px;
+		        font-size: 24px;
+		        z-index: 999;
+		        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+		    }
+    
+		    /* === GLOBE === */
+		    #globe-container {
+		        width: 100%;
+		        height: 60vh;
+		    }
+    
+		    /* === CONTRÔLES === */
+		    #controls {
+		        bottom: 10px;
+		        flex-direction: column;
+		        gap: 8px;
+		        padding: 10px;
+		        width: 90%;
+		        max-width: 300px;
+		    }
+    
+		    .control-btn {
+		        width: 100%;
+		        padding: 12px;
+		        font-size: 14px;
+		    }
+    
+		    /* === MODALS === */
+		    #modal,
+		    #stats-modal,
+		    #bucket-list-modal,
+		    #games-modal,
+		    #itinerary-modal,
+		    #auth-modal {
+		        width: 95%;
+		        max-width: 95%;
+		        padding: 20px;
+		        max-height: 85vh;
+		        overflow-y: auto;
+		    }
+    
+		    #modal h2 {
+		        font-size: 22px;
+		    }
+    
+		    /* Boutons de fermeture plus gros sur mobile */
+		    #close-modal-btn,
+		    #close-stats-btn,
+		    #close-bucket-btn,
+		    #close-games-btn,
+		    #close-itinerary-btn {
+		        width: 40px;
+		        height: 40px;
+		        font-size: 22px;
+		    }
+    
+		    /* === FORMULAIRES === */
+		    textarea,
+		    input[type="text"],
+		    input[type="email"],
+		    input[type="password"],
+		    input[type="number"],
+		    input[type="date"],
+		    select {
+		        font-size: 16px; /* Évite le zoom automatique sur iOS */
+		    }
+    
+		    /* === RATING STARS === */
+		    .rating {
+		        font-size: 40px;
+		        justify-content: center;
+		    }
+    
+		    /* === BUTTONS GROUP === */
+		    .button-group {
+		        flex-direction: column;
+		        gap: 10px;
+		    }
+    
+		    .button-group button {
+		        width: 100%;
+		    }
+    
+		    /* === STATS === */
+		    #stats {
+		        font-size: 14px;
+		    }
+    
+		    /* === SECTIONS CONTINENTS === */
+		    .continent-header {
+		        padding: 10px;
+		        font-size: 14px;
+		    }
+    
+		    .country-item {
+		        padding: 8px;
+		        margin-left: 10px;
+		    }
+    
+		    .country-name {
+		        font-size: 13px;
+		    }
+    
+		    /* === SEARCH BOX === */
+		    #search-box,
+		    #rating-filter {
+		        font-size: 14px;
+		        padding: 10px;
+		    }
+    
+		    /* === BOUTONS SIDEBAR === */
+		    #personal-stats-btn,
+		    #bucket-list-btn,
+		    #search-general-flights-btn,
+		    #itinerary-btn,
+		    #games-btn {
+		        font-size: 13px;
+		        padding: 10px;
+		    }
+    
+		    /* === AUTH SECTION === */
+		    #auth-section {
+		        padding: 12px;
+		    }
+    
+		    #auth-section button {
+		        padding: 8px;
+		        font-size: 13px;
+		    }
+    
+		    /* === GAMES MENU === */
+		    #games-menu > div {
+		        grid-template-columns: 1fr;
+		    }
+    
+		    /* === HIGHER OR LOWER === */
+		    #higher-lower-game > div:first-child {
+		        grid-template-columns: 1fr;
+		    }
+    
+		    #hl-left-card,
+		    #hl-right-card {
+		        padding: 20px;
+		    }
+    
+		    #hl-left-country,
+		    #hl-right-country {
+		        font-size: 24px;
+		    }
+    
+		    #hl-left-value,
+		    #hl-right-value {
+		        font-size: 36px;
+		    }
+    
+		    /* === QUIZ === */
+		    #quiz-options {
+		        grid-template-columns: 1fr;
+		    }
+    
+		    /* === ITINERARY TIMELINE === */
+		    #itinerary-timeline {
+		        height: 100px;
+		        padding: 15px 20px;
+		    }
+    
+		    /* Boutons exit et export video empilés */
+		    #exit-itinerary-btn,
+		    #export-video-btn {
+		        position: fixed;
+		        right: 10px;
+		        width: auto;
+		        padding: 10px 15px;
+		        font-size: 13px;
+		    }
+    
+		    #exit-itinerary-btn {
+		        top: 60px;
+		    }
+    
+		    #export-video-btn {
+		        top: 110px;
+		    }
+    
+		    /* === NOTIFICATIONS === */
+		    div[style*="position: fixed"][style*="right: 20px"] {
+		        right: 10px !important;
+		        left: 10px !important;
+		        width: calc(100% - 20px) !important;
+		        min-width: auto !important;
+		        max-width: none !important;
+		    }
+    
+		    /* === BEER GAME === */
+		    #beer-countries-list,
+		    #beer-tour-options {
+		        grid-template-columns: 1fr;
+		    }
+    
+		    /* === INTERPOL === */
+		    #interpol-game > div > div {
+		        grid-template-columns: 1fr;
+		    }
+    
+		    #interpol-countries-list {
+		        max-height: 300px;
+		    }
+		}
+
+		/* ========================================
+		   TRÈS PETITS ÉCRANS (< 480px)
+		   ======================================== */
+
+		@media screen and (max-width: 480px) {
+    
+		    #logo {
+		        width: 120px;
+		        height: 120px;
+		    }
+    
+		    #title {
+		        font-size: 18px;
+		    }
+    
+		    #modal,
+		    #stats-modal,
+		    #bucket-list-modal,
+		    #games-modal,
+		    #itinerary-modal {
+		        padding: 15px;
+		    }
+    
+		    #modal h2 {
+		        font-size: 20px;
+		    }
+    
+		    .rating {
+		        font-size: 35px;
+		    }
+    
+		    #controls {
+		        bottom: 5px;
+		    }
+    
+		    .control-btn {
+		        padding: 10px;
+		        font-size: 13px;
+		    }
+    
+		    /* Activités et compagnons sur une colonne */
+		    div[style*="grid-template-columns: 1fr 1fr"] {
+		        grid-template-columns: 1fr !important;
+		    }
+		}
+
+		/* ========================================
+		   LANDSCAPE MODE MOBILE
+		   ======================================== */
+
+		@media screen and (max-width: 896px) and (orientation: landscape) {
+    
+		    #globe-container {
+		        height: 80vh;
+		    }
+    
+		    #sidebar {
+		        height: 100vh;
+		        overflow-y: auto;
+		    }
+    
+		    #controls {
+		        flex-direction: row;
+		        bottom: 10px;
+		    }
+		}
