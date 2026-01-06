@@ -846,3 +846,24 @@
 		        bottom: 10px;
 		    }
 		}
+		@media screen and (max-width: 600px) {
+		    /* Met les deux pays l'un au dessus de l'autre */
+		    #hl-game-container {
+		        flex-direction: column !important;
+		        height: auto !important;
+		    }
+
+		    .hl-country {
+		        width: 100% !important;
+		        height: 45vh !important; /* Chaque pays prend la moitié de la hauteur */
+		    }
+
+		    .hl-vs {
+		        top: 50%;
+		        left: 50%;
+		        transform: translate(-50%, -50%);
+		        width: 40px;
+		        height: 40px;
+		        font-size: 16px;
+		    }
+		}
