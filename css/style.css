@@ -1,4 +1,4 @@
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -204,7 +204,7 @@
             z-index: 1000;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 			max-height: 90vh;
-			    overflow-y: auto;
+			overflow-y: auto;
         }
 
         #modal.active {
@@ -390,51 +390,52 @@
 		        transform: translate(-50%, -50%) scale(1);
 		        opacity: 1;
 		    }
-			
-			@keyframes slideInDown {
-			    from {
-			        transform: translate(-50%, -100%);
-			        opacity: 0;
-			    }
-			    to {
-			        transform: translate(-50%, 0);
-			        opacity: 1;
-			    }
-			}
-
-			@keyframes slideOutUp {
-			    from {
-			        transform: translate(-50%, 0);
-			        opacity: 1;
-			    }
-			    to {
-			        transform: translate(-50%, -100%);
-			        opacity: 0;
-			    }
-			}
-			@keyframes slideInRight {
-			    from {
-			        transform: translateX(100%);
-			        opacity: 0;
-			    }
-			    to {
-			        transform: translateX(0);
-			        opacity: 1;
-			    }
-			}
-
-			@keyframes slideOutRight {
-			    from {
-			        transform: translateX(0);
-			        opacity: 1;
-			    }
-			    to {
-			        transform: translateX(100%);
-			        opacity: 0;
-			    }
-				
-			}
 		}
+			
+		@keyframes slideInDown {
+		    from {
+		        transform: translate(-50%, -100%);
+		        opacity: 0;
+		    }
+		    to {
+		        transform: translate(-50%, 0);
+		        opacity: 1;
+		    }
+		}
+
+		@keyframes slideOutUp {
+		    from {
+		        transform: translate(-50%, 0);
+		        opacity: 1;
+		    }
+		    to {
+		        transform: translate(-50%, -100%);
+		        opacity: 0;
+		    }
+		}
+		
+		@keyframes slideInRight {
+		    from {
+		        transform: translateX(100%);
+		        opacity: 0;
+		    }
+		    to {
+		        transform: translateX(0);
+		        opacity: 1;
+		    }
+		}
+
+		@keyframes slideOutRight {
+		    from {
+		        transform: translateX(0);
+		        opacity: 1;
+		    }
+		    to {
+		        transform: translateX(100%);
+		        opacity: 0;
+		    }
+		}
+
 		/* ========================================
 		   RESPONSIVE MOBILE
 		   ======================================== */
@@ -470,20 +471,21 @@
 		    }
     
 		    /* === BOUTON TOGGLE SIDEBAR === */
-		     #toggle-sidebar {
-		         top: 10px;
-		         left: 10px;
-		         padding: 12px 15px;
-		         font-size: 24px;
-		         z-index: 1001; /* Au-dessus de la sidebar (qui est à 1000) */
-		         box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-		         position: fixed;
-		     }
+		    #toggle-sidebar {
+		        position: fixed;
+		        top: 10px;
+		        left: 10px;
+		        padding: 12px 15px;
+		        font-size: 24px;
+		        z-index: 1002;
+		        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+		        transition: left 0.3s ease;
+		    }
     
-		     /* Changer l'icône quand la sidebar est ouverte */
-		     #sidebar.open ~ #toggle-sidebar::after {
-		         content: '✕';
-		     }
+		    /* Déplacer le bouton à droite quand sidebar ouverte */
+		    #sidebar.open ~ #globe-container #toggle-sidebar {
+		        left: calc(100% - 70px);
+		    }
     
 		    /* === GLOBE === */
 		    #globe-container {
@@ -507,114 +509,112 @@
 		        font-size: 14px;
 		    }
     
-			@media screen and (max-width: 768px) {
+		    /* === TOUS LES MODALS === */
+		    #modal,
+		    #stats-modal,
+		    #bucket-list-modal,
+		    #games-modal,
+		    #itinerary-modal,
+		    #auth-modal,
+		    #flights-modal,
+		    div[id$="-modal"],
+		    div[id$="-game"] {
+		        width: 95vw !important;
+		        max-width: 95vw !important;
+		        min-width: auto !important;
+		        padding: 20px 15px !important;
+		        max-height: 90vh !important;
+		        overflow-y: auto !important;
+		        left: 50% !important;
+		        top: 50% !important;
+		        transform: translate(-50%, -50%) !important;
+		    }
     
-			    /* === TOUS LES MODALS === */
-			    #modal,
-			    #stats-modal,
-			    #bucket-list-modal,
-			    #games-modal,
-			    #itinerary-modal,
-			    #auth-modal,
-			    #flights-modal,
-			    div[id*="-modal"] {
-			        width: 95vw !important;
-			        max-width: 95vw !important;
-			        min-width: auto !important;
-			        padding: 20px 15px !important;
-			        max-height: 90vh !important;
-			        overflow-y: auto !important;
-			        left: 50% !important;
-			        top: 50% !important;
-			        transform: translate(-50%, -50%) !important;
-			    }
+		    /* Titres des modals */
+		    #modal h2,
+		    #stats-modal h2,
+		    #bucket-list-modal h2,
+		    #games-modal h2,
+		    #itinerary-modal h2 {
+		        font-size: 20px !important;
+		        margin-bottom: 20px !important;
+		    }
     
-			    /* Titres des modals */
-			    #modal h2,
-			    #stats-modal h2,
-			    #bucket-list-modal h2,
-			    #games-modal h2,
-			    #itinerary-modal h2 {
-			        font-size: 20px !important;
-			        margin-bottom: 20px !important;
-			    }
+		    /* Sous-titres */
+		    #modal h3,
+		    #stats-modal h3,
+		    #bucket-list-modal h3,
+		    #games-modal h3,
+		    #itinerary-modal h3 {
+		        font-size: 16px !important;
+		    }
     
-			    /* Sous-titres */
-			    #modal h3,
-			    #stats-modal h3,
-			    #bucket-list-modal h3,
-			    #games-modal h3,
-			    #itinerary-modal h3 {
-			        font-size: 16px !important;
-			    }
+		    /* Paragraphes */
+		    #modal p,
+		    #stats-modal p,
+		    #bucket-list-modal p,
+		    #games-modal p,
+		    #itinerary-modal p {
+		        font-size: 14px !important;
+		    }
     
-			    /* Paragraphes */
-			    #modal p,
-			    #stats-modal p,
-			    #bucket-list-modal p,
-			    #games-modal p,
-			    #itinerary-modal p {
-			        font-size: 14px !important;
-			    }
+		    /* Boutons dans les modals */
+		    #modal button,
+		    #stats-modal button,
+		    #bucket-list-modal button,
+		    #games-modal button,
+		    #itinerary-modal button {
+		        padding: 12px 15px !important;
+		        font-size: 14px !important;
+		    }
     
-			    /* Boutons dans les modals */
-			    #modal button,
-			    #stats-modal button,
-			    #bucket-list-modal button,
-			    #games-modal button,
-			    #itinerary-modal button {
-			        padding: 12px 15px !important;
-			        font-size: 14px !important;
-			    }
+		    /* Grilles dans les modals */
+		    #games-menu > div,
+		    #quiz-levels-menu > div,
+		    #higher-lower-menu > div,
+		    #beer-levels-menu > div,
+		    #interpol-levels-menu > div {
+		        grid-template-columns: 1fr !important;
+		        gap: 12px !important;
+		    }
     
-			    /* Grilles dans les modals */
-			    #games-menu > div,
-			    #quiz-levels-menu > div,
-			    #higher-lower-menu > div,
-			    #beer-levels-menu > div,
-			    #interpol-levels-menu > div {
-			        grid-template-columns: 1fr !important;
-			        gap: 12px !important;
-			    }
+		    /* Inputs dans les modals */
+		    #modal input,
+		    #modal textarea,
+		    #modal select,
+		    #bucket-list-modal input,
+		    #itinerary-modal input {
+		        width: 100% !important;
+		        font-size: 16px !important;
+		        padding: 12px !important;
+		    }
     
-			    /* Inputs dans les modals */
-			    #modal input,
-			    #modal textarea,
-			    #modal select,
-			    #bucket-list-modal input,
-			    #itinerary-modal input {
-			        width: 100% !important;
-			        font-size: 16px !important;
-			        padding: 12px !important;
-			    }
+		    /* Formulaire multi-colonnes → 1 colonne */
+		    .form-group > div[style*="display: flex"],
+		    .form-group > div[style*="display: grid"] {
+		        flex-direction: column !important;
+		        grid-template-columns: 1fr !important;
+		    }
     
-			    /* Formulaire multi-colonnes → 1 colonne */
-			    .form-group > div[style*="display: flex"],
-			    .form-group > div[style*="display: grid"] {
-			        flex-direction: column !important;
-			        grid-template-columns: 1fr !important;
-			    }
+		    /* Photos preview */
+		    #photos-preview {
+		        justify-content: center !important;
+		    }
     
-			    /* Photos preview */
-			    #photos-preview {
-			        justify-content: center !important;
-			    }
+		    /* Bucket list search */
+		    #bucket-list-modal > div:first-of-type {
+		        flex-direction: column !important;
+		        gap: 10px !important;
+		    }
     
-			    /* Bucket list search */
-			    #bucket-list-modal > div:first-of-type {
-			        flex-direction: column !important;
-			        gap: 10px !important;
-			    }
+		    #bucket-search {
+		        width: 100% !important;
+		    }
     
-			    #bucket-search {
-			        width: 100% !important;
-			    }
-    
-			    /* Itinéraire steps */
-			    #steps-list > div {
-			        flex-wrap: wrap !important;
-			    }
-			}
+		    /* Itinéraire steps */
+		    #steps-list > div {
+		        flex-wrap: wrap !important;
+		    }
     
 		    /* Boutons de fermeture plus gros sur mobile */
 		    #close-modal-btn,
@@ -635,7 +635,7 @@
 		    input[type="number"],
 		    input[type="date"],
 		    select {
-		        font-size: 16px; /* Évite le zoom automatique sur iOS */
+		        font-size: 16px;
 		    }
     
 		    /* === RATING STARS === */
