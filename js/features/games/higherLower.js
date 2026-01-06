@@ -78,7 +78,7 @@
             // 1️⃣ Déterminer la nouvelle catégorie EN PREMIER
             let displayCategory = this.currentCategory;
             if (this.currentCategory === 'random') {
-                const categories = ['population', 'surface', 'pib', 'medaillesJO', 'batailles'];
+                const categories = ['population', 'surface', 'pib', 'medaillesJO', 'batailles', 'unesco', 'tourisme'];
                 displayCategory = categories[Math.floor(Math.random() * categories.length)];
             }
             
@@ -114,6 +114,8 @@
                 pib: '💰 PIB',
                 medaillesJO: '🥇 Médailles JO',
                 batailles: '⚔️ Batailles',
+    			unesco: '🏛️ Sites UNESCO',       
+    			tourisme: '✈️ Tourisme',         
                 random: '🎲 Aléatoire'
             };
             
@@ -157,21 +159,25 @@
         },
         
         // Formater les valeurs
-        formatValue(value, category) {
-            switch(category) {
-                case 'population':
-                    return (value / 1000000).toFixed(1) + 'M';
-                case 'surface':
-                    return value.toLocaleString() + ' km²';
-                case 'pib':
-                    return (value / 1000).toFixed(0) + ' Md$';
-                case 'medaillesJO':
-                case 'batailles':
-                    return value.toLocaleString();
-                default:
-                    return value;
-            }
-        },
+		formatValue(value, category) {
+		    switch(category) {
+		        case 'population':
+		            return (value / 1000000).toFixed(1) + 'M';
+		        case 'surface':
+		            return value.toLocaleString() + ' km²';
+		        case 'pib':
+		            return (value / 1000).toFixed(0) + ' Md$';
+		        case 'medaillesJO':
+		        case 'batailles':
+		            return value.toLocaleString();
+		        case 'unesco':                          // ✅ NOUVEAU
+		            return value.toLocaleString() + ' site(s)';
+		        case 'tourisme':                        // ✅ NOUVEAU
+		            return (value / 1000000).toFixed(1) + 'Millions de visiteurs';
+		        default:
+		            return value;
+		    }
+		},
         
         // Vérifier la réponse
         guess(guess) {
