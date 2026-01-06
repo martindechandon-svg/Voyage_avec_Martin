@@ -23,7 +23,7 @@
         },
         
         // Démarrer le jeu
-        start(category) {
+       async start(category) {
             // Vérification des dépendances
             if (typeof window.countriesData === 'undefined' || !countriesData) {
                 console.error('❌ countriesData non chargé !');
@@ -38,9 +38,8 @@
             this.currentStreak = 0;
             this.usedCountries = [];
             
-            // Charger le record depuis localStorage
-            const recordKey = `hl_record_${category}`;
-            this.bestRecord = parseInt(localStorage.getItem(recordKey) || '0');
+			// Charger le record depuis Supabase
+			await this.loadBestRecord(category);
             
             document.getElementById('higher-lower-menu').style.display = 'none';
             document.getElementById('higher-lower-game').style.display = 'block';
@@ -48,6 +47,31 @@
             
             this.loadNewRound();
         },
+		
+		// Charger le meilleur record depuis Supabase
+		async loadBestRecord(category) {
+		    const user = await getCurrentUser();
+    
+		    if (user) {
+		        // Charger depuis Supabase
+		        const { data } = await supabaseClient
+		            .from('game_scores')
+		            .select('score')
+		            .eq('user_id', user.id)
+		            .eq('game_type', 'higher_lower')
+		            .eq('category', category)
+		            .order('score', { ascending: false })
+		            .limit(1);
+        
+		        this.bestRecord = (data && data.length > 0) ? data[0].score : 0;
+		        console.log('✅ Record chargé depuis Supabase:', this.bestRecord);
+		    } else {
+		        // Fallback sur localStorage si pas connecté
+		        const recordKey = `hl_record_${category}`;
+		        this.bestRecord = parseInt(localStorage.getItem(recordKey) || '0');
+		        console.log('📦 Record chargé depuis localStorage:', this.bestRecord);
+		    }
+		},
         
         // Charger un nouveau tour
         loadNewRound() {
