@@ -443,6 +443,7 @@
 			        transform: translateX(100%);
 			        opacity: 0;
 			    }
+				
 			}
 		}
 		
@@ -4114,6 +4115,44 @@
 			    document.getElementById('auth-username').value = '';
 			    document.getElementById('auth-email').value = '';
 			    document.getElementById('auth-password').value = '';
+			}
+			
+			function showNotification(message, type = 'success', title = '') {
+			    const notification = document.createElement('div');
+			    notification.style.cssText = `
+			        position: fixed;
+			        top: 20px;
+			        right: 20px;
+			        min-width: 300px;
+			        max-width: 400px;
+			        background: ${type === 'success' ? 'linear-gradient(135deg, #4CAF50, #45a049)' : 
+			                     type === 'warning' ? 'linear-gradient(135deg, #FF9800, #F57C00)' : 
+			                     'linear-gradient(135deg, #2196F3, #1976D2)'};
+			        color: white;
+			        padding: 20px 25px;
+			        border-radius: 12px;
+			        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+			        z-index: 9999;
+			        animation: slideInRight 0.5s ease-out;
+			        border-left: 5px solid rgba(255, 255, 255, 0.5);
+			    `;
+    
+			    notification.innerHTML = `
+			        <div style="display: flex; align-items: center; gap: 15px;">
+			            <div style="font-size: 32px;">${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️'}</div>
+			            <div style="flex: 1;">
+			                ${title ? `<div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">${title}</div>` : ''}
+			                <div style="font-size: 14px; opacity: 0.95;">${message}</div>
+			            </div>
+			        </div>
+			    `;
+    
+			    document.body.appendChild(notification);
+    
+			    setTimeout(() => {
+			        notification.style.animation = 'slideOutRight 0.5s ease-out';
+			        setTimeout(() => notification.remove(), 500);
+			    }, 3000);
 			}
 						
 </script>
