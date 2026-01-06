@@ -5,258 +5,359 @@
     'use strict';
     
     // ===== DATA =====
-    const interpolMissions = [
-        {
-            country: "France",
-            clues: [
-                "🍷 Grand producteur de vin",
-                "🗼 Possède une tour emblématique de 330m",
-                "🇪🇺 Membre fondateur de l'Union Européenne",
-                "🥖 Célèbre pour sa baguette",
-                "🎨 Abrite le musée du Louvre"
-            ]
-        },
-        {
-            country: "Japon",
-            clues: [
-                "🗻 Mont Fuji culminant à 3776m",
-                "🍣 Inventeur des sushis",
-                "🌸 Célèbre pour ses cerisiers en fleurs",
-                "🤖 Leader mondial en robotique",
-                "🏯 Architecture traditionnelle unique"
-            ]
-        },
-        {
-            country: "Brésil",
-            clues: [
-                "⚽ 5 fois champion du monde de football",
-                "🌳 Abrite la plus grande forêt tropicale",
-                "🎭 Carnaval de Rio mondialement connu",
-                "🗿 Statue du Christ Rédempteur",
-                "🇧🇷 Plus grand pays d'Amérique du Sud"
-            ]
-        },
-        {
-            country: "Égypte",
-            clues: [
-                "🏜️ Désert du Sahara",
-                "🔺 Pyramides de Gizeh",
-                "🦁 Sphinx gardien des pyramides",
-                "🌊 Traversé par le Nil",
-                "📜 Berceau des pharaons"
-            ]
-        },
-        {
-            country: "Australie",
-            clues: [
-                "🦘 Pays des kangourous",
-                "🏝️ Plus de 10 000 plages",
-                "🎭 Opéra de Sydney iconique",
-                "🪃 Inventeur du boomerang",
-                "🐨 Habitat naturel du koala"
-            ]
-        },
-        {
-            country: "Inde",
-            clues: [
-                "🕌 Taj Mahal à Agra",
-                "🐘 Population importante d'éléphants",
-                "🍛 Berceau du curry",
-                "🙏 Spiritualité et yoga",
-                "👥 Plus de 1,4 milliard d'habitants"
-            ]
-        },
-        {
-            country: "Canada",
-            clues: [
-                "🍁 Feuille d'érable sur le drapeau",
-                "🏒 Hockey sur glace sport national",
-                "❄️ Climat très froid l'hiver",
-                "🗻 Rocheuses canadiennes",
-                "🇨🇦 Deuxième plus grand pays du monde"
-            ]
-        },
-        {
-            country: "Italie",
-            clues: [
-                "🍕 Inventeur de la pizza",
-                "🏛️ Colisée à Rome",
-                "🗼 Tour de Pise penchée",
-                "🎨 Renaissance italienne",
-                "🇮🇹 Forme de botte"
-            ]
-        },
-        {
-            country: "Chine",
-            clues: [
-                "🏯 Grande Muraille visible de l'espace",
-                "🐼 Panda géant endémique",
-                "👥 Plus de 1,4 milliard d'habitants",
-                "🥡 Inventeur des nouilles",
-                "🎎 Cité interdite à Pékin"
-            ]
-        },
-        {
-            country: "Russie",
-            clues: [
-                "❄️ Plus grand pays du monde",
-                "🏛️ Place Rouge à Moscou",
-                "🚂 Transsibérien mythique",
-                "🪆 Poupées russes matriochkas",
-                "🐻 Symbole de l'ours brun"
-            ]
-        },
-        {
-            country: "Mexique",
-            clues: [
-                "🌮 Inventeur des tacos",
-                "🗿 Pyramides aztèques et mayas",
-                "🌶️ Cuisine épicée renommée",
-                "💀 Fête des Morts colorée",
-                "🏖️ Plages de Cancún"
-            ]
-        },
-        {
-            country: "Royaume-Uni",
-            clues: [
-                "👑 Monarchie constitutionnelle",
-                "🏰 Big Ben à Londres",
-                "☕ Culture du thé",
-                "🚌 Bus rouges à deux étages",
-                "🎭 Shakespeare et théâtre"
-            ]
-        },
-        {
-            country: "Allemagne",
-            clues: [
-                "🍺 Oktoberfest à Munich",
-                "🏰 Château de Neuschwanstein",
-                "🚗 Industrie automobile puissante",
-                "🧱 Ancien mur de Berlin",
-                "🎼 Beethoven et musique classique"
-            ]
-        },
-        {
-            country: "Argentine",
-            clues: [
-                "💃 Berceau du tango",
-                "🥩 Viande de bœuf réputée",
-                "⚽ Maradona et Messi",
-                "🏔️ Cordillère des Andes",
-                "🧊 Glacier Perito Moreno"
-            ]
-        },
-        {
-            country: "Afrique du Sud",
-            clues: [
-                "🦁 Safaris et Big Five",
-                "💎 Mines de diamants",
-                "🏔️ Table Mountain au Cap",
-                "🏉 Champion du monde de rugby",
-                "🌍 Nation arc-en-ciel"
-            ]
-        },
-        {
-            country: "Espagne",
-            clues: [
-                "💃 Flamenco et corrida",
-                "🏰 Sagrada Familia à Barcelone",
-                "🥘 Inventeur de la paella",
-                "☀️ Plus de 300 jours de soleil par an",
-                "🏖️ Îles Baléares et Canaries"
-            ]
-        },
-        {
-            country: "Thaïlande",
-            clues: [
-                "🐘 Pays aux éléphants sacrés",
-                "🛕 Plus de 40 000 temples bouddhistes",
-                "🌶️ Cuisine épicée renommée",
-                "🏝️ Îles paradisiaques de Phuket",
-                "👑 Royaume du Siam"
-            ]
-        },
-        {
-            country: "Grèce",
-            clues: [
-                "🏛️ Berceau de la démocratie",
-                "🏺 Mythologie et dieux de l'Olympe",
-                "🏝️ Plus de 6000 îles",
-                "🫒 Grand producteur d'huile d'olive",
-                "⚡ Zeus et Athéna"
-            ]
-        },
-        {
-            country: "Pérou",
-            clues: [
-                "🏔️ Machu Picchu dans les Andes",
-                "🦙 Lamas et alpagas",
-                "🗿 Civilisation inca",
-                "🌊 Lignes de Nazca mystérieuses",
-                "🍴 Ceviche traditionnel"
-            ]
-        },
-        {
-            country: "Maroc",
-            clues: [
-                "🕌 Mosquées et médinas",
-                "🏜️ Désert du Sahara",
-                "🍵 Culture du thé à la menthe",
-                "🎨 Artisanat et tapis berbères",
-                "🐪 Chameaux et dromadaires"
-            ]
-        },
-        {
-            country: "Norvège",
-            clues: [
-                "🌊 Fjords spectaculaires",
-                "🌌 Aurores boréales",
-                "⛷️ Ski et sports d'hiver",
-                "🐟 Grand exportateur de saumon",
-                "👑 Royaume scandinave"
-            ]
-        },
-        {
-            country: "Turquie",
-            clues: [
-                "🕌 Sainte-Sophie à Istanbul",
-                "🎈 Montgolfières de Cappadoce",
-                "🌉 Pont entre Europe et Asie",
-                "🍢 Kebabs et baklava",
-                "🛁 Bains turcs hammam"
-            ]
-        },
-        {
-            country: "Nouvelle-Zélande",
-            clues: [
-                "🐑 Plus de moutons que d'habitants",
-                "🏔️ Décors du Seigneur des Anneaux",
-                "🏉 All Blacks et haka",
-                "🌋 Activité géothermique importante",
-                "🥝 Kiwi oiseau endémique"
-            ]
-        },
-        {
-            country: "Pays-Bas",
-            clues: [
-                "🌷 Champs de tulipes",
-                "🚲 Plus de vélos que d'habitants",
-                "🧀 Fromage Gouda et Edam",
-                "💨 Moulins à vent emblématiques",
-                "🏛️ Amsterdam et ses canaux"
-            ]
-        },
-        {
-            country: "Suisse",
-            clues: [
-                "🏔️ Alpes suisses",
-                "🧀 Fondue et raclette",
-                "🕐 Horlogerie de précision",
-                "🏦 Place financière mondiale",
-                "🍫 Chocolat réputé"
-            ]
-        }
-    ];
+	const interpolMissions = [
+	    {
+	        country: "France",
+	        clues: [
+	            "Détient le record mondial du nombre de fuseaux horaires",
+	            "Premier pays à avoir instauré un système de numérotation des maisons",
+	            "Sa frontière terrestre la plus longue est partagée avec le Brésil",
+	            "Berceau de l'invention du cinéma et de la photographie",
+	            "Son territoire est bordé par trois mers et un océan"
+	        ]
+	    },
+	    {
+	        country: "Japon",
+	        clues: [
+	            "Le plus ancien empire encore en exercice au monde",
+	            "Archipel composé de plus de 6 800 îles",
+	            "Possède la plus forte densité de distributeurs automatiques par habitant",
+	            "Abrite l'entreprise la plus vieille du monde (fondée en 578)",
+	            "Le relief est occupé à 70% par des montagnes et des forêts"
+	        ]
+	    },
+	    {
+	        country: "Brésil",
+	        clues: [
+	            "Seul pays des Amériques à avoir été le siège d'une monarchie européenne",
+	            "Détient la plus grande communauté japonaise hors du Japon",
+	            "Frontalier de tous les pays d'Amérique du Sud, sauf deux",
+	            "Premier producteur mondial de café depuis plus de 150 ans",
+	            "Sa côte atlantique s'étend sur plus de 7 400 km"
+	        ]
+	    },
+	    {
+	        country: "Égypte",
+	        clues: [
+	            "Le pays le plus peuplé du monde arabe",
+	            "Considéré comme l'un des premiers États-nations de l'histoire",
+	            "Sa capitale abrite la plus ancienne université encore active au monde",
+	            "Le secteur agricole dépend presque exclusivement d'un seul cours d'eau",
+	            "Contrôle l'un des points de passage maritimes les plus stratégiques du globe"
+	        ]
+	    },
+	    {
+	        country: "Australie",
+	        clues: [
+	            "Le pays le plus plat et le plus sec du monde (hors Antarctique)",
+	            "Possède une barrière de corail visible depuis l'espace",
+	            "L'un des rares pays où la majorité de la population vit sur les côtes",
+	            "Détient les plus grandes réserves d'uranium au monde",
+	            "Ancienne colonie pénitentiaire devenue une puissance du Commonwealth"
+	        ]
+	    },
+	    {
+	        country: "Inde",
+	        clues: [
+	            "Plus grande démocratie du monde en nombre de votants",
+	            "Berceau de quatre des plus grandes religions mondiales",
+	            "Possède le plus grand réseau ferroviaire d'Asie",
+	            "Le plus grand producteur de films au monde en volume annuel",
+	            "Premier pays à avoir extrait et utilisé des diamants dès l'Antiquité"
+	        ]
+	    },
+	    {
+	        country: "Canada",
+	        clues: [
+	            "Possède la plus longue façade maritime au monde",
+	            "Abrite plus de la moitié des lacs d'eau douce de la planète",
+	            "Détient le record du nombre de parcs nationaux en zone arctique",
+	            "Le pays possède plus de 3 millions de lacs",
+	            "Son nom provient d'un mot indigène signifiant 'le village'"
+	        ]
+	    },
+	    {
+	        country: "Italie",
+	        clues: [
+	            "Le pays qui compte le plus grand nombre de sites inscrits à l'UNESCO",
+	            "Enclave deux micro-États souverains sur son propre territoire",
+	            "Détient les trois seuls volcans actifs d'Europe continentale",
+	            "Berceau du système bancaire moderne à la Renaissance",
+	            "Plus grand producteur de vin au monde en volume"
+	        ]
+	    },
+	    {
+	        country: "Chine",
+	        clues: [
+	            "Utilise un seul fuseau horaire malgré sa largeur géographique",
+	            "Détient la plus longue frontière terrestre totale au monde",
+	            "Inventeur de la boussole, de la poudre à canon et du papier",
+	            "Le pays possède le plus grand réseau de trains à grande vitesse",
+	            "Sa langue principale est la plus parlée au monde en locuteurs natifs"
+	        ]
+	    },
+	    {
+	        country: "Russie",
+	        clues: [
+	            "Le seul pays au monde bordé par douze mers",
+	            "Contient 20% des réserves d'eau douce non gelée de la planète",
+	            "Possède une forêt boréale plus vaste que l'Amazonie",
+	            "A effectué le premier vol spatial habité de l'histoire",
+	            "S'étend sur onze fuseaux horaires différents"
+	        ]
+	    },
+	    {
+	        country: "Mexique",
+	        clues: [
+	            "Le pays qui compte le plus grand nombre de locuteurs hispanophones",
+	            "C'est ici que se trouve le plus petit volcan du monde (13m)",
+	            "C'est le lieu d'origine du chocolat et du maïs",
+	            "Sa capitale est construite sur les ruines d'une cité lacustre",
+	            "Possède la plus grande pyramide au monde en termes de volume de base"
+	        ]
+	    },
+	    {
+	        country: "Royaume-Uni",
+	        clues: [
+	            "Le pays n'a pas de constitution écrite unique",
+	            "L'anglais n'y est pas officiellement la langue d'État par la loi",
+	            "C'est ici qu'est née la révolution industrielle",
+	            "Sa monnaie est la plus ancienne encore en circulation",
+	            "Possède un tunnel ferroviaire sous-marin le reliant au continent"
+	        ]
+	    },
+	    {
+	        country: "Allemagne",
+	        clues: [
+	            "Détient le record européen du nombre de pays frontaliers (neuf)",
+	            "Inventeur de l'imprimerie à caractères mobiles",
+	            "Certaines de ses autoroutes n'ont pas de limitation de vitesse globale",
+	            "Plus grande économie de l'Union Européenne",
+	            "Possède une tradition de jardins ouvriers très réglementée"
+	        ]
+	    },
+	    {
+	        country: "Argentine",
+	        clues: [
+	            "Détient le point le plus haut et le point le plus bas de l'hémisphère Sud",
+	            "A eu cinq présidents en seulement deux semaines en 2001",
+	            "Possède la plus large avenue du monde (140 mètres de large)",
+	            "Premier pays à avoir utilisé les empreintes digitales pour une enquête",
+	            "Sa partie sud est la région habitée la plus proche de l'Antarctique"
+	        ]
+	    },
+	    {
+	        country: "Afrique du Sud",
+	        clues: [
+	            "Seul pays au monde à posséder trois capitales différentes",
+	            "A volontairement démantelé son propre programme d'armes nucléaires",
+	            "Possède 11 langues officielles pour représenter sa diversité",
+	            "Abrite les plus vieux restes fossilisés d'hominidés",
+	            "Détient l'une des flores les plus riches de la planète (fynbos)"
+	        ]
+	    },
+	    {
+	        country: "Espagne",
+	        clues: [
+	            "Seul pays d'Europe à avoir une frontière physique avec un pays d'Afrique",
+	            "L'hymne national n'a pas de paroles officielles",
+	            "Possède le plus grand nombre de vignobles en termes de superficie",
+	            "Le pays est le leader mondial de la transplantation d'organes",
+	            "Deuxième pays le plus montagneux d'Europe après la Suisse"
+	        ]
+	    },
+	    {
+	        country: "Thaïlande",
+	        clues: [
+	            "Seul pays d'Asie du Sud-Est à n'avoir jamais été colonisé par l'Occident",
+	            "Le nom de sa capitale est l'un des plus longs au monde",
+	            "Considère la tête comme sacrée et les pieds comme impurs",
+	            "Détient le record mondial du plus grand nombre d'espèces de chauves-souris",
+	            "Anciennement connu sous le nom de Royaume de Rattanakosin"
+	        ]
+	    },
+	    {
+	        country: "Grèce",
+	        clues: [
+	            "Le pays dont la marine marchande est la première mondiale",
+	            "Plus de 80% de son territoire est constitué de montagnes",
+	            "Le pays n'a aucun fleuve navigable en raison du relief",
+	            "Détient le record du nombre de musées archéologiques au monde",
+	            "Son drapeau comporte 9 bandes représentant les syllabes de la liberté"
+	        ]
+	    },
+	    {
+	        country: "Pérou",
+	        clues: [
+	            "Lieu d'origine de la pomme de terre (plus de 3 000 variétés)",
+	            "Abrite la source la plus lointaine du fleuve Amazone",
+	            "Possède le lac navigable le plus haut du monde",
+	            "Détient l'une des cités de terre les plus grandes de l'histoire (Chan Chan)",
+	            "Son territoire comprend 84 des 104 zones climatiques existantes"
+	        ]
+	    },
+	    {
+	        country: "Maroc",
+	        clues: [
+	            "Détient la plus ancienne université au monde encore en activité",
+	            "Premier pays à avoir reconnu l'indépendance des États-Unis en 1777",
+	            "Le plus grand producteur mondial de phosphate",
+	            "Possède le point culminant de l'Afrique du Nord",
+	            "L'arabe et l'amazigh sont ses deux langues officielles"
+	        ]
+	    },
+	    {
+	        country: "Norvège",
+	        clues: [
+	            "Possède le tunnel routier le plus long du monde (24,5 km)",
+	            "A introduit le sushi au saumon au Japon dans les années 80",
+	            "Le pays produit presque 100% de son électricité grâce à l'hydroélectricité",
+	            "Détient la plus grande réserve souveraine d'argent au monde",
+	            "A offert le prix Nobel de la paix comme institution nationale"
+	        ]
+	    },
+	    {
+	        country: "Turquie",
+	        clues: [
+	            "Sa plus grande ville s'étend sur deux plaques tectoniques et deux continents",
+	            "Le pays a introduit les tulipes en Europe au XVIe siècle",
+	            "Abrite l'un des plus anciens et plus grands marchés couverts au monde",
+	            "C'est ici qu'ont été frappées les premières pièces de monnaie (Lydie)",
+	            "Le siège de sept églises de l'Apocalypse se trouve sur son territoire"
+	        ]
+	    },
+	    {
+	        country: "Nouvelle-Zélande",
+	        clues: [
+	            "Premier pays au monde à avoir accordé le droit de vote aux femmes",
+	            "Le pays possède le nom de lieu le plus long du monde (85 lettres)",
+	            "Il n'y a aucun serpent indigène sur tout le territoire",
+	            "Possède la capitale la plus australe de la planète",
+	            "L'un des deux seuls pays au monde à posséder deux hymnes nationaux"
+	        ]
+	    },
+	    {
+	        country: "Pays-Bas",
+	        clues: [
+	            "Environ 26% du territoire se situe en dessous du niveau de la mer",
+	            "Premier pays au monde à avoir légalisé le mariage homosexuel",
+	            "Le pays possède la plus forte densité de population d'Europe (hors micro-États)",
+	            "Détient le record mondial de la taille moyenne des habitants",
+	            "A créé la première multinationale et la première bourse au monde"
+	        ]
+	    },
+	    {
+	        country: "Suisse",
+	        clues: [
+	            "Le pays possède assez d'abris nucléaires pour loger toute sa population",
+	            "Le drapeau national est l'un des deux seuls au monde à être carré",
+	            "N'a pas de chef d'État unique, mais un conseil de sept membres",
+	            "Le pays est neutre depuis 1815 et n'a pas connu de guerre depuis",
+	            "Possède quatre langues nationales officielles"
+	        ]
+	    },
+	    // --- NOUVEAUX PAYS ---
+	    {
+	        country: "Indonésie",
+	        clues: [
+	            "Plus grand État archipel du monde avec plus de 17 000 îles",
+	            "Abrite la plus grande population musulmane de la planète",
+	            "Seul endroit au monde où l'on trouve des dragons de Komodo à l'état sauvage",
+	            "Contient la plus grande structure bouddhiste au monde (Borobudur)",
+	            "Le pays compte plus de 130 volcans actifs"
+	        ]
+	    },
+	    {
+	        country: "Portugal",
+	        clues: [
+	            "A établi la première route maritime directe entre l'Europe et l'Asie",
+	            "Premier empire colonial mondial à avoir aboli l'esclavage",
+	            "Le pays produit 50% de la consommation mondiale de liège",
+	            "Détient la plus ancienne frontière d'Europe (inchangée depuis 1139)",
+	            "Ses explorateurs ont été les premiers Européens à atteindre le Japon"
+	        ]
+	    },
+	    {
+	        country: "Corée du Sud",
+	        clues: [
+	            "Le pays possède la vitesse internet moyenne la plus élevée au monde",
+	            "Possède le système de recyclage des déchets le plus efficace du globe",
+	            "Le port du masque y était une norme sociale bien avant les pandémies",
+	            "L'éducation y occupe la part la plus importante du budget des familles",
+	            "A inventé le premier caractère mobile en métal (avant l'imprimerie européenne)"
+	        ]
+	    },
+	    {
+	        country: "Vietnam",
+	        clues: [
+	            "Deuxième exportateur mondial de café après le Brésil",
+	            "Abrite la plus grande grotte naturelle du monde",
+	            "Le pays a une forme de 'S' étirée sur plus de 1 600 km",
+	            "Possède un taux d'alphabétisation parmi les plus hauts d'Asie du Sud-Est",
+	            "Réputé pour ses formations karstiques émergent de la mer"
+	        ]
+	    },
+	    {
+	        country: "Arabie Saoudite",
+	        clues: [
+	            "Le plus grand pays au monde à ne posséder aucun fleuve permanent",
+	            "Détient les deux lieux les plus saints de l'Islam",
+	            "Son économie repose sur les plus grandes réserves de pétrole conventionnel",
+	            "Le pays construit actuellement une ville linéaire de 170 km de long",
+	            "Territoire occupé à 95% par des zones désertiques ou semi-désertiques"
+	        ]
+	    },
+	    {
+	        country: "Pologne",
+	        clues: [
+	            "A adopté la première constitution moderne d'Europe en 1791",
+	            "Détient la plus grande forteresse médiévale en briques au monde",
+	            "Le pays a disparu de la carte du monde pendant 123 ans",
+	            "Plus de 90% de son territoire est situé à moins de 300m d'altitude",
+	            "Sa capitale a été reconstruite à l'identique après une destruction totale"
+	        ]
+	    },
+	    {
+	        country: "Chili",
+	        clues: [
+	            "Le pays le plus long et le plus étroit du monde",
+	            "Possède le désert le plus aride de la planète (Atacama)",
+	            "Territoire incluant une île célèbre pour ses statues monolithiques",
+	            "Premier exportateur mondial de cuivre",
+	            "Possède l'un des cieux les plus clairs pour l'observation astronomique"
+	        ]
+	    },
+	    {
+	        country: "Israël",
+	        clues: [
+	            "Seul pays au monde à être entré dans le XXIe siècle avec un gain net d'arbres",
+	            "Détient le record mondial de publications scientifiques par habitant",
+	            "Possède le point le plus bas de la surface terrestre émergée",
+	            "A ressuscité une langue morte pour en faire sa langue officielle",
+	            "Berceau des technologies de pointe en matière d'irrigation goutte-à-goutte"
+	        ]
+	    },
+	    {
+	        country: "Singapour",
+	        clues: [
+	            "Cité-État composée de 63 îles, la plupart artificielles",
+	            "L'un des trois seuls pays au monde sans arrière-pays agricole",
+	            "L'importation et la vente de chewing-gum y sont interdites",
+	            "Possède le jardin botanique le plus visité et le plus riche d'Asie",
+	            "Détient l'un des passeports les plus puissants du monde"
+	        ]
+	    },
+	    {
+	        country: "Éthiopie",
+	        clues: [
+	            "Seul pays d'Afrique à avoir un alphabet propre et ancien",
+	            "Utilise un calendrier de 13 mois qui a 7 ans de retard sur le nôtre",
+	            "Berceau originel de la plante du café (région de Kaffa)",
+	            "L'un des rares pays africains à n'avoir jamais été colonisé",
+	            "Possède le plus grand nombre de sites UNESCO en Afrique"
+	        ]
+	    }
+	];
     
     // ===== VARIABLES DU JEU =====
     let interpolTargetCountry = '';
